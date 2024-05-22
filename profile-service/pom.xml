@@ -125,10 +125,10 @@
 				</executions>
 				<configuration>
 					<excludes>
-						<exclude>com/devteria/profile/dto/**</exclude>
-						<exclude>com/devteria/profile/entity/**</exclude>
-						<exclude>com/devteria/profile/mapper/**</exclude>
-						<exclude>com/devteria/profile/configuration/**</exclude>
+						<exclude>com/thai/profile/dto/**</exclude>
+						<exclude>com/thai/profile/entity/**</exclude>
+						<exclude>com/thai/profile/mapper/**</exclude>
+						<exclude>com/thai/profile/configuration/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
