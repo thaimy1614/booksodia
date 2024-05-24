@@ -7,7 +7,10 @@ import com.thai.profile.mapper.UserProfileMapper;
 import com.thai.profile.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -42,5 +45,9 @@ public class UserProfileService {
 
         }).orElseThrow(() -> new RuntimeException("Profile not found!"));
         return userProfileMapper.toUserProfileResponse(userProfileRepository.save(userProfile));
+    }
+
+    public List<UserProfile> getAll() {
+        return userProfileRepository.findAll();
     }
 }
