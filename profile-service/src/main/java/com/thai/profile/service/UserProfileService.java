@@ -8,6 +8,7 @@ import com.thai.profile.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class UserProfileService {
         return userProfileMapper.toUserProfileResponse(userProfileRepository.save(userProfile));
     }
 
+    @PreAuthorize(value = "hasRole('ADMIN')")
     public List<UserProfile> getAll() {
         return userProfileRepository.findAll();
     }
