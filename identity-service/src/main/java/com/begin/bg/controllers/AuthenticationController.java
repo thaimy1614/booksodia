@@ -1,10 +1,7 @@
 package com.begin.bg.controllers;
 
 
-import com.begin.bg.dto.request.IntrospectRequest;
-import com.begin.bg.dto.request.InvalidatedTokenRequest;
-import com.begin.bg.dto.request.RefreshTokenRequest;
-import com.begin.bg.dto.request.UserRequest;
+import com.begin.bg.dto.request.*;
 import com.begin.bg.dto.response.IntrospectResponse;
 import com.begin.bg.entities.ResponseObject;
 import com.begin.bg.entities.User;
@@ -103,5 +100,17 @@ public class AuthenticationController {
     ResponseEntity<ResponseObject> refreshToken(@RequestBody RefreshTokenRequest request) throws Exception {
         String token = authService.refreshToken(request);
         return ResponseEntity.ok(new ResponseObject("OK", "Refresh token successful!", token));
+    }
+
+    @PostMapping("/change-password")
+    ResponseEntity<ResponseObject> changePassword(@RequestBody ChangePasswordRequest request) throws Exception {
+        authService.changePassword(request);
+        return ResponseEntity.ok().body(new ResponseObject("OK", "Change password successful!", null));
+    }
+
+    @PostMapping("/forget-password/send-otp")
+    ResponseEntity<ResponseObject> sendOtp(@RequestBody SendOTPRequest request){
+        authService.sendOTPForForgetPassword(request);
+        return ResponseEntity.ok().body(new ResponseObject("OK", "Send OTP successful!", null));
     }
 }
