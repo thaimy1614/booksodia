@@ -37,11 +37,11 @@ public class UserService {
     public User getMyInfo(){
         var user = SecurityContextHolder.getContext().getAuthentication();
         String name = user.getName();
-        return userRepository.findByUsername(name).get();
+        return userRepository.findByEmail(name).get();
     }
 
     public Optional<User> findUserByName(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByEmail(username);
     }
 
     public Boolean userExistsById(UUID id) {

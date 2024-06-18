@@ -23,6 +23,10 @@ spring:
         max.in.flight.requests.per.connection: 5
         partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
         linger.ms: 100  # Điều chỉnh thời gian chờ đợi để tối ưu hóa batching
+  data:
+    redis:
+      port: 6379
+      host: localhost
 jwt:
   signer-key: HJ4ppveef04BKJzTq+dyLhRdicqYiQWxaSqTLiTUxksDu4zMs/NLfrJsbHz+4OiB
   expiration-duration: 20 # in sec
