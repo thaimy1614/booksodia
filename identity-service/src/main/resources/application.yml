@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=BeginRestful;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: 170903
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 1
+      acks: all
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+        partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
+        linger.ms: 100  # Điều chỉnh thời gian chờ đợi để tối ưu hóa batching
+jwt:
+  signer-key: HJ4ppveef04BKJzTq+dyLhRdicqYiQWxaSqTLiTUxksDu4zMs/NLfrJsbHz+4OiB
+  expiration-duration: 20 # in sec
+  refreshable-duration: 120 # in sec
+app:
+  services:
+    profile: http://localhost:8081/profile
+server:
+  port: 8080
+  servlet:
+    context-path: /identity

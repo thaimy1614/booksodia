@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d2aee3a1-3fdf-4861-aa61-29313eb508e7" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2aebogUS6eBy81sMKE832JfP8iI" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Spring_Boot/microservices/booksodia/identity-service",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propCompiler",
+    "spring.configuration.checksum": "5523c88dd347d1b7cc617f632b7efdb7",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.begin.bg.dto.request" />
+      <recent name="com.begin.bg.controllers" />
+      <recent name="com.begin.bg.dto.response" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.UserControllerTest.createUser_validRequest_success">
+    <configuration name="UserControllerTest.createUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="bg" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.begin.bg.controllers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.begin.bg.controllers" />
+      <option name="MAIN_CLASS_NAME" value="com.begin.bg.controllers.UserControllerTest" />
+      <option name="METHOD_NAME" value="createUser" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest.createUser_validRequest_success" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="bg" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.begin.bg.controllers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.begin.bg.controllers" />
+      <option name="MAIN_CLASS_NAME" value="com.begin.bg.controllers.UserControllerTest" />
+      <option name="METHOD_NAME" value="createUser_validRequest_success" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BgApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="bg" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.begin.bg.BgApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.begin.bg.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserControllerTest.createUser_validRequest_success" />
+        <item itemvalue="Spring Boot.BgApplication" />
+        <item itemvalue="JUnit.UserControllerTest.createUser" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17011.79" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17011.79" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d2aee3a1-3fdf-4861-aa61-29313eb508e7" name="Changes" comment="" />
+      <created>1704682169613</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1704682169613</updated>
+      <workItem from="1704682170612" duration="55000" />
+      <workItem from="1704682260584" duration="6000" />
+      <workItem from="1704756062736" duration="184000" />
+      <workItem from="1704815551160" duration="85000" />
+      <workItem from="1704948210704" duration="3000" />
+      <workItem from="1704958242550" duration="87000" />
+      <workItem from="1704958354895" duration="10000" />
+      <workItem from="1714734361419" duration="1568000" />
+      <workItem from="1714735947188" duration="119000" />
+      <workItem from="1714736079646" duration="49000" />
+      <workItem from="1714736138589" duration="56000" />
+      <workItem from="1714736215151" duration="795000" />
+      <workItem from="1714737097930" duration="1962000" />
+      <workItem from="1714974946026" duration="12372000" />
+      <workItem from="1714996925670" duration="9110000" />
+      <workItem from="1715136323477" duration="6770000" />
+      <workItem from="1715228880665" duration="4029000" />
+      <workItem from="1715331989763" duration="596000" />
+      <workItem from="1715404924344" duration="4351000" />
+      <workItem from="1715420375182" duration="1142000" />
+      <workItem from="1715435861952" duration="4186000" />
+      <workItem from="1715487717639" duration="7581000" />
+      <workItem from="1715498055105" duration="5609000" />
+      <workItem from="1715678813318" duration="5889000" />
+      <workItem from="1715698976725" duration="4774000" />
+      <workItem from="1715741133855" duration="5740000" />
+      <workItem from="1715747077298" duration="750000" />
+      <workItem from="1715750895668" duration="1184000" />
+      <workItem from="1715753559562" duration="5089000" />
+      <workItem from="1715831739478" duration="688000" />
+      <workItem from="1715834688328" duration="40000" />
+      <workItem from="1715915760958" duration="307000" />
+      <workItem from="1715916128629" duration="5000" />
+      <workItem from="1716265640114" duration="49000" />
+      <workItem from="1718682055474" duration="106000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
