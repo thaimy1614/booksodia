@@ -33,7 +33,15 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private final ObjectMapper mapper;
     @Value("${app.api-prefix}")
     private String prefix;
-    String[] PUBLIC_ENDPOINTS = {"/identity/auth", "/identity/log-out", "/identity/introspect", "/identity/signup"};
+    String[] PUBLIC_ENDPOINTS = {
+            "/identity/auth",
+            "/identity/log-out",
+            "/identity/introspect",
+            "/identity/signup",
+            "/identity/change-password",
+            "/identity/forget-password"
+    
+    };
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         log.info(isPublicEndpoint(exchange.getRequest())+"");

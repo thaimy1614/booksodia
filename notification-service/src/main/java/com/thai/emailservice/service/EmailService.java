@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 public interface EmailService {
     void sendOtp(SendOtp sendOtp);
-    void sendNewPassword(SendPassword sendPassword);
+//    void sendNewPassword(SendPassword sendPassword);
 }
 
 @Service
