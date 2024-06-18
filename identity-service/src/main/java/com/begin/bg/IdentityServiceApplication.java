@@ -21,7 +21,14 @@ public class IdentityServiceApplication {
 	}
 
 	@Bean
-	NewTopic notification() {
+	NewTopic sendOtp() {
 		return new NewTopic("sendOtp", 3, (short) 3);
 	}
+
+	@Bean
+	NewTopic sendNewPassword() {
+		return new NewTopic("sendNewPassword", 3, (short) 3);
+	}
+
+
 }

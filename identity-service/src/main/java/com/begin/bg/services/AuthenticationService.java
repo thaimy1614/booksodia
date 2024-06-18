@@ -168,10 +168,10 @@ public class AuthenticationService {
         String OTP = generate();
         // Store OTP in redis
         redisTemplate.opsForValue().set(email,OTP,1, TimeUnit.MINUTES);
-        // TODO: Send OTP via mail - mail-service
-        kafkaTemplate.send("sendOtp", SendOtp.builder().email(email).otp(OTP).topic("OTP - FORGET PASSWORD").build());
+        // Send OTP via mail - mail-service
+        SendOtp sendOtp = SendOtp.builder().email(email).otp(OTP).topic("OTP - FORGET PASSWORD").build();
+        kafkaTemplate.send("sendOtp", sendOtp);
         return SendOTPResponse.builder().isSent(true).build();
-
     }
 
     public CheckOTPResponse checkOTP(String otp, String email) {
@@ -193,10 +193,10 @@ public class AuthenticationService {
         if(passwordEncoder.matches(request.getOldPassword(),accountInfo.getPassword())){
             accountInfo.setPassword(passwordEncoder.encode(request.getNewPassword()));
             userRepository.save(accountInfo);
-        }else{
-            // throw news ...
+            return ChangePasswordResponse.builder().success(true).build();
+        }else {
+            return ChangePasswordResponse.builder().success(false).build();
         }
-        return ChangePasswordResponse.builder().success(true).build();
     }
 
     private String generate(){

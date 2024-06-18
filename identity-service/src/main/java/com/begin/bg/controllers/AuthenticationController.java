@@ -2,7 +2,9 @@ package com.begin.bg.controllers;
 
 
 import com.begin.bg.dto.request.*;
+import com.begin.bg.dto.response.ChangePasswordResponse;
 import com.begin.bg.dto.response.IntrospectResponse;
+import com.begin.bg.dto.response.SendOTPResponse;
 import com.begin.bg.entities.ResponseObject;
 import com.begin.bg.entities.User;
 import com.begin.bg.enums.UserStatus;
@@ -104,13 +106,13 @@ public class AuthenticationController {
 
     @PostMapping("/change-password")
     ResponseEntity<ResponseObject> changePassword(@RequestBody ChangePasswordRequest request) throws Exception {
-        authService.changePassword(request);
-        return ResponseEntity.ok().body(new ResponseObject("OK", "Change password successful!", null));
+        ChangePasswordResponse response = authService.changePassword(request);
+        return ResponseEntity.ok().body(new ResponseObject("OK", "Change password successful!", response));
     }
 
     @PostMapping("/forget-password/send-otp")
     ResponseEntity<ResponseObject> sendOtp(@RequestBody SendOTPRequest request){
-        authService.sendOTPForForgetPassword(request);
-        return ResponseEntity.ok().body(new ResponseObject("OK", "Send OTP successful!", null));
+        SendOTPResponse response = authService.sendOTPForForgetPassword(request);
+        return ResponseEntity.ok().body(new ResponseObject("OK", "Send OTP successful!", response));
     }
 }

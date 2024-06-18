@@ -31,7 +31,7 @@ public class ApplicationConfiguration {
     ApplicationRunner applicationRunner(UserRepository userRepository){
         return args -> {
             log.info("A");
-            if (userRepository.findByEmail("admin").isEmpty()){
+            if (userRepository.findByEmail("lxlthailxl@gmail.com").isEmpty()){
                 permissionRepository.save(Permission.builder().name("BLOCK_USER").description("Block account").build());
                 permissionRepository.save(Permission.builder().name("DELETE_USER").description("Delete account").build());
                 log.info("B");
@@ -49,7 +49,7 @@ public class ApplicationConfiguration {
                         ));
                 User user = User
                         .builder()
-                        .email("admin")
+                        .email("lxlthailxl@gmail.com")
                         .password(passwordEncoder.encode("123"))
                         .roles(roles)
                         .status(UserStatus.ACTIVATED.name())
