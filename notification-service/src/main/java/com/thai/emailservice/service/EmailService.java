@@ -1,5 +1,7 @@
 package com.thai.emailservice.service;
 
+import com.thai.emailservice.dto.SendOtp;
+import com.thai.emailservice.dto.SendPassword;
 import com.thai.emailservice.model.MessageDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -14,7 +16,8 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 
 public interface EmailService {
-    void sendEmail(MessageDTO messageDTO);
+    void sendOtp(SendOtp sendOtp);
+    void sendNewPassword(SendPassword sendPassword);
 }
 
 @Service
@@ -28,17 +31,17 @@ class EmailServiceImpl implements EmailService {
 
     @Override
     @Async
-    public void sendEmail(MessageDTO messageDTO) {
+    public void sendOtp(SendOtp sendOtp) {
         try {
             log.info("Sending email...");
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, StandardCharsets.UTF_8.name());
 
-            helper.setTo(messageDTO.getTo());
+            helper.setTo(sendOtp.getEmail());
             helper.setFrom(from);
-            helper.setText("I LOVE YOU");
-            helper.setSubject(messageDTO.getTopic());
+            helper.setText("Your OTP is "+ sendOtp.getOtp());
+            helper.setSubject(sendOtp.getTopic());
 
             javaMailSender.send(message);
             log.info("Email sent successful!");

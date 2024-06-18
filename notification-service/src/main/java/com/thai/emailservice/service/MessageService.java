@@ -1,5 +1,6 @@
 package com.thai.emailservice.service;
 
+import com.thai.emailservice.dto.SendOtp;
 import com.thai.emailservice.model.MessageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +13,9 @@ import org.springframework.stereotype.Service;
 public class MessageService {
     private final EmailService emailService;
 
-    @KafkaListener(id="notificationGroup", topics = "notification")
-    public void listen(MessageDTO messageDTO) {
-        log.info("Message received: {}", messageDTO.getTo());
-        emailService.sendEmail(messageDTO);
+    @KafkaListener(id="sendOtpGroup", topics = "sendOtp")
+    public void listen(SendOtp sendOtp) {
+        log.info("Message received: {}", sendOtp.getEmail());
+        emailService.sendOtp(sendOtp);
     }
 }
