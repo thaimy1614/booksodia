@@ -1,10 +1,10 @@
-package com.thai.user_service;
+package com.thai.emailservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UserServiceApplicationTests {
+class EmailServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
