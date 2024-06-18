@@ -170,7 +170,7 @@ public class AuthenticationService {
         String email = request.getEmail();
         var user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
-            return SendOTPResponse.builder().isSent(true).build();
+            return SendOTPResponse.builder().isSent(false).build();
         }
         // Generate OTP and store in redis
         String OTP = generate();
