@@ -39,7 +39,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/introspect",
             "/identity/signup",
             "/identity/change-password",
-            "/identity/forget-password/send-otp"
+            "/identity/forget-password/send-otp",
+            "/identity/forget-password/check-otp",
     
     };
     @Override
