@@ -21,6 +21,8 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -40,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
     private final UserRepository userRepository;
     private final InvalidatedTokenRepository invalidatedTokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -165,6 +168,10 @@ public class AuthenticationService {
 
     public SendOTPResponse sendOTPForForgetPassword(SendOTPRequest request) {
         String email = request.getEmail();
+        var user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            return SendOTPResponse.builder().isSent(true).build();
+        }
         // Generate OTP and store in redis
         String OTP = generate();
         // Store OTP in redis
