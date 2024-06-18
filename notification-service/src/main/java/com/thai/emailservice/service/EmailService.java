@@ -17,7 +17,8 @@ import java.nio.charset.StandardCharsets;
 
 public interface EmailService {
     void sendOtp(SendOtp sendOtp);
-//    void sendNewPassword(SendPassword sendPassword);
+
+    void sendNewPassword(SendPassword sendPassword);
 }
 
 @Service
@@ -47,6 +48,24 @@ class EmailServiceImpl implements EmailService {
             log.info("Email sent successful!");
         } catch (MessagingException e) {
             log.info("Email sending failed!");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Async
+    public void sendNewPassword(SendPassword sendPassword) {
+        try {
+
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, StandardCharsets.UTF_8.name());
+
+            helper.setTo(sendPassword.getEmail());
+            helper.setFrom(from);
+            helper.setText("Your new password is "+ sendPassword.getPassword());
+            helper.setSubject(sendPassword.getTopic());
+
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
     }

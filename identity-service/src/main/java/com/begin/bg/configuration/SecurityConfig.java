@@ -35,7 +35,7 @@ public class SecurityConfig {
             "/log-out",
             "/introspect",
             "/forget-password/send-otp",
-
+            "/forget-password/check-otp",
             "/change-password"
     };
 

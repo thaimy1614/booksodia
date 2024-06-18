@@ -1,6 +1,7 @@
 package com.begin.bg.services;
 
 import com.begin.bg.dto.mail.SendOtp;
+import com.begin.bg.dto.mail.SendPassword;
 import com.begin.bg.dto.request.ChangePasswordRequest;
 import com.begin.bg.dto.request.CheckOTPRequest;
 import com.begin.bg.dto.request.RefreshTokenRequest;
@@ -179,11 +180,16 @@ public class AuthenticationService {
             // delete old OTP
             redisTemplate.delete(email);
             String newPassword = generate();
-            // TODO: send new password via mail or user enter new password?
+            var user = userRepository.findByEmail(email).get();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            // send new password
+            SendPassword sendPassword = SendPassword.builder().email(email).password(newPassword).topic("New Password - FORGET PASSWORD").build();
+            kafkaTemplate.send("sendNewPassword", sendPassword);
+            return CheckOTPResponse.builder().isValid(true).build();
         }else{
-            // TODO: throw new ...
+            return CheckOTPResponse.builder().isValid(false).build();
         }
-        return CheckOTPResponse.builder().isValid(true).build();
     }
 
     public ChangePasswordResponse changePassword(ChangePasswordRequest request) {
