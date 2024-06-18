@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,4 +25,15 @@ public class User {
     @ManyToMany
     private Set<Role> roles;
     private String status;
+    private Date created;
+    private Date updated;
+    @PrePersist
+    protected void onCreate() {
+        created = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
 }
