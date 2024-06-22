@@ -2,6 +2,7 @@ package com.thai.emailservice.service;
 
 import com.thai.emailservice.dto.SendOtp;
 import com.thai.emailservice.dto.SendPassword;
+import com.thai.emailservice.dto.VerifyAccount;
 import com.thai.emailservice.model.MessageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,5 +25,9 @@ public class MessageService {
     public void listenSendPassword(SendPassword sendPassword) {
         log.info("Message received: {}", sendPassword.getEmail());
         emailService.sendNewPassword(sendPassword);
+    }
+    @KafkaListener(id = "verificationGroup", topics = "verification")
+    public void listenVerification(VerifyAccount verifyAccount) {
+        emailService.sendHtmlEmail(verifyAccount.getFullName(), verifyAccount.getEmail(), verifyAccount.getUrl());
     }
 }

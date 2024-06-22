@@ -2,6 +2,7 @@ package com.thai.emailservice.service;
 
 import com.thai.emailservice.dto.SendOtp;
 import com.thai.emailservice.dto.SendPassword;
+import com.thai.emailservice.dto.VerifyAccount;
 import com.thai.emailservice.model.MessageDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -22,6 +23,8 @@ public interface EmailService {
     void sendOtp(SendOtp sendOtp);
 
     void sendNewPassword(SendPassword sendPassword);
+
+    void sendHtmlEmail(String name, String to, String url);
 }
 
 @Service
