@@ -1,6 +1,7 @@
 package com.begin.bg.controllers;
 
 
+import com.begin.bg.dto.mail.VerifyAccount;
 import com.begin.bg.dto.request.*;
 import com.begin.bg.dto.response.*;
 import com.begin.bg.entities.ResponseObject;
@@ -16,14 +17,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +41,8 @@ public class AuthenticationController {
     private final PermissionRepository permissionRepository;
     private final ProfileClient profileClient;
     private final ProfileCreationMapper mapper;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     //Insert new User with POST method
     @PostMapping("/signup")
     ResponseEntity<ResponseObject> insertUser(@RequestBody UserRequest newUser) {
@@ -61,12 +67,17 @@ public class AuthenticationController {
                     .status(UserStatus.UNVERIFIED.name())
                     .roles(new HashSet<>(roles))
                     .build();
-            System.out.println(roleNameList);
-            System.out.println(roles);
             user = userService.saveUser(user);
-            var profileRequest = mapper.toProfileCreationRequest(newUser);
-            profileRequest.setUserId(user.getEmail().toString());
-            var profileResponse = profileClient.createProfile(profileRequest);
+
+            if(user.getStatus().equals("UNVERIFIED")) {
+                String UUID = java.util.UUID.randomUUID().toString();
+                redisTemplate.opsForValue().set(user.getEmail()+"_verify", UUID);
+                authService.verifyAccount(newUser.getEmail(), UUID);
+                kafkaTemplate.send("verification", VerifyAccount.builder().fullName(newUser.getFirstName()+newUser.getLastName()).email(user.getEmail()).url("http://localhost:8080/identity/verify?email="+user.getEmail()+"&token="+UUID).build());
+            }
+//            var profileRequest = mapper.toProfileCreationRequest(newUser);
+//            profileRequest.setUserId(user.getEmail().toString());
+//            var profileResponse = profileClient.createProfile(profileRequest);
 //            log.info(profileResponse.toString());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject("OK", "Insert User successful!", user));

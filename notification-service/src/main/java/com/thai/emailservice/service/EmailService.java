@@ -2,8 +2,6 @@ package com.thai.emailservice.service;
 
 import com.thai.emailservice.dto.SendOtp;
 import com.thai.emailservice.dto.SendPassword;
-import com.thai.emailservice.dto.VerifyAccount;
-import com.thai.emailservice.model.MessageDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -56,9 +54,9 @@ class EmailServiceImpl implements EmailService {
             helper.setTo(to);
             helper.setText(text, true);
             javaMailSender.send(message);
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-            throw new RuntimeException(exception.getMessage());
+        } catch (MessagingException e) {
+            log.info("Email sending failed!");
+            throw new RuntimeException(e);
         }
     }
 

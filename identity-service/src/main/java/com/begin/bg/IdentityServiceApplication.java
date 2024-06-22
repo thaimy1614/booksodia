@@ -30,5 +30,9 @@ public class IdentityServiceApplication {
 		return new NewTopic("sendNewPassword", 3, (short) 3);
 	}
 
+	@Bean
+	NewTopic sendVerification() {
+		return new NewTopic("verification", 3, (short) 3);
+	}
 
 }

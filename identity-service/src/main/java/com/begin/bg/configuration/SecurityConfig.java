@@ -44,11 +44,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                .requestMatchers("/users/{id}").permitAll()
-                .requestMatchers(HttpMethod.GET,
-                        "/products/{id}",
-                        "/products", "/log-out", "/introspect", "/refresh").permitAll()
-
 //                .requestMatchers("/users").hasRole(UserRole.ADMIN.name())
                 .anyRequest().authenticated());
 
