@@ -6,13 +6,11 @@ import com.begin.bg.dto.request.ChangePasswordRequest;
 import com.begin.bg.dto.request.CheckOTPRequest;
 import com.begin.bg.dto.request.RefreshTokenRequest;
 import com.begin.bg.dto.request.SendOTPRequest;
-import com.begin.bg.dto.response.ChangePasswordResponse;
-import com.begin.bg.dto.response.CheckOTPResponse;
-import com.begin.bg.dto.response.IntrospectResponse;
-import com.begin.bg.dto.response.SendOTPResponse;
+import com.begin.bg.dto.response.*;
 import com.begin.bg.entities.InvalidatedToken;
 import com.begin.bg.entities.ResponseObject;
 import com.begin.bg.entities.User;
+import com.begin.bg.enums.UserStatus;
 import com.begin.bg.repositories.InvalidatedTokenRepository;
 import com.begin.bg.repositories.UserRepository;
 import com.nimbusds.jose.*;
@@ -163,6 +161,20 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(username);
 
         return generateToken(user.get());
+    }
+
+    public VerifyAccountResponse verifyAccount(String email, String token) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        if(!user.getStatus().equals("UNVERIFIED")){
+            return VerifyAccountResponse.builder().success(false).build();
+        }
+        if(token.equals(redisTemplate.opsForValue().get(email+"_verify"))){
+            redisTemplate.delete(email+"_verify");
+            user.setStatus(UserStatus.ACTIVATED.name());
+            userRepository.save(user);
+            return VerifyAccountResponse.builder().success(true).build();
+        }
+        return VerifyAccountResponse.builder().success(false).build();
     }
 
 
