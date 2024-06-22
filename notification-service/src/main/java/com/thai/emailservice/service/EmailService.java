@@ -12,8 +12,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public interface EmailService {
     void sendOtp(SendOtp sendOtp);
@@ -26,9 +29,35 @@ public interface EmailService {
 @RequiredArgsConstructor
 class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
+    public static final String NEW_USER_ACCOUNT_VERIFICATION = "New User Account Verification";
+    public static final String UTF_8_ENCODING = "UTF-8";
+    public static final String EMAIL_TEMPLATE = "email-template";
+    private final TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
     private String from;
+
+    @Async
+    public void sendHtmlEmail(String name, String to, String url) {
+        try {
+            Context context = new Context();
+            context.setVariable("name", name);
+            context.setVariable("url", url);
+            context.setVariables(Map.of("name", name, "url", url));
+            String text = templateEngine.process(EMAIL_TEMPLATE, context);
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);
+            helper.setPriority(1);
+            helper.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setText(text, true);
+            javaMailSender.send(message);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            throw new RuntimeException(exception.getMessage());
+        }
+    }
 
     @Override
     @Async
