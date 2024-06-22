@@ -2,10 +2,7 @@ package com.begin.bg.controllers;
 
 
 import com.begin.bg.dto.request.*;
-import com.begin.bg.dto.response.ChangePasswordResponse;
-import com.begin.bg.dto.response.CheckOTPResponse;
-import com.begin.bg.dto.response.IntrospectResponse;
-import com.begin.bg.dto.response.SendOTPResponse;
+import com.begin.bg.dto.response.*;
 import com.begin.bg.entities.ResponseObject;
 import com.begin.bg.entities.User;
 import com.begin.bg.enums.UserStatus;
@@ -121,5 +118,14 @@ public class AuthenticationController {
     ResponseEntity<ResponseObject> checkOtp(@RequestBody CheckOTPRequest request){
         CheckOTPResponse response = authService.checkOTP(request.getOtp(), request.getEmail());
         return ResponseEntity.ok().body(new ResponseObject("OK", "Check OTP successful!", response));
+    }
+
+    @GetMapping("/verify")
+    ResponseEntity<ResponseObject> refreshToken(
+            @RequestParam("email") String email,
+            @RequestParam("token") String token
+    ) throws Exception {
+        VerifyAccountResponse response = authService.verifyAccount(email, token);
+        return ResponseEntity.ok().body(new ResponseObject("OK", "Verify account successful!", response));
     }
 }
