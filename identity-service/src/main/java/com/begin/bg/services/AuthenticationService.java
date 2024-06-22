@@ -101,7 +101,6 @@ public class AuthenticationService {
                             role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
                     }
             );
-
         }
         return stringJoiner.toString();
     }
@@ -165,6 +164,7 @@ public class AuthenticationService {
 
         return generateToken(user.get());
     }
+
 
     public SendOTPResponse sendOTPForForgetPassword(SendOTPRequest request) {
         String email = request.getEmail();
