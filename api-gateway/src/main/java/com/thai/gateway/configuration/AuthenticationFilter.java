@@ -41,7 +41,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/change-password",
             "/identity/forget-password/send-otp",
             "/identity/forget-password/check-otp",
-            "/identity/verify"
+            "/identity/verify",
+            "/identity/outbound/authentication"
     
     };
     @Override

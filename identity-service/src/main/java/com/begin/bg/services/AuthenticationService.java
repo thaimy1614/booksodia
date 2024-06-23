@@ -2,23 +2,25 @@ package com.begin.bg.services;
 
 import com.begin.bg.dto.mail.SendOtp;
 import com.begin.bg.dto.mail.SendPassword;
-import com.begin.bg.dto.request.ChangePasswordRequest;
-import com.begin.bg.dto.request.CheckOTPRequest;
-import com.begin.bg.dto.request.RefreshTokenRequest;
-import com.begin.bg.dto.request.SendOTPRequest;
+import com.begin.bg.dto.request.*;
 import com.begin.bg.dto.response.*;
 import com.begin.bg.entities.InvalidatedToken;
 import com.begin.bg.entities.ResponseObject;
+import com.begin.bg.entities.Role;
 import com.begin.bg.entities.User;
+import com.begin.bg.enums.UserRole;
 import com.begin.bg.enums.UserStatus;
 import com.begin.bg.repositories.InvalidatedTokenRepository;
 import com.begin.bg.repositories.UserRepository;
+import com.begin.bg.repositories.httpclient.OutboundIdentityClient;
+import com.begin.bg.repositories.httpclient.OutboundUserClient;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.NonFinal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,10 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Random;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -46,12 +45,28 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final OutboundIdentityClient outboundIdentityClient;
+    private final OutboundUserClient outboundUserClient;
     @Value("${jwt.signer-key}")
     private String KEY;
     @Value("${jwt.expiration-duration}")
     private long EXPIRATION_DURATION;
     @Value("${jwt.refreshable-duration}")
     private String REFRESHABLE_DURATION;
+    @NonFinal
+    @Value("${outbound.identity.client-id}")
+    protected String CLIENT_ID;
+
+    @NonFinal
+    @Value("${outbound.identity.client-secret}")
+    protected String CLIENT_SECRET;
+
+    @NonFinal
+    @Value("${outbound.identity.redirect-uri}")
+    protected String REDIRECT_URI;
+
+    @NonFinal
+    protected final String GRANT_TYPE = "authorization_code";
 
     public ResponseObject authenticate(User user) throws Exception {
         User authUser = userRepository.findByEmail(user.getEmail()).get();
@@ -161,6 +176,41 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(username);
 
         return generateToken(user.get());
+    }
+
+    public AuthenticationResponse outboundAuthenticate(String code) throws JOSEException {
+        var response = outboundIdentityClient.exchangeToken(ExchangeTokenRequest.builder()
+                .code(code)
+                .clientId(CLIENT_ID)
+                .clientSecret(CLIENT_SECRET)
+                .redirectUri(REDIRECT_URI)
+                .grantType(GRANT_TYPE)
+                .build());
+        log.info("TOKEN RESPONSE {}", response);
+
+        // Get user info
+        var userInfo = outboundUserClient.getUserInfo("json", response.getAccessToken());
+
+        log.info("User Info {}", userInfo);
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.builder().name(UserRole.USER.name()).build());
+
+        // Onboard user
+        var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(
+                () -> userRepository.save(User.builder()
+                        .email(userInfo.getEmail())
+                        .roles(roles)
+                        .build()));
+
+        // TODO: call profile service to add profile
+
+        // Generate token
+        var token = generateToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .build();
     }
 
     public VerifyAccountResponse verifyAccount(String email, String token) {

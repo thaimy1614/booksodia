@@ -1,6 +1,7 @@
 package com.begin.bg.controllers;
 
 
+import com.begin.bg.dto.ApiResponse;
 import com.begin.bg.dto.mail.VerifyAccount;
 import com.begin.bg.dto.request.*;
 import com.begin.bg.dto.response.*;
@@ -13,6 +14,7 @@ import com.begin.bg.repositories.RoleRepository;
 import com.begin.bg.repositories.httpclient.ProfileClient;
 import com.begin.bg.services.AuthenticationService;
 import com.begin.bg.services.UserService;
+import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -43,6 +45,15 @@ public class AuthenticationController {
     private final ProfileCreationMapper mapper;
     private final RedisTemplate<String, String> redisTemplate;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    @PostMapping("/outbound/authentication")
+    ApiResponse<AuthenticationResponse> outboundAuthenticate(
+            @RequestParam("code") String code
+    ) throws JOSEException {
+        var result = authService.outboundAuthenticate(code);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    }
+
     //Insert new User with POST method
     @PostMapping("/signup")
     ResponseEntity<ResponseObject> insertUser(@RequestBody UserRequest newUser) {

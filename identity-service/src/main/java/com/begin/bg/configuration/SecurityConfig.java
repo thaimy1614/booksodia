@@ -37,7 +37,8 @@ public class SecurityConfig {
             "/forget-password/send-otp",
             "/forget-password/check-otp",
             "/change-password",
-            "/verify"
+            "/verify",
+            "/outbound/authentication"
     };
 
     @Bean
