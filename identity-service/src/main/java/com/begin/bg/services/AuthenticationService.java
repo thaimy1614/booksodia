@@ -201,21 +201,22 @@ public class AuthenticationService {
 
         // Onboard user
         var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(
-                () -> userRepository.save(User.builder()
-                        .email(userInfo.getEmail())
-                        .roles(roles)
-                        .status(UserStatus.ACTIVATED.name())
-                        .build()));
-
-        var profileRequest = ProfileCreationRequest.builder()
-                .userId(userInfo.getEmail())
-                .firstName(userInfo.getGivenName())
-                .lastName(userInfo.getFamilyName())
-                .avatar(userInfo.getPicture())
-                .city(userInfo.getLocale())
-                .build();
-        // call profile service to add profile
-        profileClient.createProfile(profileRequest);
+                () -> {
+                    var profileRequest = ProfileCreationRequest.builder()
+                            .userId(userInfo.getEmail())
+                            .firstName(userInfo.getGivenName())
+                            .lastName(userInfo.getFamilyName())
+                            .avatar(userInfo.getPicture())
+                            .city(userInfo.getLocale())
+                            .build();
+                    // call profile service to add profile
+                    profileClient.createProfile(profileRequest);
+                    return userRepository.save(User.builder()
+                            .email(userInfo.getEmail())
+                            .roles(roles)
+                            .status(UserStatus.ACTIVATED.name())
+                            .build());
+                });
         // Generate token
         var token = generateToken(user);
 
