@@ -29,6 +29,10 @@ public class UserProfile {
     private String firstName;
     @Property("last_name")
     private String lastName;
+    @Property("dob")
     private LocalDate dob;
+    @Property("city")
     private String city;
+    @Property("avatar")
+    private String avatar;
 }

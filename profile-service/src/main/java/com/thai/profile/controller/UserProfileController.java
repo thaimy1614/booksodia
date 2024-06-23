@@ -1,5 +1,6 @@
 package com.thai.profile.controller;
 
+import com.thai.profile.dto.ResponseObject;
 import com.thai.profile.dto.request.ProfileCreationRequest;
 import com.thai.profile.dto.response.UserProfileResponse;
 import com.thai.profile.entity.UserProfile;
@@ -16,6 +17,12 @@ import java.util.List;
 @RequestMapping()
 public class UserProfileController {
     private final UserProfileService userProfileService;
+
+    @GetMapping("/users/my-info")
+    ResponseEntity<ResponseObject> getMyInfo(){
+        UserProfile profile = userProfileService.getMyInfo();
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "GET YOUR INFORMATION SUCCESSFUL!", profile));
+    }
 
     @GetMapping("/users/{profileId}")
     ResponseEntity<UserProfileResponse> getProfile(@PathVariable String profileId){

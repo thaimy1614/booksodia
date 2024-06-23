@@ -1,7 +1,5 @@
 package com.begin.bg.controllers;
 
-
-import com.begin.bg.dto.ApiResponse;
 import com.begin.bg.dto.mail.VerifyAccount;
 import com.begin.bg.dto.request.*;
 import com.begin.bg.dto.response.*;
@@ -47,11 +45,11 @@ public class AuthenticationController {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @PostMapping("/outbound/authentication")
-    ApiResponse<AuthenticationResponse> outboundAuthenticate(
+    ResponseEntity<ResponseObject> outboundAuthenticate(
             @RequestParam("code") String code
     ) throws JOSEException {
         var result = authService.outboundAuthenticate(code);
-        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+        return ResponseEntity.ok().body(new ResponseObject("OK", "Login with google successfully", result));
     }
 
     //Insert new User with POST method
@@ -86,10 +84,10 @@ public class AuthenticationController {
                 authService.verifyAccount(newUser.getEmail(), UUID);
                 kafkaTemplate.send("verification", VerifyAccount.builder().fullName(newUser.getFirstName()+newUser.getLastName()).email(user.getEmail()).url("http://localhost:8080/identity/verify?email="+user.getEmail()+"&token="+UUID).build());
             }
-//            var profileRequest = mapper.toProfileCreationRequest(newUser);
-//            profileRequest.setUserId(user.getEmail().toString());
-//            var profileResponse = profileClient.createProfile(profileRequest);
-//            log.info(profileResponse.toString());
+            var profileRequest = mapper.toProfileCreationRequest(newUser);
+            profileRequest.setUserId(user.getEmail());
+            var profileResponse = profileClient.createProfile(profileRequest);
+            log.info(profileResponse.toString());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject("OK", "Insert User successful!", user));
         }

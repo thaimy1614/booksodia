@@ -8,7 +8,9 @@ import com.thai.profile.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +23,14 @@ public class UserProfileService {
     private final UserProfileMapper userProfileMapper;
 
     public UserProfileResponse createProfile(ProfileCreationRequest request) {
-        UserProfile userProfile = userProfileMapper.toUserProfile(request);
+        UserProfile userProfile = UserProfile.builder()
+                .userId(request.getUserId())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .avatar(request.getAvatar())
+                .city(request.getCity())
+                .dob(request.getDob())
+                .build();
         userProfileRepository.save(userProfile);
 
         return userProfileMapper.toUserProfileResponse(userProfileRepository.save(userProfile));
@@ -51,5 +60,12 @@ public class UserProfileService {
     @PreAuthorize(value = "hasRole('ADMIN')")
     public List<UserProfile> getAll() {
         return userProfileRepository.findAll();
+    }
+
+    @PostAuthorize("returnObject.userId == authentication.name")
+    public UserProfile getMyInfo() {
+        var user = SecurityContextHolder.getContext().getAuthentication();
+        String email = user.getName();
+        return userProfileRepository.findByUserId(email).get();
     }
 }

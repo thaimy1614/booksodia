@@ -14,6 +14,7 @@ import com.begin.bg.repositories.InvalidatedTokenRepository;
 import com.begin.bg.repositories.UserRepository;
 import com.begin.bg.repositories.httpclient.OutboundIdentityClient;
 import com.begin.bg.repositories.httpclient.OutboundUserClient;
+import com.begin.bg.repositories.httpclient.ProfileClient;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -47,6 +48,8 @@ public class AuthenticationService {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboundIdentityClient outboundIdentityClient;
     private final OutboundUserClient outboundUserClient;
+    private final ProfileClient profileClient;
+
     @Value("${jwt.signer-key}")
     private String KEY;
     @Value("${jwt.expiration-duration}")
@@ -136,7 +139,7 @@ public class AuthenticationService {
         SignedJWT signedJWT = SignedJWT.parse(token);
         Date expiryTime = (isRefresh) ? new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant().plus(Long.parseLong(REFRESHABLE_DURATION), ChronoUnit.SECONDS).toEpochMilli()) : signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified = signedJWT.verify(verifier);
-        if (!(verified&& expiryTime.after(new Date()))) {
+        if (!(verified && expiryTime.after(new Date()))) {
             throw new Exception("UNAUTHENTICATED");
         }
 
@@ -194,17 +197,25 @@ public class AuthenticationService {
         log.info("User Info {}", userInfo);
 
         Set<Role> roles = new HashSet<>();
-        roles.add(Role.builder().name(UserRole.USER.name()).build());
+        roles.add(Role.builder().name(UserRole.ADMIN.name()).build());
 
         // Onboard user
         var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(
                 () -> userRepository.save(User.builder()
                         .email(userInfo.getEmail())
                         .roles(roles)
+                        .status(UserStatus.ACTIVATED.name())
                         .build()));
 
-        // TODO: call profile service to add profile
-
+        var profileRequest = ProfileCreationRequest.builder()
+                .userId(userInfo.getEmail())
+                .firstName(userInfo.getGivenName())
+                .lastName(userInfo.getFamilyName())
+                .avatar(userInfo.getPicture())
+                .city(userInfo.getLocale())
+                .build();
+        // call profile service to add profile
+        profileClient.createProfile(profileRequest);
         // Generate token
         var token = generateToken(user);
 
@@ -215,11 +226,11 @@ public class AuthenticationService {
 
     public VerifyAccountResponse verifyAccount(String email, String token) {
         User user = userRepository.findByEmail(email).orElseThrow();
-        if(!user.getStatus().equals("UNVERIFIED")){
+        if (!user.getStatus().equals("UNVERIFIED")) {
             return VerifyAccountResponse.builder().success(false).build();
         }
-        if(token.equals(redisTemplate.opsForValue().get(email+"_verify"))){
-            redisTemplate.delete(email+"_verify");
+        if (token.equals(redisTemplate.opsForValue().get(email + "_verify"))) {
+            redisTemplate.delete(email + "_verify");
             user.setStatus(UserStatus.ACTIVATED.name());
             userRepository.save(user);
             return VerifyAccountResponse.builder().success(true).build();
@@ -237,7 +248,7 @@ public class AuthenticationService {
         // Generate OTP and store in redis
         String OTP = generate();
         // Store OTP in redis
-        redisTemplate.opsForValue().set(email,OTP,1, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(email, OTP, 1, TimeUnit.MINUTES);
         // Send OTP via mail - mail-service
         SendOtp sendOtp = SendOtp.builder().email(email).otp(OTP).topic("OTP - FORGET PASSWORD").build();
         kafkaTemplate.send("sendOtp", sendOtp);
@@ -245,7 +256,7 @@ public class AuthenticationService {
     }
 
     public CheckOTPResponse checkOTP(String otp, String email) {
-        if(otp.equals(redisTemplate.opsForValue().get(email))){
+        if (otp.equals(redisTemplate.opsForValue().get(email))) {
             // delete old OTP
             redisTemplate.delete(email);
             String newPassword = generate();
@@ -256,7 +267,7 @@ public class AuthenticationService {
             SendPassword sendPassword = SendPassword.builder().email(email).password(newPassword).topic("New Password - FORGET PASSWORD").build();
             kafkaTemplate.send("sendNewPassword", sendPassword);
             return CheckOTPResponse.builder().isValid(true).build();
-        }else{
+        } else {
             return CheckOTPResponse.builder().isValid(false).build();
         }
     }
@@ -265,16 +276,16 @@ public class AuthenticationService {
         var account = SecurityContextHolder.getContext().getAuthentication();
         String email = account.getName();
         var accountInfo = userRepository.findByEmail(email).get();
-        if(passwordEncoder.matches(request.getOldPassword(),accountInfo.getPassword())){
+        if (passwordEncoder.matches(request.getOldPassword(), accountInfo.getPassword())) {
             accountInfo.setPassword(passwordEncoder.encode(request.getNewPassword()));
             userRepository.save(accountInfo);
             return ChangePasswordResponse.builder().success(true).build();
-        }else {
+        } else {
             return ChangePasswordResponse.builder().success(false).build();
         }
     }
 
-    private String generate(){
+    private String generate() {
         int OTP = new Random().nextInt(900000) + 100000;
         return String.valueOf(OTP);
     }

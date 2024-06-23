@@ -1,16 +1,12 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=BeginRestful;encrypt=true;trustServerCertificate=true
-    username: sa
-    password: 170903
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     show-sql: true
-    generate-ddl: true
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.SQLServerDialect
   kafka:
     bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
     producer:
@@ -34,6 +30,11 @@ jwt:
 app:
   services:
     profile: http://localhost:8081/profile
+outbound:
+  identity:
+    client-id: "49452746846-m0mc09qdo3du2dnhbkg1ucabn7fq9lbl.apps.googleusercontent.com"
+    client-secret: "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"
+    redirect-uri: "http://localhost:3000/authenticate"
 server:
   port: 8080
   servlet:
