@@ -98,6 +98,8 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public void deleteBook(String id) {
-        bookRepository.deleteById(id);
+        Book book = bookRepository.findById(id).orElseThrow();
+        book.setStatus(BookStatus.DELETED.name());
+        bookRepository.save(book);
     }
 }
