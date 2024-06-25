@@ -1,13 +1,18 @@
 package com.thai.book_service.service;
 
+import com.thai.book_service.dto.response.BookResponse;
 import com.thai.book_service.entity.Book;
+import com.thai.book_service.mapper.BookMapper;
 import com.thai.book_service.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @Slf4j
@@ -15,30 +20,51 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService{
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
+    private final CategoryService categoryService;
+
+    @Override
+    public List<BookResponse> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+        List<BookResponse> bookResponses = new ArrayList<>();
+        books.forEach(book ->
+        {
+            BookResponse response = bookMapper.toBookResponse(book);
+            response.setCategoryName(book.getCategory().getName());
+            final double[] total = {0};
+            book.getReviews().forEach(review -> total[0] +=review.getRating());
+            if(!book.getReviews().isEmpty()){
+                response.setRating(total[0]/book.getReviews().size());
+            }else{
+                response.setRating(0);
+            }
+            bookResponses.add(response);
+        });
+        return bookResponses;
+    }
+
 
 
     @Override
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public List<BookResponse> getBooksByAuthor(String author) {
+        List<Book> books = bookRepository.findByAuthor(author);
+        List<BookResponse> bookResponses = new ArrayList<>();
+        books.forEach(book -> bookResponses.add(bookMapper.toBookResponse(book)));
+        return bookResponses;
     }
 
     @Override
-    public List<Book> getBooksByAuthor(String author) {
-        return bookRepository.findByAuthor(author);
+    public BookResponse getBookById(String id) {
+        return bookMapper.toBookResponse(bookRepository.findById(id).orElseThrow());
     }
 
     @Override
-    public Book getBookById(String id) {
-        return bookRepository.findById(id).orElseThrow();
-    }
-
-    @Override
-    public Book addBook(Book book) {
+    public BookResponse addBook(Book book) {
         return null;
     }
 
     @Override
-    public Book updateBook(Book book) {
+    public BookResponse updateBook(Book book) {
         return null;
     }
 

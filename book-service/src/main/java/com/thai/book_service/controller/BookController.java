@@ -1,5 +1,6 @@
 package com.thai.book_service.controller;
 
+import com.thai.book_service.dto.response.BookResponse;
 import com.thai.book_service.entity.Book;
 import com.thai.book_service.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping()
-    List<Book> getBooks() {
+    List<BookResponse> getBooks() {
         return bookService.getAllBooks();
     }
 }
