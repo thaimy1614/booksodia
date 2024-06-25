@@ -5,6 +5,7 @@ import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
 import com.thai.book_service.entity.Book;
 import com.thai.book_service.entity.Category;
+import com.thai.book_service.enums.BookStatus;
 import com.thai.book_service.mapper.BookMapper;
 import com.thai.book_service.repository.BookRepository;
 import com.thai.book_service.repository.CategoryRepository;
@@ -78,6 +79,7 @@ public class BookServiceImpl implements BookService{
     public BookResponse addBook(BookCreationRequest request) {
         Book book = bookMapper.toBook(request);
         book.setCategory(categoryRepository.findByName(request.getCategoryName()).orElseGet(() -> categoryRepository.save(Category.builder().name(request.getCategoryName()).build())));
+        book.setStatus(request.getQuantity()>0? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
         bookRepository.save(book);
         return bookMapper.toBookResponse(book);
     }

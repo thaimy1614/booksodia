@@ -18,4 +18,5 @@ public class BookResponse {
     private LocalDate publishedDate;
     private double rating;
     private String imgUrl;
+    private String status;
 }

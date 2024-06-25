@@ -21,4 +21,5 @@ public class BookDetailResponse {
     private String description;
     private String imageUrl;
     private List<Review> reviews;
+    private String status;
 }
