@@ -3,6 +3,7 @@ package com.thai.book_service.configuration;
 import com.thai.book_service.entity.Book;
 import com.thai.book_service.entity.Category;
 import com.thai.book_service.entity.Review;
+import com.thai.book_service.enums.BookStatus;
 import com.thai.book_service.repository.BookRepository;
 import com.thai.book_service.repository.CategoryRepository;
 import com.thai.book_service.repository.ReviewRepository;
@@ -37,8 +38,23 @@ public class ApplicationConfiguration {
                 categoryRepository.save(Category.builder().name("AI").build());
                 categoryRepository.save(Category.builder().name("Logistic").build());
                 categoryRepository.save(Category.builder().name("Medicine").build());
-                Book book = bookRepository.save(Book.builder().author("Duong Thai").category(category).title("Microservices Architecture Deep").price(1000).publishedDate(LocalDate.now()).build());
-                bookRepository.save(Book.builder().author("Nguyen My").category(category).title("OOP JAVA LEARNING").price(800).publishedDate(LocalDate.now()).build());
+                Book book = bookRepository.save(Book.builder()
+                        .author("Duong Thai")
+                        .category(category)
+                        .title("Microservices Architecture Deep")
+                        .quantity(9)
+                        .price(1000)
+                        .status(BookStatus.AVAILABLE.name())
+                        .publishedDate(LocalDate.now())
+                        .build());
+                bookRepository.save(Book.builder()
+                        .author("Nguyen My")
+                        .category(category)
+                        .title("OOP JAVA LEARNING")
+                        .price(800)
+                        .publishedDate(LocalDate.now())
+                        .quantity(8)
+                        .build());
                 reviewRepository.save(Review.builder().book(book).reviewDate(LocalDateTime.now()).reviewText("Good book").userId("lxlthailxl@gmail.com").rating(5).build());
                 reviewRepository.save(Review.builder().book(book).reviewDate(LocalDateTime.now()).reviewText("Very useful").userId("thaidqce171563@gmail.com").rating(4).build());
             }
