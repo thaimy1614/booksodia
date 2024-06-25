@@ -2,15 +2,13 @@ package com.thai.book_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@ToString
 @NoArgsConstructor
 @Builder
 @Entity
@@ -22,4 +20,11 @@ public class Category {
     @JsonManagedReference
     @OneToMany(mappedBy = "category", targetEntity = Book.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Book> books;
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

@@ -12,7 +12,7 @@ public interface BookService {
     List<BookResponse> getBooksByAuthor(String author);
     BookResponse getBookById(String id);
     BookResponse addBook(BookCreationRequest request);
-    BookResponse updateBook(Book book);
+    BookResponse updateBook(String id, BookCreationRequest request);
     BookDetailResponse getBookDetail(String id);
     void deleteBook(String id);
 }

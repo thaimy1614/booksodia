@@ -4,13 +4,11 @@ package com.thai.book_service.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -37,4 +35,17 @@ public class Book {
     private String description;
     private String image;
     private String status;
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", publishedDate=" + publishedDate +
+                ", category=" + category.getName() + // Avoid full object reference
+                '}';
+    }
 }

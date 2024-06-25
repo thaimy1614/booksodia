@@ -38,6 +38,7 @@ public class BookServiceImpl implements BookService{
             BookResponse response = bookMapper.toBookResponse(book);
             response.setCategoryName(book.getCategory().getName());
             response.setRating(calculateRating(book));
+            response.setStatus(book.getStatus());
             bookResponses.add(response);
         });
         return bookResponses;
@@ -85,8 +86,14 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public BookResponse updateBook(Book book) {
-        return null;
+    public BookResponse updateBook(String id, BookCreationRequest bookCreationRequest) {
+        Book book = bookRepository.findById(id).orElseThrow();
+        Book bookToUpdate = bookMapper.toBook(bookCreationRequest);
+        bookToUpdate.setId(id);
+        bookToUpdate.setReviews(book.getReviews());
+        bookToUpdate.setCategory(categoryRepository.findByName(bookCreationRequest.getCategoryName()).orElseThrow());
+        bookToUpdate.setStatus(bookCreationRequest.getQuantity()>0? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
+        return bookMapper.toBookResponse(bookRepository.save(bookToUpdate));
     }
 
     @Override
