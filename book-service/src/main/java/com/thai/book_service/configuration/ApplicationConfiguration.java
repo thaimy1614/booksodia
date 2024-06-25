@@ -7,8 +7,6 @@ import com.thai.book_service.enums.BookStatus;
 import com.thai.book_service.repository.BookRepository;
 import com.thai.book_service.repository.CategoryRepository;
 import com.thai.book_service.repository.ReviewRepository;
-import com.thai.book_service.service.BookService;
-import com.thai.book_service.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
@@ -17,9 +15,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Configuration
@@ -27,10 +22,11 @@ import java.util.Set;
 public class ApplicationConfiguration {
     private final BookRepository bookRepository;
     private final ReviewRepository reviewRepository;
+
     @Bean
-    ApplicationRunner applicationRunner(CategoryRepository categoryRepository){
+    ApplicationRunner applicationRunner(CategoryRepository categoryRepository) {
         return args -> {
-            if (categoryRepository.findByName("IT").isEmpty()){
+            if (categoryRepository.findByName("IT").isEmpty()) {
                 Category category = Category.builder().name("IT").build();
 //                category.setBooks(List.of(Book.builder().author("Duong Thai").category(category).title("Microservices Architecture Deep").price(1000).publishedDate(LocalDate.now()).build()));
                 categoryRepository.save(category);

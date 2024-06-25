@@ -3,7 +3,6 @@ package com.thai.book_service.service;
 import com.thai.book_service.dto.request.BookCreationRequest;
 import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
-import com.thai.book_service.entity.Book;
 
 import java.util.List;
 

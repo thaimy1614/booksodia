@@ -1,6 +1,5 @@
 package com.thai.book_service.dto.response;
 
-import com.thai.book_service.entity.Category;
 import lombok.Builder;
 import lombok.Data;
 

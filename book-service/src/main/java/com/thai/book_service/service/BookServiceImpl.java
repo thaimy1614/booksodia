@@ -16,25 +16,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
-public class BookServiceImpl implements BookService{
+public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    private final CategoryService categoryService;
     private final CategoryRepository categoryRepository;
 
     @Override
     public List<BookResponse> getAllBooks() {
         List<Book> books = bookRepository.findAll();
         List<BookResponse> bookResponses = new ArrayList<>();
-        books.forEach(book ->
-        {
+        books.forEach(book -> {
             BookResponse response = bookMapper.toBookResponse(book);
             response.setCategoryName(book.getCategory().getName());
             response.setRating(calculateRating(book));
@@ -44,14 +40,15 @@ public class BookServiceImpl implements BookService{
         return bookResponses;
     }
 
-    public double calculateRating(Book book){
+    public double calculateRating(Book book) {
         final double[] total = {0};
-        book.getReviews().forEach(review -> total[0] +=review.getRating());
-        if(!book.getReviews().isEmpty()){
-            return total[0]/book.getReviews().size();
-        }else{
+        book.getReviews().forEach(review -> total[0] += review.getRating());
+        if (!book.getReviews().isEmpty()) {
+            return total[0] / book.getReviews().size();
+        } else {
             return 0;
         }
+
     }
 
     public BookDetailResponse getBookDetail(String id) {
@@ -80,7 +77,7 @@ public class BookServiceImpl implements BookService{
     public BookResponse addBook(BookCreationRequest request) {
         Book book = bookMapper.toBook(request);
         book.setCategory(categoryRepository.findByName(request.getCategoryName()).orElseGet(() -> categoryRepository.save(Category.builder().name(request.getCategoryName()).build())));
-        book.setStatus(request.getQuantity()>0? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
+        book.setStatus(request.getQuantity() > 0 ? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
         bookRepository.save(book);
         return bookMapper.toBookResponse(book);
     }
@@ -92,7 +89,7 @@ public class BookServiceImpl implements BookService{
         bookToUpdate.setId(id);
         bookToUpdate.setReviews(book.getReviews());
         bookToUpdate.setCategory(categoryRepository.findByName(bookCreationRequest.getCategoryName()).orElseThrow());
-        bookToUpdate.setStatus(bookCreationRequest.getQuantity()>0? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
+        bookToUpdate.setStatus(bookCreationRequest.getQuantity() > 0 ? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
         return bookMapper.toBookResponse(bookRepository.save(bookToUpdate));
     }
 
