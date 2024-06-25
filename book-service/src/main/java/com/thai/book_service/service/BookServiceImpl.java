@@ -1,10 +1,13 @@
 package com.thai.book_service.service;
 
+import com.thai.book_service.dto.request.BookCreationRequest;
 import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
 import com.thai.book_service.entity.Book;
+import com.thai.book_service.entity.Category;
 import com.thai.book_service.mapper.BookMapper;
 import com.thai.book_service.repository.BookRepository;
+import com.thai.book_service.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,7 @@ public class BookServiceImpl implements BookService{
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<BookResponse> getAllBooks() {
@@ -71,8 +75,11 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public BookResponse addBook(Book book) {
-        return null;
+    public BookResponse addBook(BookCreationRequest request) {
+        Book book = bookMapper.toBook(request);
+        book.setCategory(categoryRepository.findByName(request.getCategoryName()).orElseGet(() -> categoryRepository.save(Category.builder().name(request.getCategoryName()).build())));
+        bookRepository.save(book);
+        return bookMapper.toBookResponse(book);
     }
 
     @Override
