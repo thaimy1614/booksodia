@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USERNAME}
@@ -32,3 +36,14 @@ server:
   port: 8082
   servlet:
     context-path: /book
+aws:
+  access:
+    key:
+      id: ${AWS_ACCESS_KEY_ID}
+  secret:
+    access:
+      key: ${AWS_SECRET_ACCESS_KEY}
+  s3:
+    region: ${AWS_S3_REGION}
+    bucket:
+      name: ${AWS_S3_BUCKET_NAME}

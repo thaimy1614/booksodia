@@ -1,5 +1,10 @@
 package com.thai.book_service.service;
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.thai.book_service.dto.request.BookCreationRequest;
 import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
@@ -12,9 +17,15 @@ import com.thai.book_service.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -25,7 +36,10 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final CategoryRepository categoryRepository;
+    private final AmazonS3 s3;
 
+    @Value("${aws.s3.bucket.name}")
+    private String bucketName;
     @Override
     public List<BookResponse> getAllBooks() {
         List<Book> books = bookRepository.findAll();
@@ -99,4 +113,42 @@ public class BookServiceImpl implements BookService {
         book.setStatus(BookStatus.DELETED.name());
         bookRepository.save(book);
     }
+
+    public void uploadImg(MultipartFile file, String objectName) throws IOException {
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/jpeg");
+            PutObjectRequest request = new PutObjectRequest(bucketName, objectName, file.getInputStream(), metadata);
+            s3.putObject(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String generateGetUrl(String objectName, long time) {
+        Date expiration = new Date();
+        long expTimeMillis = expiration.getTime();
+        expTimeMillis += time;
+        expiration.setTime(expTimeMillis);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectName)
+                .withExpiration(expiration).withMethod(HttpMethod.GET);
+        URL url = s3.generatePresignedUrl(generatePresignedUrlRequest);
+
+        return url.toString();
+
+    }
+
+    public String generateUploadUrl(String objectName, long time) {
+        Date expiration = new Date();
+        long expTimeMillis = expiration.getTime();
+        expTimeMillis += time;
+        expiration.setTime(expTimeMillis);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, objectName)
+                .withExpiration(expiration).withMethod(HttpMethod.PUT);
+        URL url = s3.generatePresignedUrl(generatePresignedUrlRequest);
+
+        return url.toString();
+
+    }
+
 }
