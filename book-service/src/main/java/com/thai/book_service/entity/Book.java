@@ -36,4 +36,5 @@ public class Book {
     private List<Review> reviews;
     private String description;
     private String image;
+    private String status;
 }
