@@ -1,14 +1,15 @@
 package com.thai.book_service.dto.response;
 
-import com.thai.book_service.entity.Category;
+import com.thai.book_service.entity.Review;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
-public class BookResponse {
+public class BookDetailResponse {
     private String id;
     private String title;
     private String author;
@@ -17,5 +18,7 @@ public class BookResponse {
     private int quantity;
     private LocalDate publishedDate;
     private double rating;
-    private String imgUrl;
+    private String description;
+    private String imageUrl;
+    private List<Review> reviews;
 }

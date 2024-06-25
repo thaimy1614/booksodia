@@ -34,4 +34,6 @@ public class Book {
     @JsonManagedReference
     @OneToMany(mappedBy = "book", targetEntity = Review.class,cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;
+    private String description;
+    private String image;
 }

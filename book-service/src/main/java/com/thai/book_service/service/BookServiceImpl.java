@@ -1,5 +1,6 @@
 package com.thai.book_service.service;
 
+import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
 import com.thai.book_service.entity.Book;
 import com.thai.book_service.mapper.BookMapper;
@@ -31,19 +32,30 @@ public class BookServiceImpl implements BookService{
         {
             BookResponse response = bookMapper.toBookResponse(book);
             response.setCategoryName(book.getCategory().getName());
-            final double[] total = {0};
-            book.getReviews().forEach(review -> total[0] +=review.getRating());
-            if(!book.getReviews().isEmpty()){
-                response.setRating(total[0]/book.getReviews().size());
-            }else{
-                response.setRating(0);
-            }
+            response.setRating(calculateRating(book));
             bookResponses.add(response);
         });
         return bookResponses;
     }
 
+    public double calculateRating(Book book){
+        final double[] total = {0};
+        book.getReviews().forEach(review -> total[0] +=review.getRating());
+        if(!book.getReviews().isEmpty()){
+            return total[0]/book.getReviews().size();
+        }else{
+            return 0;
+        }
+    }
 
+    public BookDetailResponse getBookDetail(String id) {
+        Book book = bookRepository.findById(id).orElseThrow();
+        BookDetailResponse bookDetailResponse = bookMapper.toBookDetailResponse(book);
+        bookDetailResponse.setCategoryName(book.getCategory().getName());
+        bookDetailResponse.setRating(calculateRating(book));
+        bookDetailResponse.setReviews(book.getReviews());
+        return bookDetailResponse;
+    }
 
     @Override
     public List<BookResponse> getBooksByAuthor(String author) {

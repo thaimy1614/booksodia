@@ -1,5 +1,6 @@
 package com.thai.book_service.service;
 
+import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
 import com.thai.book_service.entity.Book;
 
@@ -11,5 +12,6 @@ public interface BookService {
     BookResponse getBookById(String id);
     BookResponse addBook(Book book);
     BookResponse updateBook(Book book);
+    BookDetailResponse getBookDetail(String id);
     void deleteBook(String id);
 }
