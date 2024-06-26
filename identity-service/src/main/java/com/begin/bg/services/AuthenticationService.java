@@ -20,6 +20,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import org.slf4j.Logger;
@@ -30,7 +31,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -289,6 +294,17 @@ public class AuthenticationService {
     private String generate() {
         int OTP = new Random().nextInt(900000) + 100000;
         return String.valueOf(OTP);
+    }
+
+    // Get url of this service
+    private UriComponentsBuilder getThisServiceURL() {
+        HttpServletRequest currRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        return UriComponentsBuilder
+                .fromHttpUrl(UrlUtils.buildFullRequestUrl(currRequest))
+                .replacePath(currRequest.getContextPath())
+                .replaceQuery(null)
+                .fragment(null);
     }
 }
 
