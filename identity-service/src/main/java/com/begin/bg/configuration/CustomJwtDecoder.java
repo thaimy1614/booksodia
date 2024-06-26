@@ -28,6 +28,17 @@ public class CustomJwtDecoder implements JwtDecoder {
 
     @Override
     public Jwt decode(String token) throws JwtException {
+        try {
+            var response = authenticationService.introspect(token);
+            if (!response.isValid()){
+                throw new JwtException("Token invalid");
+            }
+        }catch (JOSEException | ParseException e ){
+            throw new JwtException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         if(Objects.isNull(nimbusJwtDecoder)){
             SecretKeySpec secretKeySpec = new SecretKeySpec(KEY.getBytes(), "HS512");
             nimbusJwtDecoder = NimbusJwtDecoder

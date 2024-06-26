@@ -131,12 +131,16 @@ public class AuthenticationService {
         String jId = signedJWT.getJWTClaimsSet().getJWTID();
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-        InvalidatedToken invalidatedToken = InvalidatedToken
-                .builder()
-                .id(jId)
-                .expiryTime(expiryTime)
-                .build();
-        invalidatedTokenRepository.save(invalidatedToken);
+        addTokenToBlacklist(jId, expiryTime);
+    }
+
+    private boolean isTokenInBlacklist(String jwtId) {
+        return redisTemplate.opsForValue().get("bl_" + jwtId) != null;
+    }
+
+    private void addTokenToBlacklist(String jwtId, Date expiryTime) {
+        redisTemplate.opsForValue().set("bl_" + jwtId, jwtId);
+        redisTemplate.expireAt("bl_" + jwtId, expiryTime);
     }
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws Exception {
@@ -148,7 +152,7 @@ public class AuthenticationService {
             throw new Exception("UNAUTHENTICATED");
         }
 
-        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
+        if (isTokenInBlacklist(signedJWT.getJWTClaimsSet().getJWTID())) {
             throw new Exception("UNAUTHENTICATED");
         }
         return signedJWT;
