@@ -49,7 +49,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final InvalidatedTokenRepository invalidatedTokenRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboundIdentityClient outboundIdentityClient;
     private final OutboundUserClient outboundUserClient;
