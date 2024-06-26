@@ -17,7 +17,6 @@ import com.thai.book_service.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,12 +87,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookResponse addBook(BookCreationRequest request) {
+    public BookResponse addBook(BookCreationRequest request, MultipartFile file) {
+        String url = uploadImg(file, request.getTitle().replaceAll(" ","-"));
         Book book = bookMapper.toBook(request);
         book.setCategory(categoryRepository.findByName(request.getCategoryName()).orElseGet(() -> categoryRepository.save(Category.builder().name(request.getCategoryName()).build())));
         book.setStatus(request.getQuantity() > 0 ? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
-        bookRepository.save(book);
-        return bookMapper.toBookResponse(book);
+        book.setImage(url);
+        book = bookRepository.save(book);
+        BookResponse bookResponse = bookMapper.toBookResponse(book);
+        bookResponse.setCategoryName(book.getCategory().getName());
+        return bookResponse;
     }
 
     @Override
@@ -114,12 +117,15 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
     }
 
-    public void uploadImg(MultipartFile file, String objectName) throws IOException {
+    public String uploadImg(MultipartFile file, String objectName){
         try {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/jpeg");
             PutObjectRequest request = new PutObjectRequest(bucketName, objectName, file.getInputStream(), metadata);
             s3.putObject(request);
+            String url = s3.getUrl(bucketName, objectName).toString();
+            log.info(url);
+            return url;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

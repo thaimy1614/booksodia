@@ -5,9 +5,11 @@ import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
 
 import com.thai.book_service.service.BookService;
+import jakarta.servlet.annotation.MultipartConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.List;
@@ -29,8 +31,8 @@ public class BookController {
     }
 
     @PostMapping("/add")
-    BookResponse addBook(@RequestBody BookCreationRequest bookRequest) {
-        return bookService.addBook(bookRequest);
+    BookResponse addBook(@RequestPart BookCreationRequest bookRequest, @RequestParam("file") MultipartFile multipartFile) {
+        return bookService.addBook(bookRequest, multipartFile);
     }
 
     @PutMapping("/{id}")
