@@ -36,8 +36,8 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    BookResponse updateBook(@PathVariable String id, @RequestBody BookCreationRequest bookRequest) {
-        return bookService.updateBook(id, bookRequest);
+    BookResponse updateBook(@PathVariable String id, @RequestPart BookCreationRequest bookRequest, @RequestParam("file") MultipartFile multipartFile) {
+        return bookService.updateBook(id, bookRequest, multipartFile);
     }
 
     @DeleteMapping("/{id}")

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,21 +94,23 @@ public class BookServiceImpl implements BookService {
         book.setCategory(categoryRepository.findByName(request.getCategoryName()).orElseGet(() -> categoryRepository.save(Category.builder().name(request.getCategoryName()).build())));
         book.setStatus(request.getQuantity() > 0 ? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
         book = bookRepository.save(book);
-        uploadImg(file, request.getTitle().replaceAll(" ","-"), book.getId());
+        uploadImg(file, book.getId());
         BookResponse bookResponse = bookMapper.toBookResponse(book);
         bookResponse.setCategoryName(book.getCategory().getName());
         return bookResponse;
     }
 
     @Override
-    public BookResponse updateBook(String id, BookCreationRequest bookCreationRequest) {
+    public BookResponse updateBook(String id, BookCreationRequest bookCreationRequest, MultipartFile file) {
         Book book = bookRepository.findById(id).orElseThrow();
         Book bookToUpdate = bookMapper.toBook(bookCreationRequest);
         bookToUpdate.setId(id);
         bookToUpdate.setReviews(book.getReviews());
         bookToUpdate.setCategory(categoryRepository.findByName(bookCreationRequest.getCategoryName()).orElseThrow());
         bookToUpdate.setStatus(bookCreationRequest.getQuantity() > 0 ? BookStatus.AVAILABLE.name() : BookStatus.OUT_OF_STOCK.name());
-        return bookMapper.toBookResponse(bookRepository.save(bookToUpdate));
+        BookResponse response = bookMapper.toBookResponse(bookRepository.save(bookToUpdate));
+        uploadImg(file, book.getId());
+        return response;
     }
 
     @Override
@@ -117,15 +120,23 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
     }
 
+    public String getUrl(String objectName){
+        return s3.getUrl(bucketName, objectName).toString();
+    }
+
 
     @Async
-    public void uploadImg(MultipartFile file, String objectName, String id){
+    public void uploadImg(MultipartFile file, String id){
         try {
+            log.info("Uploading image to " + id);
+            InputStream in = file.getInputStream();
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType("image/jpeg");
-            PutObjectRequest request = new PutObjectRequest(bucketName, objectName, file.getInputStream(), metadata);
+            metadata.setContentLength(in.available());
+            PutObjectRequest request = new PutObjectRequest(bucketName, id, file.getInputStream(), metadata);
             s3.putObject(request);
-            String url = s3.getUrl(bucketName, objectName).toString();
+            String url = getUrl(id);
+            log.info(url);
             Book book = bookRepository.findById(id).orElseThrow();
             book.setImage(url);
             bookRepository.save(book);

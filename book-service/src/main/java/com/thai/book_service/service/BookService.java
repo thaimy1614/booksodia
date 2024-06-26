@@ -12,7 +12,7 @@ public interface BookService {
     List<BookResponse> getBooksByAuthor(String author);
     BookResponse getBookById(String id);
     BookResponse addBook(BookCreationRequest request, MultipartFile multipartFile);
-    BookResponse updateBook(String id, BookCreationRequest request);
+    BookResponse updateBook(String id, BookCreationRequest request, MultipartFile multipartFile);
     BookDetailResponse getBookDetail(String id);
     void deleteBook(String id);
 }
