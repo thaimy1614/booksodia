@@ -13,14 +13,14 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Configuration
 public class WebClientConfig {
     @Bean
-    WebClient webClient(){
+    WebClient webClient() {
         return WebClient.builder()
                 .baseUrl("http://localhost:8080/identity")
                 .build();
     }
 
     @Bean
-    CorsWebFilter corsWebFilter(){
+    CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
@@ -31,7 +31,7 @@ public class WebClientConfig {
     }
 
     @Bean
-    IdentityClient identityClient(WebClient webClient){
+    IdentityClient identityClient(WebClient webClient) {
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory
                 .builderFor(WebClientAdapter.create(webClient))
                 .build();

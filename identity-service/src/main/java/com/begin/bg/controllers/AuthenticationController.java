@@ -15,19 +15,15 @@ import com.begin.bg.services.UserService;
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -78,11 +74,11 @@ public class AuthenticationController {
                     .build();
             user = userService.saveUser(user);
 
-            if(user.getStatus().equals("UNVERIFIED")) {
+            if (user.getStatus().equals("UNVERIFIED")) {
                 String UUID = java.util.UUID.randomUUID().toString();
-                redisTemplate.opsForValue().set(user.getEmail()+"_verify", UUID);
+                redisTemplate.opsForValue().set(user.getEmail() + "_verify", UUID);
                 authService.verifyAccount(newUser.getEmail(), UUID);
-                kafkaTemplate.send("verification", VerifyAccount.builder().fullName(newUser.getFirstName()+newUser.getLastName()).email(user.getEmail()).url("http://localhost:8080/identity/verify?email="+user.getEmail()+"&token="+UUID).build());
+                kafkaTemplate.send("verification", VerifyAccount.builder().fullName(newUser.getFirstName() + newUser.getLastName()).email(user.getEmail()).url("http://localhost:8080/identity/verify?email=" + user.getEmail() + "&token=" + UUID).build());
             }
             var profileRequest = mapper.toProfileCreationRequest(newUser);
             profileRequest.setUserId(user.getEmail());
@@ -129,13 +125,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forget-password/send-otp")
-    ResponseEntity<ResponseObject> sendOtp(@RequestBody SendOTPRequest request){
+    ResponseEntity<ResponseObject> sendOtp(@RequestBody SendOTPRequest request) {
         SendOTPResponse response = authService.sendOTPForForgetPassword(request);
         return ResponseEntity.ok().body(new ResponseObject("OK", "Send OTP successful!", response));
     }
 
     @PostMapping("/forget-password/check-otp")
-    ResponseEntity<ResponseObject> checkOtp(@RequestBody CheckOTPRequest request){
+    ResponseEntity<ResponseObject> checkOtp(@RequestBody CheckOTPRequest request) {
         CheckOTPResponse response = authService.checkOTP(request.getOtp(), request.getEmail());
         return ResponseEntity.ok().body(new ResponseObject("OK", "Check OTP successful!", response));
     }

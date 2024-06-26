@@ -7,7 +7,6 @@ import com.thai.profile.mapper.UserProfileMapper;
 import com.thai.profile.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,13 +35,13 @@ public class UserProfileService {
         return userProfileMapper.toUserProfileResponse(userProfileRepository.save(userProfile));
     }
 
-    public UserProfileResponse getProfile(String profileId){
-        UserProfile userProfile = userProfileRepository.findById(profileId).orElseThrow(()->new RuntimeException("Profile not found!"));
+    public UserProfileResponse getProfile(String profileId) {
+        UserProfile userProfile = userProfileRepository.findById(profileId).orElseThrow(() -> new RuntimeException("Profile not found!"));
         return userProfileMapper.toUserProfileResponse(userProfile);
     }
 
     public UserProfileResponse updateProfile(ProfileCreationRequest request, String id) {
-        UserProfile userProfile = userProfileRepository.findById(id).map(profile-> {
+        UserProfile userProfile = userProfileRepository.findById(id).map(profile -> {
             profile = UserProfile
                     .builder()
                     .id(id)

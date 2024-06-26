@@ -41,6 +41,7 @@ public class BookServiceImpl implements BookService {
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
+
     @Override
     public List<BookResponse> getAllBooks() {
         List<Book> books = bookRepository.findAll();
@@ -120,13 +121,13 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
     }
 
-    public String getUrl(String objectName){
+    public String getUrl(String objectName) {
         return s3.getUrl(bucketName, objectName).toString();
     }
 
 
     @Async
-    public void uploadImg(MultipartFile file, String id){
+    public void uploadImg(MultipartFile file, String id) {
         try {
             log.info("Uploading image to " + id);
             InputStream in = file.getInputStream();

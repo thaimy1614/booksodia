@@ -1,8 +1,8 @@
 package com.begin.bg.controllers;
 
 import com.begin.bg.dto.request.UserRequest;
-import com.begin.bg.entities.User;
 import com.begin.bg.entities.ResponseObject;
+import com.begin.bg.entities.User;
 import com.begin.bg.enums.UserStatus;
 import com.begin.bg.repositories.RoleRepository;
 import com.begin.bg.services.UserService;
@@ -55,15 +55,13 @@ public class UserController {
                     User.setStatus(UserStatus.UNVERIFIED.name());
                     User.setRoles(new HashSet<>(roles));
                     return userService.saveUser(User);
-                }).orElseGet(() -> {
-                    return userService.saveUser(null);
-                });
+                }).orElseThrow();
 
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Updated User succesful!", updatedUser));
     }
 
     @GetMapping("/my-info")
-    ResponseEntity<ResponseObject> getMyInfo(){
+    ResponseEntity<ResponseObject> getMyInfo() {
         User user = userService.getMyInfo();
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "GET YOUR INFORMATION SUCCESSFUL!", user));
     }
@@ -72,7 +70,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteUser(@PathVariable UUID id) {
         Boolean exists = userService.userExistsById(id);
-        if(exists){
+        if (exists) {
             User user = userService.deleteUserById(id);
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Deleted User with id = " + id + " successful!", user));
         }

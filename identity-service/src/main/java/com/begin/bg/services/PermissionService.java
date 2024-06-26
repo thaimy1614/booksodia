@@ -14,7 +14,7 @@ import java.util.List;
 public class PermissionService {
     private final PermissionRepository permissionRepository;
 
-    public PermissionResponse create(PermissionRequest request){
+    public PermissionResponse create(PermissionRequest request) {
         Permission permission = Permission
                 .builder()
                 .name(request.getName())
@@ -28,7 +28,7 @@ public class PermissionService {
                 .build();
     }
 
-    public List<PermissionResponse> getAll(){
+    public List<PermissionResponse> getAll() {
         var permissions = permissionRepository.findAll();
         return permissions.stream().map(permission -> PermissionResponse
                 .builder()
@@ -37,7 +37,7 @@ public class PermissionService {
                 .build()).toList();
     }
 
-    public void delete(String permissionName){
+    public void delete(String permissionName) {
         permissionRepository.deleteById(permissionName);
     }
 }

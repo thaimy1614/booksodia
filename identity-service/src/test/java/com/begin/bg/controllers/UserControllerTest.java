@@ -37,7 +37,7 @@ public class UserControllerTest {
     private UserRequest request;
 
     @BeforeEach
-    void initData(){
+    void initData() {
         request = UserRequest
                 .builder()
                 .username("thaidq11")
@@ -61,10 +61,10 @@ public class UserControllerTest {
 
         //WHEN
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/signup")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(content))
-        //THEN
+                        .post("/signup")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(content))
+                //THEN
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
     }

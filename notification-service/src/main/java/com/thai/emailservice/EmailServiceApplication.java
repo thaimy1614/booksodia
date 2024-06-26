@@ -10,12 +10,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class EmailServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(EmailServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EmailServiceApplication.class, args);
+    }
 
-	@Bean
-	JsonMessageConverter converter(){
-		return new JsonMessageConverter();
-	}
+    @Bean
+    JsonMessageConverter converter() {
+        return new JsonMessageConverter();
+    }
 }

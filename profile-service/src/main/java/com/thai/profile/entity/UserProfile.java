@@ -12,7 +12,6 @@ import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Node("user_profile")
 @Data

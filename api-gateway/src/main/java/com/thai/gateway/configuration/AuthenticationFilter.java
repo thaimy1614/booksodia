@@ -13,17 +13,13 @@ import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -31,8 +27,6 @@ import java.util.Objects;
 public class AuthenticationFilter implements GlobalFilter, Ordered {
     private final IdentityService identityService;
     private final ObjectMapper mapper;
-    @Value("${app.api-prefix}")
-    private String prefix;
     String[] PUBLIC_ENDPOINTS = {
             "/identity/auth",
             "/identity/log-out",
@@ -43,13 +37,16 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/forget-password/check-otp",
             "/identity/verify",
             "/identity/outbound/authentication"
-    
+
     };
+    @Value("${app.api-prefix}")
+    private String prefix;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         log.info("{}", isPublicEndpoint(exchange.getRequest()));
         log.info(exchange.getRequest().getPath().toString());
-        if(isPublicEndpoint(exchange.getRequest())){
+        if (isPublicEndpoint(exchange.getRequest())) {
             return chain.filter(exchange);
         }
         // Get token from authorization header
@@ -68,7 +65,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             log.info(String.valueOf(responseObjectResponseEntity.getBody().isValid()));
             if (responseObjectResponseEntity.getBody().isValid()) {
                 return chain.filter(exchange);  // Chain the introspect call with the filter chain
-            }else{
+            } else {
                 try {
                     return unauthenticated(exchange.getResponse());
                 } catch (JsonProcessingException e) {
@@ -90,12 +87,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         return -1;
     }
 
-    private boolean isPublicEndpoint(ServerHttpRequest request){
+    private boolean isPublicEndpoint(ServerHttpRequest request) {
         return Arrays.stream(PUBLIC_ENDPOINTS).anyMatch(s ->
-                {
-                    log.info(s);
-                    return request.getURI().getPath().matches(prefix+s);
-                });
+        {
+            log.info(s);
+            return request.getURI().getPath().matches(prefix + s);
+        });
     }
 
     Mono<Void> unauthenticated(ServerHttpResponse response) throws JsonProcessingException {

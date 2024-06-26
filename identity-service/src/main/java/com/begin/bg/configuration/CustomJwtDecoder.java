@@ -1,6 +1,5 @@
 package com.begin.bg.configuration;
 
-import com.begin.bg.dto.request.IntrospectRequest;
 import com.begin.bg.services.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +29,16 @@ public class CustomJwtDecoder implements JwtDecoder {
     public Jwt decode(String token) throws JwtException {
         try {
             var response = authenticationService.introspect(token);
-            if (!response.isValid()){
+            if (!response.isValid()) {
                 throw new JwtException("Token invalid");
             }
-        }catch (JOSEException | ParseException e ){
+        } catch (JOSEException | ParseException e) {
             throw new JwtException(e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        if(Objects.isNull(nimbusJwtDecoder)){
+        if (Objects.isNull(nimbusJwtDecoder)) {
             SecretKeySpec secretKeySpec = new SecretKeySpec(KEY.getBytes(), "HS512");
             nimbusJwtDecoder = NimbusJwtDecoder
                     .withSecretKey(secretKeySpec)

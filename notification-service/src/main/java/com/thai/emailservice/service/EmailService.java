@@ -29,10 +29,10 @@ public interface EmailService {
 @Slf4j
 @RequiredArgsConstructor
 class EmailServiceImpl implements EmailService {
-    private final JavaMailSender javaMailSender;
     public static final String NEW_USER_ACCOUNT_VERIFICATION = "New User Account Verification";
     public static final String UTF_8_ENCODING = "UTF-8";
     public static final String EMAIL_TEMPLATE = "email-template";
+    private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
@@ -71,7 +71,7 @@ class EmailServiceImpl implements EmailService {
 
             helper.setTo(sendOtp.getEmail());
             helper.setFrom(from);
-            helper.setText("Your OTP is "+ sendOtp.getOtp());
+            helper.setText("Your OTP is " + sendOtp.getOtp());
             helper.setSubject(sendOtp.getTopic());
 
             javaMailSender.send(message);
@@ -91,7 +91,7 @@ class EmailServiceImpl implements EmailService {
 
             helper.setTo(sendPassword.getEmail());
             helper.setFrom(from);
-            helper.setText("Your new password is "+ sendPassword.getPassword());
+            helper.setText("Your new password is " + sendPassword.getPassword());
             helper.setSubject(sendPassword.getTopic());
 
             javaMailSender.send(message);

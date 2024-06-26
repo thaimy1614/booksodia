@@ -1,6 +1,5 @@
 package com.begin.bg.dto.request;
 
-import com.begin.bg.entities.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -4,13 +4,11 @@ import com.begin.bg.dto.mail.SendOtp;
 import com.begin.bg.dto.mail.SendPassword;
 import com.begin.bg.dto.request.*;
 import com.begin.bg.dto.response.*;
-import com.begin.bg.entities.InvalidatedToken;
 import com.begin.bg.entities.ResponseObject;
 import com.begin.bg.entities.Role;
 import com.begin.bg.entities.User;
 import com.begin.bg.enums.UserRole;
 import com.begin.bg.enums.UserStatus;
-import com.begin.bg.repositories.InvalidatedTokenRepository;
 import com.begin.bg.repositories.UserRepository;
 import com.begin.bg.repositories.httpclient.OutboundIdentityClient;
 import com.begin.bg.repositories.httpclient.OutboundUserClient;
@@ -46,38 +44,33 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
+    @NonFinal
+    protected final String GRANT_TYPE = "authorization_code";
     private final UserRepository userRepository;
-    private final InvalidatedTokenRepository invalidatedTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, Object> redisTemplate;
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboundIdentityClient outboundIdentityClient;
     private final OutboundUserClient outboundUserClient;
     private final ProfileClient profileClient;
-
+    @NonFinal
+    @Value("${outbound.identity.client-id}")
+    protected String CLIENT_ID;
+    @NonFinal
+    @Value("${outbound.identity.client-secret}")
+    protected String CLIENT_SECRET;
+    @NonFinal
+    @Value("${outbound.identity.redirect-uri}")
+    protected String REDIRECT_URI;
     @Value("${jwt.signer-key}")
     private String KEY;
     @Value("${jwt.expiration-duration}")
     private long EXPIRATION_DURATION;
     @Value("${jwt.refreshable-duration}")
     private String REFRESHABLE_DURATION;
-    @NonFinal
-    @Value("${outbound.identity.client-id}")
-    protected String CLIENT_ID;
-
-    @NonFinal
-    @Value("${outbound.identity.client-secret}")
-    protected String CLIENT_SECRET;
-
-    @NonFinal
-    @Value("${outbound.identity.redirect-uri}")
-    protected String REDIRECT_URI;
-
-    @NonFinal
-    protected final String GRANT_TYPE = "authorization_code";
 
     public ResponseObject authenticate(User user) throws Exception {
-        User authUser = userRepository.findByEmail(user.getEmail()).get();
+        User authUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean check = passwordEncoder.matches(user.getPassword(), authUser.getPassword());
         if (!check) {
@@ -177,17 +170,12 @@ public class AuthenticationService {
         var jit = signedJWT.getJWTClaimsSet().getJWTID();
         var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-        InvalidatedToken invalidatedToken = InvalidatedToken
-                .builder()
-                .id(jit)
-                .expiryTime(expiryTime)
-                .build();
-        invalidatedTokenRepository.save(invalidatedToken);
+        addTokenToBlacklist(jit, expiryTime);
 
         var username = signedJWT.getJWTClaimsSet().getSubject();
-        var user = userRepository.findByEmail(username);
+        var user = userRepository.findByEmail(username).orElseThrow();
 
-        return generateToken(user.get());
+        return generateToken(user);
     }
 
     public AuthenticationResponse outboundAuthenticate(String code) throws JOSEException {
@@ -270,7 +258,7 @@ public class AuthenticationService {
             // delete old OTP
             redisTemplate.delete(email);
             String newPassword = generate();
-            var user = userRepository.findByEmail(email).get();
+            var user = userRepository.findByEmail(email).orElseThrow();
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             // send new password

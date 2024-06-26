@@ -3,7 +3,6 @@ package com.thai.emailservice.service;
 import com.thai.emailservice.dto.SendOtp;
 import com.thai.emailservice.dto.SendPassword;
 import com.thai.emailservice.dto.VerifyAccount;
-import com.thai.emailservice.model.MessageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,17 +14,18 @@ import org.springframework.stereotype.Service;
 public class MessageService {
     private final EmailService emailService;
 
-    @KafkaListener(id="sendOtpGroup", topics = "sendOtp")
+    @KafkaListener(id = "sendOtpGroup", topics = "sendOtp")
     public void listenSendOtp(SendOtp sendOtp) {
         log.info("Message received: {}", sendOtp.getEmail());
         emailService.sendOtp(sendOtp);
     }
 
-    @KafkaListener(id="sendPasswordGroup", topics = "sendNewPassword")
+    @KafkaListener(id = "sendPasswordGroup", topics = "sendNewPassword")
     public void listenSendPassword(SendPassword sendPassword) {
         log.info("Message received: {}", sendPassword.getEmail());
         emailService.sendNewPassword(sendPassword);
     }
+
     @KafkaListener(id = "verificationGroup", topics = "verification")
     public void listenVerification(VerifyAccount verifyAccount) {
         emailService.sendHtmlEmail(verifyAccount.getFullName(), verifyAccount.getEmail(), verifyAccount.getUrl());

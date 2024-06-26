@@ -7,10 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "Users")
@@ -27,6 +25,7 @@ public class User {
     private String status;
     private Date created;
     private Date updated;
+
     @PrePersist
     protected void onCreate() {
         created = new Date();

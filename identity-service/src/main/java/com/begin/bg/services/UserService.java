@@ -29,15 +29,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @PostAuthorize("returnObject.get().username == authentication.name || hasRole('ADMIN')")
+    @PostAuthorize("returnObject.get().email == authentication.name || hasRole('ADMIN')")
     public Optional<User> findUserById(UUID id) {
         return userRepository.findById(id);
     }
-    @PostAuthorize("returnObject.username == authentication.name")
-    public User getMyInfo(){
+
+    @PostAuthorize("returnObject.email == authentication.name")
+    public User getMyInfo() {
         var user = SecurityContextHolder.getContext().getAuthentication();
         String name = user.getName();
-        return userRepository.findByEmail(name).get();
+        return userRepository.findByEmail(name).orElseThrow();
     }
 
     public Optional<User> findUserByName(String username) {
@@ -49,7 +50,7 @@ public class UserService {
     }
 
     public User deleteUserById(UUID id) {
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElseThrow();
         user.setStatus(UserStatus.DELETED.name());
         return user;
     }
