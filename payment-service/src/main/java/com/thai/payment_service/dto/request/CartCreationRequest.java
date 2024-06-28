@@ -16,5 +16,5 @@ import java.util.List;
 @NoArgsConstructor
 public class CartCreationRequest {
     private String userId;
-    private Cart_Book books;
+    private Cart_Book book;
 }
