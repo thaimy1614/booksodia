@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -27,8 +29,12 @@ public class Review {
     private int rating;
     @Column(name = "review_text")
     private String reviewText;
-    @Column(name = "review_date")
+    @Column(name = "review_created_at", updatable = false)
+    @CreationTimestamp
     private LocalDateTime reviewDate;
 
+    @Column(name = "review_updated_ad")
+    @UpdateTimestamp
+    private LocalDateTime updateDate;
 
 }

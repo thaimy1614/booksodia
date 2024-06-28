@@ -15,8 +15,8 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/{id}")
-    public Review addReviewByBookId(@RequestBody Review review) {
-        return reviewService.addReview(review);
+    public Review addReviewByBookId(@RequestBody Review review, @PathVariable String id) {
+        return reviewService.addReview(review, id);
     }
 
     @GetMapping

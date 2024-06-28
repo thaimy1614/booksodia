@@ -9,7 +9,7 @@ public interface ReviewService {
 
     List<Review> getReviewsByBookId(String id);
 
-    Review addReview(Review review);
+    Review addReview(Review review, String id);
 
     Review updateReview(Review review);
 

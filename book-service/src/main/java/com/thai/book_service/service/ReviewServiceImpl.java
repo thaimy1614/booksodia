@@ -6,6 +6,7 @@ import com.thai.book_service.repository.BookRepository;
 import com.thai.book_service.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,8 +30,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review addReview(Review review) {
-        return null;
+    public Review addReview(Review review, String id) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Book book = bookRepository.findById(id).orElseThrow();
+        review.setBook(book);
+        review.setUserId(userId);
+        List<Review> reviews = book.getReviews();
+        reviews.add(review);
+        book.setReviews(reviews);
+        return review;
     }
 
     @Override
