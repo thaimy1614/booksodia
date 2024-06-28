@@ -32,7 +32,7 @@ public class UserController {
 
     //Get detail User
     @GetMapping("/{id}")
-    ResponseEntity<ResponseObject> findById(@PathVariable UUID id) {
+    ResponseEntity<ResponseObject> findById(@PathVariable String id) {
         Optional<User> foundUser = userService.findUserById(id);
         return foundUser.isPresent()
                 ? ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "User found", foundUser))
@@ -47,7 +47,7 @@ public class UserController {
 
     //Update User or insert User if not found
     @PutMapping("/{id}")
-    ResponseEntity<ResponseObject> updateUser(@RequestBody UserRequest newUser, @PathVariable UUID id) {
+    ResponseEntity<ResponseObject> updateUser(@RequestBody UserRequest newUser, @PathVariable String id) {
         User updatedUser = userService.findUserById(id)
                 .map(User -> {
                     var roles = roleRepository.findAllById(newUser.getRoles());
@@ -68,7 +68,7 @@ public class UserController {
 
     //Delete a User
     @DeleteMapping("/{id}")
-    ResponseEntity<ResponseObject> deleteUser(@PathVariable UUID id) {
+    ResponseEntity<ResponseObject> deleteUser(@PathVariable String id) {
         Boolean exists = userService.userExistsById(id);
         if (exists) {
             User user = userService.deleteUserById(id);

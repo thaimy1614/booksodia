@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: payment_service
+
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8083
+  servlet:
+    context-path: /payment
+
+
+payment:
+  vnPay:
+    url: ${PAY_URL}
+    tmnCode: ${TMN_CODE}
+    secretKey: ${SECRET_KEY}
+    returnUrl: ${RETURN_URL}
+    version: ${VERSION}
+    command: ${COMMAND}
+    orderType: ${ORDER_TYPE}

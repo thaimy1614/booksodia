@@ -29,8 +29,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @PostAuthorize("returnObject.get().email == authentication.name || hasRole('ADMIN')")
-    public Optional<User> findUserById(UUID id) {
+    @PostAuthorize("hasPermission(returnObject, 'BLOCK_USER')")
+    public Optional<User> findUserById(String id) {
         return userRepository.findById(id);
     }
 
@@ -45,11 +45,11 @@ public class UserService {
         return userRepository.findByEmail(username);
     }
 
-    public Boolean userExistsById(UUID id) {
+    public Boolean userExistsById(String id) {
         return userRepository.existsById(id);
     }
 
-    public User deleteUserById(UUID id) {
+    public User deleteUserById(String id) {
         User user = userRepository.findById(id).orElseThrow();
         user.setStatus(UserStatus.DELETED.name());
         return user;
