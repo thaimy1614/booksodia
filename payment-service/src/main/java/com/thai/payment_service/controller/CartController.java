@@ -16,8 +16,8 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping
-    ResponseObject createOrder(@RequestBody CartCreationRequest request) {
+    ResponseObject createCart(@RequestBody CartCreationRequest request) {
         var cart = cartService.addToCart(request);
-        return ResponseObject.builder().status("OK").message("CREATE ORDER SUCCESSFULLY!").data(cart).build();
+        return ResponseObject.builder().status("OK").message("CREATE CART SUCCESSFULLY!").data(cart).build();
     }
 }
