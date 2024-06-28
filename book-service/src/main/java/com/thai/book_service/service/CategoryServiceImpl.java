@@ -1,5 +1,6 @@
 package com.thai.book_service.service;
 
+import com.thai.book_service.entity.Book;
 import com.thai.book_service.entity.Category;
 import com.thai.book_service.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category update(Category category) {
         return null;
+    }
+
+    @Override
+    public List<Book> getAllBooksByCategoryId(String id) {
+        Category category = categoryRepository.findById(id).orElseThrow();
+        return category.getBooks();
     }
 }

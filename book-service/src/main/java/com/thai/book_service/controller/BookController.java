@@ -27,6 +27,7 @@ public class BookController {
         return bookService.getBookDetail(id);
     }
 
+
     @PostMapping("/add")
     BookResponse addBook(@RequestPart BookCreationRequest bookRequest, @RequestParam("file") MultipartFile multipartFile) {
         return bookService.addBook(bookRequest, multipartFile);

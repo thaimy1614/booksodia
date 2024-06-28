@@ -1,5 +1,6 @@
 package com.thai.book_service.service;
 
+import com.thai.book_service.entity.Book;
 import com.thai.book_service.entity.Category;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface CategoryService {
     void delete(String id);
 
     Category update(Category category);
+
+    List<Book> getAllBooksByCategoryId(String id);
 }
