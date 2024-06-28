@@ -1,4 +1,4 @@
-package com.thai.payment_service.dto;
+package com.thai.payment_service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

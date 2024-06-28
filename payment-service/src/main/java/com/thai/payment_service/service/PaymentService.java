@@ -1,7 +1,7 @@
 package com.thai.payment_service.service;
 
 import com.thai.payment_service.configuration.VNPAYConfig;
-import com.thai.payment_service.dto.VNPayResponse;
+import com.thai.payment_service.dto.response.VNPayResponse;
 import com.thai.payment_service.util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
