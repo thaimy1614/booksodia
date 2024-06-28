@@ -1,6 +1,8 @@
 package com.thai.book_service.service;
 
+import com.thai.book_service.entity.Book;
 import com.thai.book_service.entity.Review;
+import com.thai.book_service.repository.BookRepository;
 import com.thai.book_service.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,7 @@ import java.util.List;
 @Transactional
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
-
+    private final BookRepository bookRepository;
 
     @Override
     public List<Review> getReviews() {
@@ -21,8 +23,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review getReviewById(String id) {
-        return reviewRepository.findById(id).orElse(null);
+    public List<Review> getReviewsByBookId(String id) {
+        Book book = bookRepository.findById(id).orElseThrow();
+        return book.getReviews();
     }
 
     @Override
