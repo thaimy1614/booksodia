@@ -1,6 +1,6 @@
 package com.thai.payment_service.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 
 @Data

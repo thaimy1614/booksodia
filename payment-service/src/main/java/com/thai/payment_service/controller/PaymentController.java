@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PaymentController {
     private final PaymentService paymentService;
+
     @GetMapping("/pay")
     public VNPayResponse pay(HttpServletRequest request) {
         return paymentService.createVnPayPayment(request);

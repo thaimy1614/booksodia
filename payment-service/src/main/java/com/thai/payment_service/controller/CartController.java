@@ -3,7 +3,6 @@ package com.thai.payment_service.controller;
 import com.thai.payment_service.dto.ResponseObject;
 import com.thai.payment_service.dto.request.CartCreationRequest;
 import com.thai.payment_service.dto.request.DeleteItemRequest;
-import com.thai.payment_service.model.Cart;
 import com.thai.payment_service.model.Cart_Book;
 import com.thai.payment_service.service.CartService;
 import lombok.RequiredArgsConstructor;

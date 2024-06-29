@@ -2,7 +2,6 @@ package com.thai.payment_service.controller;
 
 import com.thai.payment_service.dto.ResponseObject;
 import com.thai.payment_service.dto.request.OrderCreationRequest;
-import com.thai.payment_service.model.Order;
 import com.thai.payment_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
