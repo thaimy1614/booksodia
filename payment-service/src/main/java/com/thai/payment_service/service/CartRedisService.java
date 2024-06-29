@@ -24,19 +24,20 @@ public class CartRedisService {
         List<String> keys = new ArrayList<>();
         List<Cart> carts = cartRepository.findAll();
         carts.forEach(cart -> {
-            keys.add("cart_"+cart.getUserId());
+            keys.add("cart_" + cart.getUserId());
         });
         redisTemplate.delete(keys);
     }
 
     public void saveCart(Cart cart) throws JsonProcessingException {
-        String key = "cart_"+cart.getUserId();
+        String key = "cart_" + cart.getUserId();
         String json = redisObjectMapper.writeValueAsString(cart);
         redisTemplate.opsForValue().set(key, json);
     }
 
     public List<Cart_Book> getCartByUserId(String userId) throws JsonProcessingException {
-        String json = (String) redisTemplate.opsForValue().get("cart_"+userId);
-        return (json!=null)?redisObjectMapper.readValue(json,new TypeReference<List<Cart_Book>>(){}) : null;
+        String json = (String) redisTemplate.opsForValue().get("cart_" + userId);
+        return (json != null) ? redisObjectMapper.readValue(json, new TypeReference<List<Cart_Book>>() {
+        }) : null;
     }
 }

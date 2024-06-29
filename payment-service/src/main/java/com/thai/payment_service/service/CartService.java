@@ -1,6 +1,7 @@
 package com.thai.payment_service.service;
 
 import com.thai.payment_service.dto.request.CartCreationRequest;
+import com.thai.payment_service.dto.request.DeleteItemRequest;
 import com.thai.payment_service.model.Cart;
 import com.thai.payment_service.model.Cart_Book;
 import com.thai.payment_service.repository.CartRepository;
@@ -29,5 +30,13 @@ public class CartService {
             cart.get().setBooks(books);
         }
         return cartRepository.save(cart.orElseThrow());
+    }
+
+    public List<Cart_Book> getCart(String userId) {
+        return cartRepository.findByUserId(userId).getBooks();
+    }
+
+    public void removeItems(DeleteItemRequest request) {
+
     }
 }
