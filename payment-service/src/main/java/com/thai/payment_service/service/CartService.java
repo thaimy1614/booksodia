@@ -5,11 +5,13 @@ import com.thai.payment_service.dto.request.DeleteItemRequest;
 import com.thai.payment_service.model.Cart;
 import com.thai.payment_service.model.Cart_Book;
 import com.thai.payment_service.repository.CartRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,18 @@ public class CartService {
         return cartRepository.findByUserId(userId).getBooks();
     }
 
+    @Transactional
     public void removeItems(DeleteItemRequest request) {
+        Cart cart = cartRepository.findByUserId(request.getUserId());
 
+        if (cart != null) {
+            cart.setBooks(
+                    cart.getBooks().stream()
+                            .filter(cartBook -> !request.getBookId().contains(cartBook.getBookId()))
+                            .collect(Collectors.toList())
+            );
+
+            cartRepository.save(cart);
+        }
     }
 }
