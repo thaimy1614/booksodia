@@ -1,55 +1,65 @@
 package com.thai.payment_service.service;
 
-import com.thai.payment_service.dto.request.CartCreationRequest;
+import com.thai.payment_service.dto.request.AddToCartRequest;
 import com.thai.payment_service.dto.request.DeleteItemRequest;
-import com.thai.payment_service.model.Cart;
-import com.thai.payment_service.model.Cart_Book;
+import com.thai.payment_service.dto.response.ReadCartResponse;
+import com.thai.payment_service.model.CartItem;
+import com.thai.payment_service.model.CartItemKey;
 import com.thai.payment_service.repository.CartRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CartService {
     private final CartRepository cartRepository;
 
-    public Cart addToCart(CartCreationRequest request) {
-        Optional<Cart> cart = cartRepository.findById(request.getUserId());
-
-        if (cart.isEmpty()) {
-            cart = Optional.ofNullable(Cart.builder()
-                    .userId(request.getUserId())
-                    .books(List.of(request.getBook()))
-                    .build());
-        } else {
-            List<Cart_Book> books = cart.get().getBooks();
-            books.add(request.getBook());
-            cart.get().setBooks(books);
-        }
-        return cartRepository.save(cart.orElseThrow());
-    }
-
-    public List<Cart_Book> getCart(String userId) {
-        return cartRepository.findByUserId(userId).getBooks();
-    }
-
     @Transactional
-    public void removeItems(DeleteItemRequest request) {
-        Cart cart = cartRepository.findByUserId(request.getUserId());
+    public ReadCartResponse addToCart(AddToCartRequest request) {
+        CartItemKey key = new CartItemKey(request.getUserId(), request.getBookId());
 
-        if (cart != null) {
-            cart.setBooks(
-                    cart.getBooks().stream()
-                            .filter(cartBook -> !request.getBookId().contains(cartBook.getBookId()))
-                            .collect(Collectors.toList())
-            );
+        boolean exists = cartRepository.existsById(key);
 
-            cartRepository.save(cart);
+        if (!exists) {
+            CartItem cartItem = CartItem.builder()
+                    .userId(request.getUserId())
+                    .bookId(request.getBookId())
+                    .price(request.getPrice())
+                    .quantity(request.getQuantity())
+                    .build();
+
+            cartRepository.save(cartItem);
+        } else {
+            // TODO: throw new?
+            log.info("Item already exists");
         }
+
+        List<CartItem> updatedCartItems = cartRepository.findCartItemsByUserId(request.getUserId());
+
+        return ReadCartResponse.builder()
+                .cart(updatedCartItems)
+                .build();
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void removeFromCart(DeleteItemRequest request) {
+        // Validate input
+        if (request.getUserId() == null || request.getBookId() == null || request.getBookId().isEmpty()) {
+            throw new IllegalArgumentException("UserId and BookId list must be provided");
+        }
+        cartRepository.deleteByUserIdAndBookIdIn(request.getUserId(), request.getBookId());
+        List<CartItem> updatedCart = cartRepository.findCartItemsByUserId(request.getUserId());
+        ReadCartResponse.builder().cart(updatedCart).build();
+    }
+
+    public ReadCartResponse readCart(String id) {
+        return ReadCartResponse.builder()
+                .cart(cartRepository.findCartItemsByUserId(id))
+                .build();
     }
 }

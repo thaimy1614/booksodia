@@ -2,8 +2,10 @@ package com.thai.payment_service.controller;
 
 import com.thai.payment_service.dto.ResponseObject;
 import com.thai.payment_service.dto.request.OrderCreationRequest;
+import com.thai.payment_service.model.Order;
 import com.thai.payment_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +18,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    ResponseObject createOrder(@RequestBody OrderCreationRequest request) {
+    ResponseObject<Order> createOrder(@RequestBody OrderCreationRequest request) {
         var order = orderService.createOrder(request);
-        return ResponseObject.builder().status("OK").message("CREATE ORDER SUCCESSFULLY!").data(order).build();
+        return new ResponseObject<>(HttpStatus.OK, "CREATE ORDER SUCCESSFULLY!", order);
     }
 }

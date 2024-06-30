@@ -1,17 +1,16 @@
-package com.thai.payment_service.dto.request;
+package com.thai.payment_service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
-@Data
 @Builder
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class DeleteItemRequest {
+@NoArgsConstructor
+public class CartItemKey{
     private String userId;
-    private List<String> bookId;
+    private String bookId;
 }

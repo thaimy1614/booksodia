@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -44,10 +44,10 @@ public class Order {
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
-    private LocalDate createdDate;
+    private Date createdDate;
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDate updatedDate;
+    private Date updatedDate;
 
     public enum Status {
         PENDING,
