@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,9 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class CartService {
+    private static final String CART_KEY_PREFIX = "cart:";
     private final CartRepository cartRepository;
     private final RedisTemplate<String, Object> redisTemplate;
-    private static final String CART_KEY_PREFIX = "cart:";
 
     private String getCartKey(String userId) {
         return CART_KEY_PREFIX + userId;
@@ -43,20 +42,26 @@ public class CartService {
                     .price(request.getPrice())
                     .quantity(request.getQuantity())
                     .build();
-
             cartRepository.save(cartItem);
+            List<CartItem> updatedCartItems = cartRepository.findCartItemsByUserId(request.getUserId());
+            redisTemplate.opsForHash().putAll(cartKey, updatedCartItems.stream()
+                    .collect(Collectors.toMap(CartItem::getBookId, item -> item)));
+
+            return ReadCartResponse.builder()
+                    .cart(updatedCartItems)
+                    .build();
         } else {
             // TODO: throw new?
             log.info("Item already exists");
         }
 
-        List<CartItem> updatedCartItems = cartRepository.findCartItemsByUserId(request.getUserId());
-        redisTemplate.opsForHash().putAll(cartKey, updatedCartItems.stream()
-                .collect(Collectors.toMap(CartItem::getBookId, cartItem -> cartItem)));
+        return null;
+    }
 
-        return ReadCartResponse.builder()
-                .cart(updatedCartItems)
-                .build();
+    private void addItemsToRedis(List<CartItem> items, String userId) {
+        String cartKey = getCartKey(userId);
+        redisTemplate.opsForHash().putAll(cartKey, items.stream()
+                .collect(Collectors.toMap(CartItem::getBookId, cartItem -> cartItem)));
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
@@ -69,10 +74,9 @@ public class CartService {
         }
         cartRepository.deleteByUserIdAndBookIdIn(request.getUserId(), request.getBookId());
         List<CartItem> afterDelete = cartRepository.findCartItemsByUserId(request.getUserId());
-        if(beforeDelete.size() == afterDelete.size()) {
+        if (beforeDelete.size() == afterDelete.size()) {
             throw new Exception("BOOKS NOT IN CART");
         }
-        ReadCartResponse.builder().cart(afterDelete).build();
 
         request.getBookId().forEach(bookId -> redisTemplate.opsForHash().delete(cartKey, bookId));
     }

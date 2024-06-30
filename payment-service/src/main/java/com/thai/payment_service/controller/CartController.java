@@ -4,13 +4,10 @@ import com.thai.payment_service.dto.ResponseObject;
 import com.thai.payment_service.dto.request.AddToCartRequest;
 import com.thai.payment_service.dto.request.DeleteItemRequest;
 import com.thai.payment_service.dto.response.ReadCartResponse;
-import com.thai.payment_service.model.CartItem;
 import com.thai.payment_service.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
