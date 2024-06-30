@@ -31,7 +31,7 @@ public class CartController {
     }
 
     @DeleteMapping()
-    ResponseObject<ReadCartResponse> deleteCartById(@RequestBody DeleteItemRequest request) {
+    ResponseObject<ReadCartResponse> deleteCartById(@RequestBody DeleteItemRequest request) throws Exception {
         cartService.removeFromCart(request);
         return new ResponseObject<>(HttpStatus.OK, "REMOVE ITEMS IN CART SUCCESSFULLY!", null);
     }

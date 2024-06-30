@@ -47,14 +47,17 @@ public class CartService {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void removeFromCart(DeleteItemRequest request) {
-        // Validate input
+    public void removeFromCart(DeleteItemRequest request) throws Exception {
+        List<CartItem> beforeDelete = cartRepository.findCartItemsByUserId(request.getUserId());
         if (request.getUserId() == null || request.getBookId() == null || request.getBookId().isEmpty()) {
             throw new IllegalArgumentException("UserId and BookId list must be provided");
         }
         cartRepository.deleteByUserIdAndBookIdIn(request.getUserId(), request.getBookId());
-        List<CartItem> updatedCart = cartRepository.findCartItemsByUserId(request.getUserId());
-        ReadCartResponse.builder().cart(updatedCart).build();
+        List<CartItem> afterDelete = cartRepository.findCartItemsByUserId(request.getUserId());
+        if(beforeDelete.size() == afterDelete.size()) {
+            throw new Exception("BOOKS NOT IN CART");
+        }
+        ReadCartResponse.builder().cart(afterDelete).build();
     }
 
     public ReadCartResponse readCart(String id) {
