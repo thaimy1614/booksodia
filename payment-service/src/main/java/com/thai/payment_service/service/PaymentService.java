@@ -13,15 +13,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentService {
     private final VNPAYConfig vnPayConfig;
+    private final OrderService orderService;
 
     public VNPayResponse createVnPayPayment(HttpServletRequest request) {
-        long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
+        String orderId = request.getParameter("orderId");
+        long amount = orderService.getOrderByOrderId(orderId).getTotalAmount() * 100L;
         String bankCode = request.getParameter("bankCode");
         Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         if (bankCode != null && !bankCode.isEmpty()) {
             vnpParamsMap.put("vnp_BankCode", bankCode);
         }
+        vnpParamsMap.put("vnp_OrderInfo", orderId);
         vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
         //build query url
         String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);

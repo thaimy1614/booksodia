@@ -14,5 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderCreationRequest {
     private String userId;
+    private String orderId;
     private List<Order_Book> books;
 }

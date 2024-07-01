@@ -18,9 +18,11 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/checkout")
-    ResponseObject<CheckoutResponse> checkout(@RequestBody CheckoutRequest request){
+    ResponseObject<CheckoutResponse> checkout(@RequestBody CheckoutRequest request) {
+        cartService.checkout(request);
         return null;
     }
+
     @PostMapping
     ResponseObject<ReadCartResponse> addToCart(@RequestBody AddToCartRequest request) {
         var cart = cartService.addToCart(request);

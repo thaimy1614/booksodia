@@ -23,9 +23,9 @@ public class OrderService {
 
     public Order createOrder(OrderCreationRequest request) {
         final int[] totalAmount = {0};
-        request.getBooks().forEach(book -> totalAmount[0] += book.getPrice());
+        request.getBooks().forEach(book -> totalAmount[0] += book.getPrice()*book.getQuantity());
         final int[] totalQuantity = {0};
-        request.getBooks().forEach(book -> totalQuantity[0] += book.getPrice());
+        request.getBooks().forEach(book -> totalQuantity[0] += book.getQuantity());
         Order order = Order.builder()
                 .userId(request.getUserId())
                 .books(request.getBooks())
@@ -41,5 +41,9 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow();
         order.setStatus(status);
         orderRepository.save(order);
+    }
+
+    public Order getOrderByOrderId(String orderId) {
+        return orderRepository.findById(orderId).orElseThrow();
     }
 }
