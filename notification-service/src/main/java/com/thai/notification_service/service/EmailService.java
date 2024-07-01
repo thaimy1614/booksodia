@@ -1,7 +1,7 @@
-package com.thai.emailservice.service;
+package com.thai.notification_service.service;
 
-import com.thai.emailservice.dto.SendOtp;
-import com.thai.emailservice.dto.SendPassword;
+import com.thai.notification_service.dto.SendOtp;
+import com.thai.notification_service.dto.SendPassword;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

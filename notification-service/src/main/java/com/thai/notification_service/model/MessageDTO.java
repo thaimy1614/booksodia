@@ -1,4 +1,4 @@
-package com.thai.emailservice.model;
+package com.thai.notification_service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

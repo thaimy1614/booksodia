@@ -1,4 +1,4 @@
-package com.thai.emailservice.dto;
+package com.thai.notification_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

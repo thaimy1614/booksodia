@@ -1,10 +1,10 @@
-package com.thai.emailservice;
+package com.thai.notification_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EmailServiceApplicationTests {
+class NotificationServiceApplicationTests {
 
     @Test
     void contextLoads() {
