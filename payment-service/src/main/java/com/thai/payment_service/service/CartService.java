@@ -29,8 +29,6 @@ public class CartService {
 
     @Transactional
     public ReadCartResponse addToCart(AddToCartRequest request) {
-        String cartKey = getCartKey(request.getUserId());
-
         CartItemKey key = new CartItemKey(request.getUserId(), request.getBookId());
 
         boolean exists = cartRepository.existsById(key);
@@ -44,9 +42,7 @@ public class CartService {
                     .build();
             cartRepository.save(cartItem);
             List<CartItem> updatedCartItems = cartRepository.findCartItemsByUserId(request.getUserId());
-            redisTemplate.opsForHash().putAll(cartKey, updatedCartItems.stream()
-                    .collect(Collectors.toMap(CartItem::getBookId, item -> item)));
-
+            addItemsToRedis(updatedCartItems, cartItem.getUserId());
             return ReadCartResponse.builder()
                     .cart(updatedCartItems)
                     .build();
