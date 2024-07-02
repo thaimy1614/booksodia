@@ -1,1 +1,18 @@
-spring.application.name=order-service
+spring:
+  application:
+    name: order_service
+
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+server:
+  port: 8084
+  servlet:
+    context-path: /order
