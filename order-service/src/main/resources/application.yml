@@ -11,6 +11,18 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 1
+      acks: all
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+        partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
+        linger.ms: 100  # ?i?u ch?nh th?i gian ch? ??i ?? t?i ?u hóa batching
 
 server:
   port: 8084
