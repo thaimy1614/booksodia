@@ -28,9 +28,10 @@ public class PaymentController {
         String orderId = request.getParameter("vnp_OrderInfo");
         if (status.equals("00")) {
             orderService.updateOrder(Order.Status.DONE, orderId);
-            return new VNPayResponse("00", "Success", "");
+            return new VNPayResponse("00", "Success " + orderId, "");
         } else {
-            return null;
+            orderService.updateOrder(Order.Status.REJECTED, orderId);
+            return new VNPayResponse("01", "Fail " + orderId, "");
         }
     }
 }

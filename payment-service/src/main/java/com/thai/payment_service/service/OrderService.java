@@ -23,10 +23,11 @@ public class OrderService {
 
     public Order createOrder(OrderCreationRequest request) {
         final int[] totalAmount = {0};
-        request.getBooks().forEach(book -> totalAmount[0] += book.getPrice()*book.getQuantity());
+        request.getBooks().forEach(book -> totalAmount[0] += book.getPrice() * book.getQuantity());
         final int[] totalQuantity = {0};
         request.getBooks().forEach(book -> totalQuantity[0] += book.getQuantity());
         Order order = Order.builder()
+                .orderId(request.getOrderId())
                 .userId(request.getUserId())
                 .books(request.getBooks())
                 .totalAmount(totalAmount[0])
