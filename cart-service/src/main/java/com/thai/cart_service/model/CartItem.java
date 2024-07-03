@@ -30,7 +30,7 @@ public class CartItem {
     @Column(name = "book_id")
     private String bookId;
 
-    private Long price;
+    private int price;
 
     private int quantity;
 

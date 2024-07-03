@@ -1,7 +1,9 @@
 package com.thai.cart_service;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class CartServiceApplication {
@@ -10,4 +12,8 @@ public class CartServiceApplication {
 		SpringApplication.run(CartServiceApplication.class, args);
 	}
 
+	@Bean
+	NewTopic initCartCheckout() {
+		return new NewTopic("init-cart-checkout", 1, (short) 3);
+	}
 }

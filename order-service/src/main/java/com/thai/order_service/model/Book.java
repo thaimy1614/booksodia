@@ -1,4 +1,4 @@
-package com.thai.cart_service.dto.request;
+package com.thai.order_service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class AddToCartRequest {
-    private String userId;
+@NoArgsConstructor
+public class Book {
     private String bookId;
     private int price;
-    private int quantity;
 }

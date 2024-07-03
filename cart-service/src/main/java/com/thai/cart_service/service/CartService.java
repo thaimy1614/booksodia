@@ -1,9 +1,12 @@
 package com.thai.cart_service.service;
 
+import com.thai.cart_service.dto.Kafka.InitCartCheckout;
 import com.thai.cart_service.dto.request.AddToCartRequest;
 import com.thai.cart_service.dto.request.CheckoutRequest;
 import com.thai.cart_service.dto.request.DeleteItemRequest;
 import com.thai.cart_service.dto.response.ReadCartResponse;
+import com.thai.cart_service.mapper.CartMapper;
+import com.thai.cart_service.model.Book;
 import com.thai.cart_service.model.CartItem;
 import com.thai.cart_service.model.CartItemKey;
 import com.thai.cart_service.repository.CartRepository;
@@ -11,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +27,8 @@ public class CartService {
     private static final String CART_KEY_PREFIX = "cart:";
     private final CartRepository cartRepository;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final CartMapper cartMapper;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     private String getCartKey(String userId) {
         return CART_KEY_PREFIX + userId;
@@ -102,13 +108,10 @@ public class CartService {
     public void checkout(CheckoutRequest request) {
         // Get all items in card
         List<CartItem> cartItems = readCart(request.getUserId()).getCart();
-        // TODO: send a message "createOrder" to Order service
-//        List<Order_Book> orderBooks = convertToOrderBookList(cartItems);
-//        orderService.createOrder(OrderCreationRequest.builder()
-//                .userId(request.getUserId())
-//                .orderId(request.getOrderId())
-//                .books(orderBooks)
-//                .build());
+        List<Book> books = cartMapper.toBook(cartItems);
+        log.info(books.toString());
+
+        kafkaTemplate.send("init-cart-checkout", InitCartCheckout.builder().userId(request.getUserId()).books(books).build());
     }
 
 //    public Order_Book convertToOrderBook(CartItem cartItem) {
