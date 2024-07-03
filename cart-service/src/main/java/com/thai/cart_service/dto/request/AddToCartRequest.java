@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class AddToCartRequest {
     private String userId;
     private String bookId;
-    private int price;
     private int quantity;
 }

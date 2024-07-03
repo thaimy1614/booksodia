@@ -28,6 +28,10 @@ spring:
         partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
         linger.ms: 100
 
+app:
+  services:
+    book: http://localhost:8082/book
+
 server:
   port: 8085
   servlet:

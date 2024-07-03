@@ -1,6 +1,7 @@
 package com.thai.book_service.controller;
 
 import com.thai.book_service.dto.request.BookCreationRequest;
+import com.thai.book_service.dto.request.GetBookRequest;
 import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
 import com.thai.book_service.service.BookService;
@@ -42,4 +43,9 @@ public class BookController {
     void deleteBook(@PathVariable String id) {
         bookService.deleteBook(id);
     }
+
+    @PostMapping("/getPrice")
+    BookResponse getBook(@RequestBody GetBookRequest request){
+        return bookService.getBookById(request.getBookId());
+    };
 }

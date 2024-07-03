@@ -4,12 +4,15 @@ import com.thai.cart_service.dto.Kafka.InitCartCheckout;
 import com.thai.cart_service.dto.request.AddToCartRequest;
 import com.thai.cart_service.dto.request.CheckoutRequest;
 import com.thai.cart_service.dto.request.DeleteItemRequest;
+import com.thai.cart_service.dto.request.client.GetBookRequest;
+import com.thai.cart_service.dto.response.BookResponse;
 import com.thai.cart_service.dto.response.ReadCartResponse;
 import com.thai.cart_service.mapper.CartMapper;
 import com.thai.cart_service.model.Book;
 import com.thai.cart_service.model.CartItem;
 import com.thai.cart_service.model.CartItemKey;
 import com.thai.cart_service.repository.CartRepository;
+import com.thai.cart_service.repository.httpclient.BookClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,7 @@ public class CartService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final CartMapper cartMapper;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final BookClient bookClient;
 
     private String getCartKey(String userId) {
         return CART_KEY_PREFIX + userId;
@@ -41,18 +45,21 @@ public class CartService {
         boolean exists = cartRepository.existsById(key);
 
         if (!exists) {
-            CartItem cartItem = CartItem.builder()
-                    .userId(request.getUserId())
-                    .bookId(request.getBookId())
-                    .price(request.getPrice())
-                    .quantity(request.getQuantity())
-                    .build();
-            cartRepository.save(cartItem);
-            List<CartItem> updatedCartItems = cartRepository.findCartItemsByUserId(request.getUserId());
-            addItemsToRedis(updatedCartItems, cartItem.getUserId());
-            return ReadCartResponse.builder()
-                    .cart(updatedCartItems)
-                    .build();
+            BookResponse bookResponse = bookClient.getBook(GetBookRequest.builder().bookId(request.getBookId()).build());
+            if (bookResponse.getQuantity() >= request.getQuantity()) {
+                CartItem cartItem = cartMapper.toCartItem(bookResponse);
+                cartItem.setUserId(request.getUserId());
+                cartItem.setQuantity(request.getQuantity());
+                cartItem.setCreateAt(null);
+                cartRepository.save(cartItem);
+                List<CartItem> updatedCartItems = cartRepository.findCartItemsByUserId(request.getUserId());
+                addItemsToRedis(updatedCartItems, cartItem.getUserId());
+                return ReadCartResponse.builder()
+                        .cart(updatedCartItems)
+                        .build();
+            } else {
+                log.info("No have enough book to add to cart");
+            }
         } else {
             // TODO: throw new?
             log.info("Item already exists");
