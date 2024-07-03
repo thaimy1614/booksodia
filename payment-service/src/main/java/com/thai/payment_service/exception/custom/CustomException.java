@@ -1,6 +1,6 @@
 package com.thai.payment_service.exception.custom;
 
-import fsa.cursus.payment_service.core.exception.code.ErrorCode;
+import com.thai.payment_service.exception.code.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

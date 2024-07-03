@@ -1,9 +1,10 @@
 package com.thai.payment_service.exception.handler;
 
 
-import fsa.cursus.payment_service.core.exception.code.ErrorCode;
-import fsa.cursus.payment_service.core.exception.custom.CustomException;
-import fsa.cursus.payment_service.core.response.ResponseObject;
+
+import com.thai.payment_service.dto.ResponseObject;
+import com.thai.payment_service.exception.code.ErrorCode;
+import com.thai.payment_service.exception.custom.CustomException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.Ordered;

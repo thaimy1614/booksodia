@@ -26,7 +26,7 @@ spring:
         enable.idempotence: true
         max.in.flight.requests.per.connection: 5
         partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
-        linger.ms: 100  # ?i?u ch?nh th?i gian ch? ??i ?? t?i ?u hóa batching
+        linger.ms: 100
 
 server:
   port: 8085
