@@ -1,9 +1,13 @@
 package com.thai.order_service.service;
 
 import com.thai.order_service.dto.request.OrderCreationRequest;
+import com.thai.order_service.dto.request.kafka.InitCartCheckout;
+import com.thai.order_service.mapper.OrderMapper;
 import com.thai.order_service.model.Order;
+import com.thai.order_service.model.Order_Book;
 import com.thai.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -46,5 +51,12 @@ public class OrderService {
 
     public Order getOrderByOrderId(String orderId) {
         return orderRepository.findById(orderId).orElseThrow();
+    }
+
+    @KafkaListener(id = "init-cart-checkout-group", topics = "init-cart-checkout")
+    public void initCartCheckout(InitCartCheckout initCartCheckout){
+        List<Order_Book> orderBooks = orderMapper.toOrderBook(initCartCheckout.getBooks());
+        createOrder(OrderCreationRequest.builder().userId(initCartCheckout.getUserId()).orderId("ABC").books(orderBooks).build());
+
     }
 }

@@ -1,13 +1,11 @@
-package com.thai.cart_service.dto.Kafka;
+package com.thai.order_service.dto.request.kafka;
 
-import com.thai.cart_service.model.Book;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
-
-@Data
 @Builder
+@Data
 public class InitCartCheckout {
     private String userId;
     private List<Book> books;

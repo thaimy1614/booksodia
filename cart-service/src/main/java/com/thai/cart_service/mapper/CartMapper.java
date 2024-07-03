@@ -1,7 +1,7 @@
 package com.thai.cart_service.mapper;
 
 import com.thai.cart_service.dto.response.BookResponse;
-import com.thai.cart_service.model.Book;
+import com.thai.cart_service.dto.kafka.Book;
 import com.thai.cart_service.model.CartItem;
 import org.mapstruct.Mapper;
 

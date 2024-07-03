@@ -7,7 +7,13 @@ import lombok.Data;
 @Embeddable
 public class Order_Book {
     private String bookId;
-    private int quantity;
+
+    private String title;
+
     private int price;
+
+    private int quantity;
+
+    private String image;
 }
 

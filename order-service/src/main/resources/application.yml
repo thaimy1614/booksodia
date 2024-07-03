@@ -2,7 +2,6 @@ spring:
   application:
     name: order_service
 
-
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USERNAME}
@@ -22,7 +21,10 @@ spring:
         enable.idempotence: true
         max.in.flight.requests.per.connection: 5
         partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
-        linger.ms: 100  # ?i?u ch?nh th?i gian ch? ??i ?? t?i ?u hóa batching
+        linger.ms: 100
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      auto-offset-reset: earliest
 
 server:
   port: 8084

@@ -1,6 +1,6 @@
 package com.thai.cart_service.service;
 
-import com.thai.cart_service.dto.Kafka.InitCartCheckout;
+import com.thai.cart_service.dto.kafka.InitCartCheckout;
 import com.thai.cart_service.dto.request.AddToCartRequest;
 import com.thai.cart_service.dto.request.CheckoutRequest;
 import com.thai.cart_service.dto.request.DeleteItemRequest;
@@ -8,7 +8,7 @@ import com.thai.cart_service.dto.request.client.GetBookRequest;
 import com.thai.cart_service.dto.response.BookResponse;
 import com.thai.cart_service.dto.response.ReadCartResponse;
 import com.thai.cart_service.mapper.CartMapper;
-import com.thai.cart_service.model.Book;
+import com.thai.cart_service.dto.kafka.Book;
 import com.thai.cart_service.model.CartItem;
 import com.thai.cart_service.model.CartItemKey;
 import com.thai.cart_service.repository.CartRepository;
@@ -116,7 +116,6 @@ public class CartService {
         // Get all items in card
         List<CartItem> cartItems = readCart(request.getUserId()).getCart();
         List<Book> books = cartMapper.toBook(cartItems);
-        log.info(books.toString());
 
         kafkaTemplate.send("init-cart-checkout", InitCartCheckout.builder().userId(request.getUserId()).books(books).build());
     }

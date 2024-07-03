@@ -30,9 +30,13 @@ public class CartItem {
     @Column(name = "book_id")
     private String bookId;
 
+    private String title;
+
     private int price;
 
     private int quantity;
+
+    private String image;
 
     @CreationTimestamp
     @JsonProperty("createAt")
