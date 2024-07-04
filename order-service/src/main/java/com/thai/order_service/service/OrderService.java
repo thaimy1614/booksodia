@@ -67,7 +67,7 @@ public class OrderService {
         List<Order_Book> orderBooks = orderMapper.toOrderBook(initCartCheckout.getBooks());
         Order order = createOrder(OrderCreationRequest.builder().userId(initCartCheckout.getUserId()).orderId(initCartCheckout.getOrderId()).books(orderBooks).build());
         redisTemplate.opsForValue().set("order:" + order.getOrderId(), order);
-        redisTemplate.expire("order:" + order.getOrderId(), 15, TimeUnit.MINUTES);
+        redisTemplate.expire("order:" + order.getOrderId(), 5, TimeUnit.MINUTES);
         kafkaTemplate.send("created-order", CheckoutOrder.builder().orderId(order.getOrderId()).totalAmount(order.getTotalAmount()).build());
     }
 }
