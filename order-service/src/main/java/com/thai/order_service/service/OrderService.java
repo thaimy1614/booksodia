@@ -10,15 +10,18 @@ import com.thai.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private final RedisTemplate<String, Object> redisTemplate;
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
@@ -62,8 +65,9 @@ public class OrderService {
     @KafkaListener(id = "init-cart-checkout-group", topics = "init-cart-checkout")
     public void initCartCheckout(InitCartCheckout initCartCheckout){
         List<Order_Book> orderBooks = orderMapper.toOrderBook(initCartCheckout.getBooks());
-        createOrder(OrderCreationRequest.builder().userId(initCartCheckout.getUserId()).orderId(initCartCheckout.getOrderId()).books(orderBooks).build());
-        Order order = getOrderByOrderId(initCartCheckout.getOrderId());
+        Order order = createOrder(OrderCreationRequest.builder().userId(initCartCheckout.getUserId()).orderId(initCartCheckout.getOrderId()).books(orderBooks).build());
+        redisTemplate.opsForValue().set("order:" + order.getOrderId(), order);
+        redisTemplate.expire("order:" + order.getOrderId(), 15, TimeUnit.MINUTES);
         kafkaTemplate.send("created-order", CheckoutOrder.builder().orderId(order.getOrderId()).totalAmount(order.getTotalAmount()).build());
     }
 }

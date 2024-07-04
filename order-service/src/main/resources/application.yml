@@ -2,6 +2,10 @@ spring:
   application:
     name: order_service
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USERNAME}
