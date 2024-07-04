@@ -1,13 +1,17 @@
 package com.thai.order_service.service;
 
 import com.thai.order_service.dto.request.OrderCreationRequest;
+import com.thai.order_service.dto.request.kafka.CheckoutOrder;
 import com.thai.order_service.dto.request.kafka.InitCartCheckout;
 import com.thai.order_service.mapper.OrderMapper;
 import com.thai.order_service.model.Order;
 import com.thai.order_service.model.Order_Book;
 import com.thai.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +19,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -56,7 +62,8 @@ public class OrderService {
     @KafkaListener(id = "init-cart-checkout-group", topics = "init-cart-checkout")
     public void initCartCheckout(InitCartCheckout initCartCheckout){
         List<Order_Book> orderBooks = orderMapper.toOrderBook(initCartCheckout.getBooks());
-        createOrder(OrderCreationRequest.builder().userId(initCartCheckout.getUserId()).orderId("ABC").books(orderBooks).build());
-
+        createOrder(OrderCreationRequest.builder().userId(initCartCheckout.getUserId()).orderId(initCartCheckout.getOrderId()).books(orderBooks).build());
+        Order order = getOrderByOrderId(initCartCheckout.getOrderId());
+        kafkaTemplate.send("created-order", CheckoutOrder.builder().orderId(order.getOrderId()).totalAmount(order.getTotalAmount()).build());
     }
 }

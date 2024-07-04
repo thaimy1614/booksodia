@@ -44,7 +44,7 @@ public class BookController {
         bookService.deleteBook(id);
     }
 
-    @PostMapping("/getPrice")
+    @PostMapping("/get-book")
     BookResponse getBook(@RequestBody GetBookRequest request){
         return bookService.getBookById(request.getBookId());
     };
