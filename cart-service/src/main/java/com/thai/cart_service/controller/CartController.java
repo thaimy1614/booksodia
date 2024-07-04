@@ -18,8 +18,8 @@ public class CartController {
 
     @PostMapping("/checkout")
     ResponseObject<CheckoutResponse> checkout(@RequestBody CheckoutRequest request) {
-        cartService.checkout(request);
-        return null;
+        CheckoutResponse response = cartService.checkout(request);
+        return new ResponseObject<>(HttpStatus.OK, "Checkout successfully", response);
     }
 
     @PostMapping

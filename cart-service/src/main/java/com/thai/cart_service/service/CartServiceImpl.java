@@ -6,6 +6,7 @@ import com.thai.cart_service.dto.request.CheckoutRequest;
 import com.thai.cart_service.dto.request.DeleteItemRequest;
 import com.thai.cart_service.dto.request.client.GetBookRequest;
 import com.thai.cart_service.dto.response.BookResponse;
+import com.thai.cart_service.dto.response.CheckoutResponse;
 import com.thai.cart_service.dto.response.ReadCartResponse;
 import com.thai.cart_service.mapper.CartMapper;
 import com.thai.cart_service.dto.kafka.Book;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,10 +119,12 @@ public class CartServiceImpl implements CartService {
         return ReadCartResponse.builder().cart(cartItems).build();
     }
 
-    public void checkout(CheckoutRequest request) {
+    public CheckoutResponse checkout(CheckoutRequest request) {
+        String orderId = UUID.randomUUID().toString();
         // Get all items in card
         List<CartItem> cartItems = cartRepository.findCartItemsByUserId(request.getUserId());
         List<Book> books = cartMapper.toBookList(cartItems);
-        kafkaTemplate.send("init-cart-checkout", InitCartCheckout.builder().orderId(request.getOrderId()).userId(request.getUserId()).books(books).build());
+        kafkaTemplate.send("init-cart-checkout", InitCartCheckout.builder().orderId(orderId).userId(request.getUserId()).books(books).build());
+        return CheckoutResponse.builder().orderId(orderId).build();
     }
 }

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CheckoutRequest {
-    private String orderId;
     private String userId;
 }
