@@ -52,4 +52,18 @@ public class PaymentService {
                 .message("success")
                 .paymentUrl(paymentUrl).build();
     }
+
+    public VNPayResponse handleCallback(String status, HttpServletRequest request) {
+        String orderId = request.getParameter("vnp_TxnRef");
+        redisTemplate.delete("order:" + orderId);
+        if (status.equals("00")) {
+            return
+                    new VNPayResponse(
+                            "00",
+                            "Success",
+                            request.getParameter("vnp_OrderInfo"));
+        } else {
+            return null;
+        }
+    }
 }
