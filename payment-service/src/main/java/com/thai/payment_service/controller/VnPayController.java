@@ -1,5 +1,6 @@
 package com.thai.payment_service.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thai.payment_service.dto.ResponseObject;
 import com.thai.payment_service.dto.response.VNPayResponse;
 import com.thai.payment_service.service.PaymentService;
@@ -19,7 +20,7 @@ public class VnPayController {
     @GetMapping("/get-url")
     ResponseObject<VNPayResponse> payCart(
             HttpServletRequest servletRequest
-    ) {
+    ) throws JsonProcessingException {
         VNPayResponse response = paymentService.createVnPayPayment(servletRequest);
 
         return new ResponseObject<>(

@@ -1,5 +1,7 @@
 package com.thai.payment_service.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thai.payment_service.configuration.VNPAYConfig;
 import com.thai.payment_service.dto.Order;
 import com.thai.payment_service.dto.response.VNPayResponse;
@@ -10,16 +12,18 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
     private final VNPAYConfig vnPayConfig;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
-    public VNPayResponse createVnPayPayment(HttpServletRequest request) {
+    public VNPayResponse createVnPayPayment(HttpServletRequest request) throws JsonProcessingException {
         String orderId = request.getParameter("orderId");
-        Order order = (Order) redisTemplate.opsForValue().get("order:" + orderId);
+        Order order = objectMapper.readValue(Objects.requireNonNull(redisTemplate.opsForValue().get("order:" + orderId)).toString(), Order.class);
         if (order == null) {
             return VNPayResponse.builder()
                     .code("701")
