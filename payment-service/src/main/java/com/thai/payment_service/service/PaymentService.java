@@ -20,9 +20,14 @@ public class PaymentService {
     public VNPayResponse createVnPayPayment(HttpServletRequest request) {
         String orderId = request.getParameter("orderId");
         Order order = (Order) redisTemplate.opsForValue().get("order:" + orderId);
-        if (order == null || !order.getStatus().toString().equals("PENDING")) {
+        if (order == null) {
             return VNPayResponse.builder()
-                    .code("400")
+                    .code("701")
+                    .message("Your order is not created, please try again")
+                    .build();
+        } else if (!order.getStatus().toString().equals("PENDING")) {
+            return VNPayResponse.builder()
+                    .code("700")
                     .message("This order is not pending. Please try again later.")
                     .build();
         }
@@ -34,7 +39,7 @@ public class PaymentService {
         if (bankCode != null && !bankCode.isEmpty()) {
             vnpParamsMap.put("vnp_BankCode", bankCode);
         }
-        vnpParamsMap.put("vnp_OrderInfo", "Your order id is " + orderId +", total price is " + amount);
+        vnpParamsMap.put("vnp_OrderInfo", "Your order id is " + orderId + ", total price is " + amount);
         vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
         //build query url
         String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
