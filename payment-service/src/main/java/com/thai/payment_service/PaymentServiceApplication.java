@@ -1,5 +1,6 @@
 package com.thai.payment_service;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +14,12 @@ public class PaymentServiceApplication {
     }
 
     @Bean
-    JsonMessageConverter jsonMessageConverter() {
+    NewTopic paymentTopic() {
+        return new NewTopic("payment-status", 1, (short) 3);
+    }
+
+    @Bean
+    JsonMessageConverter converter() {
         return new JsonMessageConverter();
     }
 

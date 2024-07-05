@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class VnPayController {
@@ -30,12 +32,12 @@ public class VnPayController {
     }
 
     @GetMapping("/vn-pay-callback")
-    public ResponseObject<VNPayResponse> payCallbackHandler(
+    public void payCallbackHandler(
             HttpServletRequest request,
             HttpServletResponse response
-    ) {
+    ) throws IOException {
         String status = request.getParameter("vnp_ResponseCode");
         VNPayResponse vnPayResponse = paymentService.handleCallback(status, request);
-        return new ResponseObject<>(HttpStatus.OK, "Success", vnPayResponse);
+        response.sendRedirect("https://google.com");
     }
 }
