@@ -1,13 +1,12 @@
 package com.thai.payment_service.dto;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
@@ -16,13 +15,18 @@ public class Order {
     private String userId;
     private int totalAmount;
     private int totalQuantity;
+    private String status;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    public enum Status {
-        PENDING,
-        DONE,
-        REJECTED,
+    @JsonCreator
+    public Order(@JsonProperty("orderId") String orderId,
+                 @JsonProperty("userId") String userId,
+                 @JsonProperty("totalAmount") int totalAmount,
+                 @JsonProperty("totalQuantity") int totalQuantity,
+                 @JsonProperty("status") String status) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.totalAmount = totalAmount;
+        this.totalQuantity = totalQuantity;
+        this.status = status;
     }
 }

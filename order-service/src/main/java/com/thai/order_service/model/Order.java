@@ -1,5 +1,9 @@
 package com.thai.order_service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,16 +38,21 @@ public class Order {
             name = "order_books",
             joinColumns = @JoinColumn(name = "order_id")
     )
+    @JsonIgnore
     private List<Order_Book> books;
 
+    @JsonIgnore
     private String address;
+    @JsonIgnore
     private String phone;
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @JsonIgnore
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdDate;
+    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedDate;

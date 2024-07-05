@@ -1,5 +1,8 @@
 package com.thai.order_service.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thai.order_service.dto.request.OrderCreationRequest;
 import com.thai.order_service.dto.request.kafka.CheckoutOrder;
 import com.thai.order_service.dto.request.kafka.InitCartCheckout;
@@ -8,9 +11,11 @@ import com.thai.order_service.model.Order;
 import com.thai.order_service.model.Order_Book;
 import com.thai.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.repository.init.ResourceReader;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -26,6 +31,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -63,10 +69,12 @@ public class OrderService {
     }
 
     @KafkaListener(id = "init-cart-checkout-group", topics = "init-cart-checkout")
-    public void initCartCheckout(InitCartCheckout initCartCheckout){
+    public void initCartCheckout(InitCartCheckout initCartCheckout) throws JsonProcessingException {
         List<Order_Book> orderBooks = orderMapper.toOrderBook(initCartCheckout.getBooks());
         Order order = createOrder(OrderCreationRequest.builder().userId(initCartCheckout.getUserId()).orderId(initCartCheckout.getOrderId()).books(orderBooks).build());
-        redisTemplate.opsForValue().set("order:" + order.getOrderId(), order);
+        String orderJson = objectMapper.writeValueAsString(order);
+        log.info(orderJson);
+        redisTemplate.opsForValue().set("order:" + order.getOrderId(), orderJson);
         redisTemplate.expire("order:" + order.getOrderId(), 5, TimeUnit.MINUTES);
         kafkaTemplate.send("created-order", CheckoutOrder.builder().orderId(order.getOrderId()).totalAmount(order.getTotalAmount()).build());
     }

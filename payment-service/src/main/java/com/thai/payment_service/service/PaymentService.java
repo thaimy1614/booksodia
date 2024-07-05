@@ -12,7 +12,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ public class PaymentService {
 
     public VNPayResponse createVnPayPayment(HttpServletRequest request) throws JsonProcessingException {
         String orderId = request.getParameter("orderId");
-        Order order = objectMapper.readValue(Objects.requireNonNull(redisTemplate.opsForValue().get("order:" + orderId)).toString(), Order.class);
+        Order order = objectMapper.readValue((String) redisTemplate.opsForValue().get("order:" + orderId), Order.class);
         if (order == null) {
             return VNPayResponse.builder()
                     .code("701")

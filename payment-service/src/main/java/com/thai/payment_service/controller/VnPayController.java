@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/vn-pay")
 public class VnPayController {
     private final PaymentService paymentService;
     private final
