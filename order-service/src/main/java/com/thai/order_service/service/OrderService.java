@@ -3,6 +3,7 @@ package com.thai.order_service.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thai.order_service.dto.PaymentStatus;
 import com.thai.order_service.dto.request.OrderCreationRequest;
 import com.thai.order_service.dto.request.kafka.CheckoutOrder;
 import com.thai.order_service.dto.request.kafka.InitCartCheckout;
@@ -77,5 +78,10 @@ public class OrderService {
         redisTemplate.opsForValue().set("order:" + order.getOrderId(), orderJson);
         redisTemplate.expire("order:" + order.getOrderId(), 5, TimeUnit.MINUTES);
         kafkaTemplate.send("created-order", CheckoutOrder.builder().orderId(order.getOrderId()).totalAmount(order.getTotalAmount()).build());
+    }
+
+    @KafkaListener(id = "update-order-group", topics = "payment-status")
+    public void updateOrderStatus(PaymentStatus paymentStatus) {
+        
     }
 }
