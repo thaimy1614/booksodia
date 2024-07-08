@@ -38,7 +38,6 @@ public class Order {
             name = "order_books",
             joinColumns = @JoinColumn(name = "order_id")
     )
-    @JsonIgnore
     private List<Order_Book> books;
 
     @JsonIgnore

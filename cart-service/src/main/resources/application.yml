@@ -27,6 +27,9 @@ spring:
         max.in.flight.requests.per.connection: 5
         partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
         linger.ms: 100
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      auto-offset-reset: earliest
 
 app:
   services:

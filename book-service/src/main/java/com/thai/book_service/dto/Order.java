@@ -1,4 +1,4 @@
-package com.thai.payment_service.dto;
+package com.thai.book_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

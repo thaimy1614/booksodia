@@ -1,7 +1,6 @@
 package com.thai.order_service.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thai.order_service.dto.PaymentStatus;
 import com.thai.order_service.dto.request.OrderCreationRequest;
@@ -12,11 +11,9 @@ import com.thai.order_service.model.Order;
 import com.thai.order_service.model.Order_Book;
 import com.thai.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.repository.init.ResourceReader;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -77,11 +74,17 @@ public class OrderService {
         log.info(orderJson);
         redisTemplate.opsForValue().set("order:" + order.getOrderId(), orderJson);
         redisTemplate.expire("order:" + order.getOrderId(), 5, TimeUnit.MINUTES);
-        kafkaTemplate.send("created-order", CheckoutOrder.builder().orderId(order.getOrderId()).totalAmount(order.getTotalAmount()).build());
+        redisTemplate.opsForValue().set("order:user:" + initCartCheckout.getOrderId(), order.getUserId());
+        redisTemplate.expire("order:user:" + initCartCheckout.getOrderId(), 5, TimeUnit.MINUTES);
+        kafkaTemplate.send("created-order", order.getOrderId());
     }
 
     @KafkaListener(id = "update-order-group", topics = "payment-status")
     public void updateOrderStatus(PaymentStatus paymentStatus) {
-        
+        if (paymentStatus.getStatus().equals("00")) {
+            updateOrder(Order.Status.DONE, paymentStatus.getOrderId());
+        } else {
+            updateOrder(Order.Status.REJECTED, paymentStatus.getOrderId());
+        }
     }
 }

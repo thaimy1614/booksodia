@@ -1,4 +1,4 @@
-package com.thai.order_service.dto;
+package com.thai.book_service.dto.Kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

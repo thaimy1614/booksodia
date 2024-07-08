@@ -1,6 +1,7 @@
 package com.thai.cart_service.service;
 
 import com.thai.cart_service.dto.kafka.InitCartCheckout;
+import com.thai.cart_service.dto.kafka.PaymentStatus;
 import com.thai.cart_service.dto.request.AddToCartRequest;
 import com.thai.cart_service.dto.request.CheckoutRequest;
 import com.thai.cart_service.dto.request.DeleteItemRequest;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -126,5 +128,20 @@ public class CartServiceImpl implements CartService {
         List<Book> books = cartMapper.toBookList(cartItems);
         kafkaTemplate.send("init-cart-checkout", InitCartCheckout.builder().orderId(orderId).userId(request.getUserId()).books(books).build());
         return CheckoutResponse.builder().orderId(orderId).build();
+    }
+
+    private void deleteCart(String orderId) {
+        String userId = (String)redisTemplate.opsForValue().get("order:user"+orderId);
+        if (userId != null) {
+            redisTemplate.delete(getCartKey(userId));
+            cartRepository.deleteAllByUserId(userId);
+        }
+    }
+
+    @KafkaListener(id = "update-cart-group", topics = "payment-status")
+    public void updateCartListener(PaymentStatus paymentStatus){
+        if(!paymentStatus.getStatus().equals("00")){
+            deleteCart(paymentStatus.getOrderId());
+        }
     }
 }

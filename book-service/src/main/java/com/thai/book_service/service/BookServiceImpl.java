@@ -5,6 +5,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thai.book_service.dto.Kafka.PaymentStatus;
+import com.thai.book_service.dto.Order;
+import com.thai.book_service.dto.Order_Book;
 import com.thai.book_service.dto.request.BookCreationRequest;
 import com.thai.book_service.dto.response.BookDetailResponse;
 import com.thai.book_service.dto.response.BookResponse;
@@ -18,6 +23,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +45,8 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
     private final CategoryRepository categoryRepository;
     private final AmazonS3 s3;
+    private final ObjectMapper objectMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
@@ -170,6 +179,39 @@ public class BookServiceImpl implements BookService {
 
         return url.toString();
 
+    }
+
+    private void revertQuantity(String bookId, int quantity){
+        Book book = bookRepository.findById(bookId).orElseThrow();
+        book.setQuantity(book.getQuantity() + quantity);
+    }
+
+    public void subtractQuantity(String bookId, int quantity){
+        Book book = bookRepository.findById(bookId).orElseThrow();
+        book.setQuantity(book.getQuantity() - quantity);
+    }
+
+    @KafkaListener(id = "update-book-group", topics = "payment-status")
+    public void updateBookQuantity(PaymentStatus paymentStatus) throws JsonProcessingException {
+        if(!paymentStatus.getStatus().equals("DONE")) {
+            String orderId = paymentStatus.getOrderId();
+            Order order = objectMapper.readValue((String) redisTemplate.opsForValue().get("order:" + orderId), Order.class);
+            List<Order_Book> books = order.getBooks();
+            books.forEach(book -> {
+                revertQuantity(book.getBookId(), book.getQuantity());
+            });
+        }
+    }
+
+    @KafkaListener(id = "subtract-quantity-group", topics = "created-order")
+    public void subtractQuantity(String orderId) throws JsonProcessingException {
+        if(orderId != null) {
+            Order order = objectMapper.readValue((String) redisTemplate.opsForValue().get("order:" + orderId), Order.class);
+            List<Order_Book> books = order.getBooks();
+            books.forEach(book -> {
+                subtractQuantity(book.getBookId(), book.getQuantity());
+            });
+        }
     }
 
 }

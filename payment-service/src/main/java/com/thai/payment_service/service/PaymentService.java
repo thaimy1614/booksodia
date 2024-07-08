@@ -52,7 +52,6 @@ public class PaymentService {
 
     public VNPayResponse handleCallback(String status, HttpServletRequest request) {
         String orderId = request.getParameter("vnp_TxnRef");
-        redisTemplate.delete("order:" + orderId);
         kafkaTemplate.send("payment-status", PaymentStatus.builder().status(status).orderId(orderId).build());
         if (status.equals("00")) {
             return new VNPayResponse("00", "Success", request.getParameter("vnp_OrderInfo"));

@@ -1,12 +1,15 @@
-package com.thai.order_service.dto;
+package com.thai.cart_service.dto.kafka;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaymentStatus {
     private String status;
     private String orderId;
-    private boolean success;
 }
