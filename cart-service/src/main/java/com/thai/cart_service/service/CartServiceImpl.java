@@ -1,5 +1,6 @@
 package com.thai.cart_service.service;
 
+import com.thai.cart_service.dto.kafka.Book;
 import com.thai.cart_service.dto.kafka.InitCartCheckout;
 import com.thai.cart_service.dto.kafka.PaymentStatus;
 import com.thai.cart_service.dto.request.AddToCartRequest;
@@ -10,23 +11,18 @@ import com.thai.cart_service.dto.response.BookResponse;
 import com.thai.cart_service.dto.response.CheckoutResponse;
 import com.thai.cart_service.dto.response.ReadCartResponse;
 import com.thai.cart_service.mapper.CartMapper;
-import com.thai.cart_service.dto.kafka.Book;
 import com.thai.cart_service.model.CartItem;
 import com.thai.cart_service.model.CartItemKey;
 import com.thai.cart_service.repository.CartRepository;
 import com.thai.cart_service.repository.httpclient.BookClient;
 import jakarta.transaction.Transactional;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,6 +37,7 @@ public class CartServiceImpl implements CartService {
     private final CartMapper cartMapper;
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final BookClient bookClient;
+    private final RedisTemplate<String, String> stringRedisTemplate;
 
     private String getCartKey(String userId) {
         return CART_KEY_PREFIX + userId;
@@ -130,18 +127,20 @@ public class CartServiceImpl implements CartService {
         return CheckoutResponse.builder().orderId(orderId).build();
     }
 
-    private void deleteCart(String orderId) {
-        String userId = (String)redisTemplate.opsForValue().get("order:user"+orderId);
-        if (userId != null) {
-            redisTemplate.delete(getCartKey(userId));
-            cartRepository.deleteAllByUserId(userId);
-        }
-    }
 
-    @KafkaListener(id = "update-cart-group", topics = "payment-status")
-    public void updateCartListener(PaymentStatus paymentStatus){
-        if(paymentStatus.getStatus().equals("00")){
-            deleteCart(paymentStatus.getOrderId());
+    @Transactional(Transactional.TxType.REQUIRED)
+    @KafkaListener(groupId = "update-cart-group", topics = "payment-status")
+    public void updateCartListener(PaymentStatus paymentStatus) {
+        if (paymentStatus.getStatus().equals("00")) {
+            String userId = stringRedisTemplate.opsForValue().get("order:user:" + paymentStatus.getOrderId());
+            redisTemplate.delete("order:user:" + paymentStatus.getOrderId());
+            if (userId != null) {
+                redisTemplate.delete(getCartKey(userId));
+                log.info("Deleting cart for userId: {}", userId);
+                cartRepository.deleteCartItemsByUserId(userId);
+            } else {
+                log.warn("No userId found for orderId: {}", paymentStatus.getOrderId());
+            }
         }
     }
 }

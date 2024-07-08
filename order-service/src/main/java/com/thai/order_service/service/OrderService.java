@@ -66,20 +66,20 @@ public class OrderService {
         return orderRepository.findById(orderId).orElseThrow();
     }
 
-    @KafkaListener(id = "init-cart-checkout-group", topics = "init-cart-checkout")
+    @KafkaListener(groupId = "init-cart-checkout-group", topics = "init-cart-checkout")
     public void initCartCheckout(InitCartCheckout initCartCheckout) throws JsonProcessingException {
         List<Order_Book> orderBooks = orderMapper.toOrderBook(initCartCheckout.getBooks());
         Order order = createOrder(OrderCreationRequest.builder().userId(initCartCheckout.getUserId()).orderId(initCartCheckout.getOrderId()).books(orderBooks).build());
         String orderJson = objectMapper.writeValueAsString(order);
         log.info(orderJson);
         redisTemplate.opsForValue().set("order:" + order.getOrderId(), orderJson);
-        redisTemplate.expire("order:" + order.getOrderId(), 5, TimeUnit.MINUTES);
+        redisTemplate.expire("order:" + order.getOrderId(), 7, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set("order:user:" + initCartCheckout.getOrderId(), order.getUserId());
-        redisTemplate.expire("order:user:" + initCartCheckout.getOrderId(), 5, TimeUnit.MINUTES);
+        redisTemplate.expire("order:user:" + initCartCheckout.getOrderId(), 7, TimeUnit.MINUTES);
         kafkaTemplate.send("created-order", order.getOrderId());
     }
 
-    @KafkaListener(id = "update-order-group", topics = "payment-status")
+    @KafkaListener(groupId = "update-order-group", topics = "payment-status")
     public void updateOrderStatus(PaymentStatus paymentStatus) {
         if (paymentStatus.getStatus().equals("00")) {
             updateOrder(Order.Status.DONE, paymentStatus.getOrderId());

@@ -191,7 +191,7 @@ public class BookServiceImpl implements BookService {
         book.setQuantity(book.getQuantity() - quantity);
     }
 
-    @KafkaListener(id = "update-book-group", topics = "payment-status")
+    @KafkaListener(groupId = "update-book-group", topics = "payment-status")
     public void updateBookQuantity(PaymentStatus paymentStatus) throws JsonProcessingException {
         if(!paymentStatus.getStatus().equals("00")) {
             String orderId = paymentStatus.getOrderId();
@@ -201,9 +201,10 @@ public class BookServiceImpl implements BookService {
                 revertQuantity(book.getBookId(), book.getQuantity());
             });
         }
+        redisTemplate.delete("order:" + paymentStatus.getOrderId());
     }
 
-    @KafkaListener(id = "subtract-quantity-group", topics = "created-order")
+    @KafkaListener(groupId = "subtract-quantity-group", topics = "created-order")
     public void subtractQuantity(String orderId) throws JsonProcessingException {
         if(orderId != null) {
             Order order = objectMapper.readValue((String) redisTemplate.opsForValue().get("order:" + orderId), Order.class);
