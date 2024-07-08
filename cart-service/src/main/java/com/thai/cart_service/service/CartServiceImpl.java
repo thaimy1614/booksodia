@@ -140,7 +140,7 @@ public class CartServiceImpl implements CartService {
 
     @KafkaListener(id = "update-cart-group", topics = "payment-status")
     public void updateCartListener(PaymentStatus paymentStatus){
-        if(!paymentStatus.getStatus().equals("00")){
+        if(paymentStatus.getStatus().equals("00")){
             deleteCart(paymentStatus.getOrderId());
         }
     }

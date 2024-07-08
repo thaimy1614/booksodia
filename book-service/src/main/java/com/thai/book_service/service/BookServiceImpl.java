@@ -193,7 +193,7 @@ public class BookServiceImpl implements BookService {
 
     @KafkaListener(id = "update-book-group", topics = "payment-status")
     public void updateBookQuantity(PaymentStatus paymentStatus) throws JsonProcessingException {
-        if(!paymentStatus.getStatus().equals("DONE")) {
+        if(!paymentStatus.getStatus().equals("00")) {
             String orderId = paymentStatus.getOrderId();
             Order order = objectMapper.readValue((String) redisTemplate.opsForValue().get("order:" + orderId), Order.class);
             List<Order_Book> books = order.getBooks();
