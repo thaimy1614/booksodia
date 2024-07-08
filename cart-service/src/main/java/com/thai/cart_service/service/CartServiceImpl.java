@@ -133,7 +133,6 @@ public class CartServiceImpl implements CartService {
     public void updateCartListener(PaymentStatus paymentStatus) {
         if (paymentStatus.getStatus().equals("00")) {
             String userId = stringRedisTemplate.opsForValue().get("order:user:" + paymentStatus.getOrderId());
-            redisTemplate.delete("order:user:" + paymentStatus.getOrderId());
             if (userId != null) {
                 redisTemplate.delete(getCartKey(userId));
                 log.info("Deleting cart for userId: {}", userId);
@@ -142,5 +141,6 @@ public class CartServiceImpl implements CartService {
                 log.warn("No userId found for orderId: {}", paymentStatus.getOrderId());
             }
         }
+        redisTemplate.delete("order:user:" + paymentStatus.getOrderId());
     }
 }
