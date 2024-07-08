@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -16,7 +17,7 @@ public class BookDetailResponse {
     private String categoryName;
     private int price;
     private int quantity;
-    private LocalDate publishedDate;
+    private Date publishedDate;
     private double rating;
     private String description;
     private String imageUrl;

@@ -13,8 +13,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @RequiredArgsConstructor
 @Configuration
@@ -39,20 +41,20 @@ public class ApplicationConfiguration {
                         .category(category)
                         .title("Microservices Architecture Deep")
                         .quantity(9)
-                        .price(1000)
+                        .price(10000)
                         .status(BookStatus.AVAILABLE.name())
-                        .publishedDate(LocalDate.now())
+                        .publishedDate(Date.from(Instant.now()))
                         .build());
                 bookRepository.save(Book.builder()
                         .author("Nguyen My")
                         .category(category)
                         .title("OOP JAVA LEARNING")
-                        .price(800)
-                        .publishedDate(LocalDate.now())
+                        .price(20000dd )
+                        .publishedDate(Date.from(Instant.now()))
                         .quantity(8)
                         .build());
-                reviewRepository.save(Review.builder().book(book).reviewDate(LocalDateTime.now()).reviewText("Good book").userId("lxlthailxl@gmail.com").rating(5).build());
-                reviewRepository.save(Review.builder().book(book).reviewDate(LocalDateTime.now()).reviewText("Very useful").userId("thaidqce171563@gmail.com").rating(4).build());
+                reviewRepository.save(Review.builder().book(book).reviewDate(Date.from(Instant.now())).reviewText("Good book").userId("lxlthailxl@gmail.com").rating(5).build());
+                reviewRepository.save(Review.builder().book(book).reviewDate(Date.from(Instant.now())).reviewText("Very useful").userId("thaidqce171563@gmail.com").rating(4).build());
             }
 
         };

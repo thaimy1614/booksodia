@@ -2,7 +2,11 @@ package com.thai.book_service.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 
@@ -31,7 +36,10 @@ public class Book {
     private int price;
     private int quantity;
     @Column(name = "published_date")
-    private LocalDate publishedDate;
+    @JsonProperty("publishedDate")
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date publishedDate;
     @JsonManagedReference
     @OneToMany(mappedBy = "book", targetEntity = Review.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;

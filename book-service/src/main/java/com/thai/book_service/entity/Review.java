@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -31,10 +32,10 @@ public class Review {
     private String reviewText;
     @Column(name = "review_created_at", updatable = false)
     @CreationTimestamp
-    private LocalDateTime reviewDate;
+    private Date reviewDate;
 
     @Column(name = "review_updated_ad")
     @UpdateTimestamp
-    private LocalDateTime updateDate;
+    private Date updateDate;
 
 }
