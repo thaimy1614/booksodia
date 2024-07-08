@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thai.order_service.dto.PaymentStatus;
 import com.thai.order_service.dto.request.OrderCreationRequest;
-import com.thai.order_service.dto.request.kafka.CheckoutOrder;
 import com.thai.order_service.dto.request.kafka.InitCartCheckout;
 import com.thai.order_service.mapper.OrderMapper;
 import com.thai.order_service.model.Order;
@@ -24,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    private final RedisTemplate<String, Object> redisTemplate;
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
+    private final RedisTemplate<String, Object> redisTemplate;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final KafkaTemplate<String, Object> kafkaTemplate;

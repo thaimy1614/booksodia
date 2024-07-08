@@ -3,7 +3,6 @@ package com.thai.book_service.dto.request;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data

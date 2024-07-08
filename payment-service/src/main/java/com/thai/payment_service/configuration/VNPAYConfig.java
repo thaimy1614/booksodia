@@ -1,6 +1,5 @@
 package com.thai.payment_service.configuration;
 
-import com.thai.payment_service.util.VNPayUtil;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

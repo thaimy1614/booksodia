@@ -45,7 +45,9 @@ public class BookController {
     }
 
     @PostMapping("/get-book")
-    BookResponse getBook(@RequestBody GetBookRequest request){
+    BookResponse getBook(@RequestBody GetBookRequest request) {
         return bookService.getBookById(request.getBookId());
-    };
+    }
+
+    ;
 }

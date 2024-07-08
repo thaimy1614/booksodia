@@ -8,7 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class VnPayController {
     private final PaymentService paymentService;
+
     private final
 
     @GetMapping("/get-url")

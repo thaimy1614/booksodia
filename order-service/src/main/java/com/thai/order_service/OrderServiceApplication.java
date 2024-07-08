@@ -19,7 +19,7 @@ public class OrderServiceApplication {
     }
 
     @Bean
-    NewTopic createOrderTopic(){
+    NewTopic createOrderTopic() {
         return new NewTopic("created-order", 1, (short) 3);
     }
 }

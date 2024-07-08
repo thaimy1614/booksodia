@@ -181,19 +181,19 @@ public class BookServiceImpl implements BookService {
 
     }
 
-    private void revertQuantity(String bookId, int quantity){
+    private void revertQuantity(String bookId, int quantity) {
         Book book = bookRepository.findById(bookId).orElseThrow();
         book.setQuantity(book.getQuantity() + quantity);
     }
 
-    public void subtractQuantity(String bookId, int quantity){
+    public void subtractQuantity(String bookId, int quantity) {
         Book book = bookRepository.findById(bookId).orElseThrow();
         book.setQuantity(book.getQuantity() - quantity);
     }
 
     @KafkaListener(groupId = "update-book-group", topics = "payment-status")
     public void updateBookQuantity(PaymentStatus paymentStatus) throws JsonProcessingException {
-        if(!paymentStatus.getStatus().equals("00")) {
+        if (!paymentStatus.getStatus().equals("00")) {
             String orderId = paymentStatus.getOrderId();
             Order order = objectMapper.readValue((String) redisTemplate.opsForValue().get("order:" + orderId), Order.class);
             List<Order_Book> books = order.getBooks();
@@ -206,7 +206,7 @@ public class BookServiceImpl implements BookService {
 
     @KafkaListener(groupId = "subtract-quantity-group", topics = "created-order")
     public void subtractQuantity(String orderId) throws JsonProcessingException {
-        if(orderId != null) {
+        if (orderId != null) {
             Order order = objectMapper.readValue((String) redisTemplate.opsForValue().get("order:" + orderId), Order.class);
             List<Order_Book> books = order.getBooks();
             books.forEach(book -> {
