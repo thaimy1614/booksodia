@@ -49,7 +49,7 @@ public class ApplicationConfiguration {
                         .author("Nguyen My")
                         .category(category)
                         .title("OOP JAVA LEARNING")
-                        .price(20000dd )
+                        .price(20000)
                         .publishedDate(Date.from(Instant.now()))
                         .quantity(8)
                         .build());
