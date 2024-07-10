@@ -29,3 +29,7 @@ neo4j_data
 *.env
 docker-compose.yaml
 Dockerfile
+kibana
+logstash
+elasticsearch
+env
