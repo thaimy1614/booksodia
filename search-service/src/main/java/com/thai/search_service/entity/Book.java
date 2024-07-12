@@ -9,29 +9,36 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 import java.util.List;
 
-@Document(indexName = "book")
+@Document(indexName = "dbserver1.public.book")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Book {
+    @Id
     private String id;
     private String title;
     private String author;
-    private Category category;
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private String category_id;
     private int price;
     private int quantity;
     @JsonProperty("publishedDate")
     @JsonSerialize(using = DateSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @Field(type = FieldType.Date, name = "published_date")
     private Date publishedDate;
-    private List<Review> reviews;
+//    @Field(type = FieldType.Nested, includeInParent = true)
+//    private List<Review> reviews;
     private String description;
     private String image;
     private String status;
