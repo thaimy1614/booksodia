@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import java.util.List;
-
 @Document(indexName = "dbserver1.public.category")
 @Data
 @AllArgsConstructor

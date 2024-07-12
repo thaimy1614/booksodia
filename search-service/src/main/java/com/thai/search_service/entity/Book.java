@@ -15,7 +15,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
-import java.util.List;
 
 @Document(indexName = "dbserver1.public.book")
 @Data
@@ -37,7 +36,7 @@ public class Book {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Field(type = FieldType.Date, name = "published_date")
     private Date publishedDate;
-//    @Field(type = FieldType.Nested, includeInParent = true)
+    //    @Field(type = FieldType.Nested, includeInParent = true)
 //    private List<Review> reviews;
     private String description;
     private String image;
