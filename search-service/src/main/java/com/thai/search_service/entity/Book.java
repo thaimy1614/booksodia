@@ -36,8 +36,6 @@ public class Book {
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Field(type = FieldType.Date, name = "published_date")
     private Date publishedDate;
-    //    @Field(type = FieldType.Nested, includeInParent = true)
-//    private List<Review> reviews;
     private String description;
     private String image;
     private String status;

@@ -6,7 +6,11 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 import java.util.List;
 
-public interface Repository extends ElasticsearchRepository<Book, String> {
+public interface BookRepository extends ElasticsearchRepository<Book, String> {
     @Nonnull
     List<Book> findAll();
+
+    List<Book> searchBooksByTitle(String title);
+
+    List<Book> searchBooksByTitleAndPriceLessThan(String author, int price);
 }

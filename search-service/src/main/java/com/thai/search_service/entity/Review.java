@@ -22,7 +22,6 @@ import java.util.Date;
 public class Review {
     @Id
     private String id;
-    @JsonBackReference
     @Field(type = FieldType.Nested, includeInParent = true)
     private String book_id;
     private String userId;

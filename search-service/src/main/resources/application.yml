@@ -3,5 +3,4 @@ server:
 spring:
   elasticsearch:
     uris: http://localhost:9200
-    path-prefix: /book
 

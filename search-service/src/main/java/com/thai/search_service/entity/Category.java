@@ -19,9 +19,6 @@ public class Category {
     private String id;
     private String name;
 
-//    @Field(type = FieldType.Nested, includeInParent = true)
-//    private List<Book> books;
-
     @Override
     public String toString() {
         return "Category{" +
