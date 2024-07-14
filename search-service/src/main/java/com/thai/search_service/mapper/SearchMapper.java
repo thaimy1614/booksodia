@@ -8,15 +8,18 @@ import com.thai.search_service.entity.Book;
 import com.thai.search_service.entity.Category;
 import com.thai.search_service.entity.Review;
 import org.mapstruct.Mapper;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface SearchMapper {
-    List<BookResponse> toBookResponse(List<Book> books);
+    BookResponse toBookResponse(Book book);
     BookDetailResponse toBookDetailResponse(Book book);
 
     List<ReviewResponse> toReviewResponse(List<Review> reviews);
 
     List<CategoryResponse> toCategoryResponse(List<Category> categories);
+
+    List<BookResponse> toBookResponsePage(Page<Book> books);
 }
