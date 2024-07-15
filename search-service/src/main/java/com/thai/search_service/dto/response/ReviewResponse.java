@@ -2,8 +2,6 @@ package com.thai.search_service.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 

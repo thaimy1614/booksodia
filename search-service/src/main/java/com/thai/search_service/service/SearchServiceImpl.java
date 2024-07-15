@@ -17,8 +17,8 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public Page<BookResponse> filterBooksByCategoryAndPrice(String category, int minPrice, int maxPrice, Pageable pageable) {
-        Page<Book> books = null;
-        if (category.equals("0")){
+        Page<Book> books;
+        if (category.equals("0")) {
             books = bookRepository.findAllByPriceBetween(minPrice, maxPrice, pageable);
         } else {
             books = bookRepository.findAllByCategoryAndPriceBetween(category, minPrice, maxPrice, pageable);

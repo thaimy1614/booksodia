@@ -2,9 +2,6 @@ package com.thai.search_service.controller;
 
 import com.thai.search_service.dto.ResponseObject;
 import com.thai.search_service.dto.response.BookResponse;
-import com.thai.search_service.entity.Book;
-import com.thai.search_service.mapper.SearchMapper;
-import com.thai.search_service.repository.BookRepository;
 import com.thai.search_service.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,16 +12,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/search")
 @Slf4j
 public class SearchController {
     private final SearchService searchService;
-    private final SearchMapper searchMapper;
 
     @GetMapping
     ResponseObject<Page<BookResponse>> findAll(
@@ -80,14 +73,14 @@ public class SearchController {
         return new ResponseObject<>(HttpStatus.OK, "Search books by category successfully", response);
     }
 
-    String sortField (String sortBy){
+    String sortField(String sortBy) {
         if (sortBy.equals("title")) {
             return "title.keyword";
         }
         return sortBy;
     }
 
-    Pageable createPageable (int page, int size, String sortBy, String direction){
+    Pageable createPageable(int page, int size, String sortBy, String direction) {
 
         Sort sort = Sort.by(Sort.Direction.fromString(direction.toUpperCase()), sortBy);
         return PageRequest.of(page, size, sort);
