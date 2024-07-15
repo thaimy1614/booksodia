@@ -27,6 +27,7 @@ public class Book {
     private String id;
     private String title;
     private String author;
+    @Field(name = "category_id")
     private String category;
     private int price;
     private int quantity;
