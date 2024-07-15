@@ -16,13 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/search")
 @Slf4j
 public class SearchController {
-    private final BookRepository bookRepository;
     private final SearchService searchService;
     private final SearchMapper searchMapper;
 
@@ -31,31 +31,66 @@ public class SearchController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "price");
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Book> books = bookRepository.findAllByPriceBetween(5000.0, 30000.0, pageable);
-        return new ResponseObject<>(HttpStatus.OK, "Get all books successfully", books.map(searchMapper::toBookResponse));
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BookResponse> books = searchService.getAllBooks(pageable);
+        return new ResponseObject<>(HttpStatus.OK, "Get all books successfully", books);
+    }
+
+    @GetMapping("/filter")
+    ResponseObject<Page<BookResponse>> filter(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(name = "min", defaultValue = "0") int minPrice,
+            @RequestParam(name = "max", defaultValue = "1000000000") int maxPrice,
+            @RequestParam(defaultValue = "0") String cid,
+            @RequestParam(defaultValue = "title") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        String sortField = sortField(sortBy);
+        Pageable pageable = createPageable(page, size, sortField, direction);
+        Page<BookResponse> response = searchService.filterBooksByCategoryAndPrice(cid, minPrice, maxPrice, pageable);
+        return new ResponseObject<>(HttpStatus.OK, "Get all books successfully", response);
     }
 
     @GetMapping("/query")
-    public String searchByTitle(
+    ResponseObject<Page<BookResponse>> searchByTitleOrAuthorOrDescriptionContaining(
             @RequestParam("keyword") String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam("title") String sortBy,
             @RequestParam(defaultValue = "asc") String direction
-    ) throws IOException {
-        return null;
+    ) {
+        String sortField = sortField(sortBy);
+        Pageable pageable = createPageable(page, size, sortField, direction);
+        Page<BookResponse> response = searchService.getAllByTitleOrAuthorOrDescriptionContaining(keyword, pageable);
+        return new ResponseObject<>(HttpStatus.OK, "Search books by keyword successfully", response);
     }
 
     @GetMapping("/category/{category}")
-    BookResponse getAllByCategory(
+    ResponseObject<Page<BookResponse>> getAllByCategory(
             @PathVariable String category,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "title") String sortBy,
             @RequestParam(defaultValue = "asc") String direction
     ) {
-        return searchMapper.toBookResponse(bookRepository.findById(category).get());
+        String sortField = sortField(sortBy);
+        Pageable pageable = createPageable(page, size, sortField, direction);
+        Page<BookResponse> response = searchService.getAllBooksByCategory(category, pageable);
+        return new ResponseObject<>(HttpStatus.OK, "Search books by category successfully", response);
+    }
+
+    String sortField (String sortBy){
+        if (sortBy.equals("title")) {
+            return "title.keyword";
+        }
+        return sortBy;
+    }
+
+    Pageable createPageable (int page, int size, String sortBy, String direction){
+
+        Sort sort = Sort.by(Sort.Direction.fromString(direction.toUpperCase()), sortBy);
+        return PageRequest.of(page, size, sort);
     }
 
 }

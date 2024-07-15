@@ -27,8 +27,7 @@ public class Book {
     private String id;
     private String title;
     private String author;
-    @Field(type = FieldType.Nested, includeInParent = true)
-    private String category_id;
+    private String category;
     private int price;
     private int quantity;
     @JsonProperty("publishedDate")
