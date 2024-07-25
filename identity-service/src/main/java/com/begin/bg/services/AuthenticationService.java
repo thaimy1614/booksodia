@@ -70,6 +70,7 @@ public class AuthenticationService {
     private String REFRESHABLE_DURATION;
 
     public ResponseObject authenticate(User user) throws Exception {
+        log.info(user.getEmail() + " " + user.getPassword());
         User authUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean check = passwordEncoder.matches(user.getPassword(), authUser.getPassword());
