@@ -36,7 +36,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/forget-password/send-otp",
             "/identity/forget-password/check-otp",
             "/identity/verify",
-            "/identity/outbound/authentication"
+            "/identity/outbound/authentication",
+
+            "/notification/connect-sse",
+            "/notification/send"
     };
     @Value("${app.api-prefix}")
     private String prefix;
