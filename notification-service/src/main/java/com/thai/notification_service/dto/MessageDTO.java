@@ -1,4 +1,4 @@
-package com.thai.notification_service.model;
+package com.thai.notification_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

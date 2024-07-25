@@ -49,5 +49,4 @@ public class BookController {
         return bookService.getBookById(request.getBookId());
     }
 
-    ;
 }
