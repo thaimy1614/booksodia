@@ -25,8 +25,8 @@ spring:
       host: localhost
 jwt:
   signer-key: HJ4ppveef04BKJzTq+dyLhRdicqYiQWxaSqTLiTUxksDu4zMs/NLfrJsbHz+4OiB
-  expiration-duration: 120 # in sec
-  refreshable-duration: 120 # in sec
+  expiration-duration: 3600 # in sec
+  refreshable-duration: 3600 # in sec
 app:
   services:
     profile: http://localhost:8081/profile

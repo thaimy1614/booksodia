@@ -6,14 +6,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 @Service
 @Slf4j
 public class NotificationServiceImpl implements NotificationService {
     // TODO: Replace Hashmap with Redis for scale different instance
     private final ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>> emitters = new ConcurrentHashMap<>();
+    private static final String HEARTBEAT_MESSAGE = "heartbeat";
+    private static final long HEARTBEAT_INTERVAL = 30; // 30 seconds
+    private static final long TIMEOUT_DURATION = 60_000L; // 60 seconds
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public void sendNotification(String userId, String notification) {
         CopyOnWriteArrayList<SseEmitter> userEmitters = emitters.get(userId);
@@ -32,14 +36,16 @@ public class NotificationServiceImpl implements NotificationService {
     public SseEmitter subscribe() {
         // Get userId via Spring security context holder
         String userId = "ABC";
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE); // No timeout
+        SseEmitter emitter = new SseEmitter(TIMEOUT_DURATION); // No timeout
 
         emitters.computeIfAbsent(userId, k -> new CopyOnWriteArrayList<>()).add(emitter);
 
         emitter.onCompletion(() -> removeEmitter(userId, emitter));
-        emitter.onTimeout(() -> removeEmitter(userId, emitter));
+        emitter.onTimeout(() -> {
+            removeEmitter(userId, emitter);
+        });
         emitter.onError((ex) -> removeEmitter(userId, emitter));
-        log.info(emitter.toString());
+        startHeartbeat(userId, emitter);
         return emitter;
     }
 
@@ -54,6 +60,17 @@ public class NotificationServiceImpl implements NotificationService {
                 log.info("All emitters removed for userId: {}", userId);
             }
         }
+    }
+
+    private void startHeartbeat(String userId, SseEmitter emitter) {
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                emitter.send(SseEmitter.event().data(HEARTBEAT_MESSAGE));
+            } catch (IOException e) {
+                // Handle error: possibly remove emitter, log information, etc.
+                removeEmitter(userId, emitter);
+            }
+        }, 0, HEARTBEAT_INTERVAL, TimeUnit.SECONDS);
     }
 
 }
