@@ -20,7 +20,7 @@ public class NotificationServiceImpl implements NotificationService {
         if (userEmitters != null) {
             for (SseEmitter emitter : userEmitters) {
                 try {
-                    emitter.send(SseEmitter.event().name("notification").data(notification));
+                    emitter.send(notification);
                 } catch (IOException e) {
                     log.info(e.getMessage());
                     userEmitters.remove(emitter);
@@ -32,7 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
     public SseEmitter subscribe() {
         // Get userId via Spring security context holder
         String userId = "ABC";
-        SseEmitter emitter = new SseEmitter(0L); // No timeout
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE); // No timeout
 
         emitters.computeIfAbsent(userId, k -> new CopyOnWriteArrayList<>()).add(emitter);
 
@@ -48,8 +48,14 @@ public class NotificationServiceImpl implements NotificationService {
         CopyOnWriteArrayList<SseEmitter> userEmitters = emitters.get(userId);
         if (userEmitters != null) {
             userEmitters.remove(emitter);
+            log.info("Removed emitter for userId: {}", userId);
+            if (userEmitters.isEmpty()) {
+                emitters.remove(userId);
+                log.info("All emitters removed for userId: {}", userId);
+            }
         }
     }
+
 }
 
 
