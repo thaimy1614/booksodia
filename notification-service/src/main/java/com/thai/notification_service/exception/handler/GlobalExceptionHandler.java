@@ -1,9 +1,9 @@
 package com.thai.notification_service.exception.handler;
 
-import fsa.cursus.authentication_service.dto.ResponseObject;
-import fsa.cursus.authentication_service.exception.BaseException;
-import fsa.cursus.authentication_service.exception.black.BlackException;
-import fsa.cursus.authentication_service.exception.white.WhiteException;
+import com.thai.notification_service.dto.ResponseObject;
+import com.thai.notification_service.exception.BaseException;
+import com.thai.notification_service.exception.black.BlackException;
+import com.thai.notification_service.exception.white.WhiteException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;

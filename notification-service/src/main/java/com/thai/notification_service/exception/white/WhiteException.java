@@ -1,6 +1,6 @@
 package com.thai.notification_service.exception.white;
 
-import fsa.cursus.authentication_service.exception.BaseException;
+import com.thai.notification_service.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
 /**
