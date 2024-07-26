@@ -36,8 +36,12 @@ public class NotificationServiceImpl implements NotificationService {
     public SseEmitter subscribe() {
         // Get userId via Spring security context holder
         String userId = "ABC";
+        CopyOnWriteArrayList<SseEmitter> userEmitters = emitters.get(userId);
+        // maximum 5 connects each user
+        if (userEmitters.size()>=5) {
+            userEmitters.clear();
+        }
         SseEmitter emitter = new SseEmitter(TIMEOUT_DURATION); // No timeout
-
         emitters.computeIfAbsent(userId, k -> new CopyOnWriteArrayList<>()).add(emitter);
 
         emitter.onCompletion(() -> removeEmitter(userId, emitter));
