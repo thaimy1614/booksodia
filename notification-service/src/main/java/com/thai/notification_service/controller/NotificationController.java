@@ -21,7 +21,7 @@ public class NotificationController {
     }
 
     @PostMapping("/send")
-    String send(){
+    String send() {
         notificationService.sendNotification("ABC", "HI HI");
         return "OK";
     }

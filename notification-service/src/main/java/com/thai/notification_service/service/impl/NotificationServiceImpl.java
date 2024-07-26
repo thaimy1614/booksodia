@@ -11,12 +11,11 @@ import java.util.concurrent.*;
 @Service
 @Slf4j
 public class NotificationServiceImpl implements NotificationService {
-    // TODO: Replace Hashmap with Redis for scale different instance
-    private final ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>> emitters = new ConcurrentHashMap<>();
     private static final String HEARTBEAT_MESSAGE = "heartbeat";
     private static final long HEARTBEAT_INTERVAL = 30; // 30 seconds
     private static final long TIMEOUT_DURATION = 60_000L; // 60 seconds
-
+    // TODO: Replace Hashmap with Redis for scale different instance
+    private final ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>> emitters = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public void sendNotification(String userId, String notification) {
@@ -38,7 +37,7 @@ public class NotificationServiceImpl implements NotificationService {
         String userId = "ABC";
         CopyOnWriteArrayList<SseEmitter> userEmitters = emitters.get(userId);
         // maximum 5 connects each user
-        if (userEmitters.size()>=5) {
+        if (userEmitters.size() >= 5) {
             userEmitters.clear();
         }
         SseEmitter emitter = new SseEmitter(TIMEOUT_DURATION); // No timeout
