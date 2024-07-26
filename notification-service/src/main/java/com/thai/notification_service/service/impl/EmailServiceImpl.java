@@ -1,7 +1,7 @@
 package com.thai.notification_service.service.impl;
 
-import com.thai.notification_service.dto.SendOtp;
-import com.thai.notification_service.dto.SendPassword;
+import com.thai.notification_service.dto.kafka.SendOtp;
+import com.thai.notification_service.dto.kafka.SendPassword;
 import com.thai.notification_service.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

@@ -1,7 +1,7 @@
 package com.thai.notification_service.service;
 
-import com.thai.notification_service.dto.SendOtp;
-import com.thai.notification_service.dto.SendPassword;
+import com.thai.notification_service.dto.kafka.SendOtp;
+import com.thai.notification_service.dto.kafka.SendPassword;
 
 public interface EmailService {
     void sendOtp(SendOtp sendOtp);

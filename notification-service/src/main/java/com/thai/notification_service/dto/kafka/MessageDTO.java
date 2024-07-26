@@ -1,4 +1,4 @@
-package com.thai.notification_service.dto;
+package com.thai.notification_service.dto.kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

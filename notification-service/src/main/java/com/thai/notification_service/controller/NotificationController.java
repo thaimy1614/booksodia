@@ -1,5 +1,6 @@
 package com.thai.notification_service.controller;
 
+import com.thai.notification_service.dto.ResponseObject;
 import com.thai.notification_service.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,8 @@ public class NotificationController {
         return "OK";
     }
 
+    @GetMapping
+    ResponseObject<>
 
 
 

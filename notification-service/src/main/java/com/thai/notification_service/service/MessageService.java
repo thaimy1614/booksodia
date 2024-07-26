@@ -1,8 +1,8 @@
 package com.thai.notification_service.service;
 
-import com.thai.notification_service.dto.SendOtp;
-import com.thai.notification_service.dto.SendPassword;
-import com.thai.notification_service.dto.VerifyAccount;
+import com.thai.notification_service.dto.kafka.SendOtp;
+import com.thai.notification_service.dto.kafka.SendPassword;
+import com.thai.notification_service.dto.kafka.VerifyAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
