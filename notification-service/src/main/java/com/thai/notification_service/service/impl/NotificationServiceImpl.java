@@ -2,7 +2,6 @@ package com.thai.notification_service.service.impl;
 
 import com.thai.notification_service.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -35,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     public SseEmitter subscribe() {
         // Get userId via Spring security context holder
-        String userId = getUserId();
+        String userId = "ABC";
         CopyOnWriteArrayList<SseEmitter> userEmitters = emitters.get(userId);
         // maximum 5 connects each user
         if (userEmitters.size() >= 5) {
@@ -51,10 +50,6 @@ public class NotificationServiceImpl implements NotificationService {
         emitter.onError((ex) -> removeEmitter(userId, emitter));
         startHeartbeat(userId, emitter);
         return emitter;
-    }
-
-    private String getUserId(){
-        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 
