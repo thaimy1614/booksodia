@@ -15,7 +15,7 @@ public class NotificationServiceApplication {
     }
 
     @Bean
-    JsonMessageConverter converter() {
+    JsonMessageConverter jsonConverter() {
         return new JsonMessageConverter();
     }
 }

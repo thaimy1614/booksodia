@@ -16,5 +16,9 @@ spring:
             mail.smtp.ssl.trust: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_TRUST:*}
             mail.smtp.auth: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH:true}
             mail.smtp.starttls.enable: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE:true}
+    data:
+        redis:
+            port: 6379
+            host: localhost
 server:
     port: ${SERVER_PORT:8088}

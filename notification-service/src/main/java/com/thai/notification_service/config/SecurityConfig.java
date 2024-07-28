@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/"
+            "/notification/connect-sse"
     };
     private final CustomJwtDecoder customJwtDecoder;
 

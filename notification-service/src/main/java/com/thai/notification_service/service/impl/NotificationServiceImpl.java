@@ -12,8 +12,8 @@ import java.util.concurrent.*;
 @Slf4j
 public class NotificationServiceImpl implements NotificationService {
     private static final String HEARTBEAT_MESSAGE = "heartbeat";
-    private static final long HEARTBEAT_INTERVAL = 30; // 30 seconds
-    private static final long TIMEOUT_DURATION = 60_000L; // 60 seconds
+    private static final long HEARTBEAT_INTERVAL = 30000; // 30 seconds
+    private static final long TIMEOUT_DURATION = 60000; // 60 seconds
     // TODO: Replace Hashmap with Redis for scale different instance
     private final ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>> emitters = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -32,12 +32,10 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    public SseEmitter subscribe() {
-        // Get userId via Spring security context holder
-        String userId = "ABC";
+    public SseEmitter subscribe(String userId) {
         CopyOnWriteArrayList<SseEmitter> userEmitters = emitters.get(userId);
         // maximum 5 connects each user
-        if (userEmitters.size() >= 5) {
+        if (userEmitters!=null && userEmitters.size() >= 5) {
             userEmitters.clear();
         }
         SseEmitter emitter = new SseEmitter(TIMEOUT_DURATION); // No timeout
@@ -48,7 +46,8 @@ public class NotificationServiceImpl implements NotificationService {
             removeEmitter(userId, emitter);
         });
         emitter.onError((ex) -> removeEmitter(userId, emitter));
-        startHeartbeat(userId, emitter);
+//        startHeartbeat(userId, emitter);
+        log.info(emitters.toString());
         return emitter;
     }
 
