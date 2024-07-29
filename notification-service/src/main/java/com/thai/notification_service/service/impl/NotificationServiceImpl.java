@@ -44,7 +44,6 @@ public class NotificationServiceImpl implements NotificationService {
         emitter.onTimeout(() -> removeEmitter(userId));
         emitter.onError((ex) -> removeEmitter(userId));
 
-        log.info(emitters.toString());
         return emitter;
     }
 

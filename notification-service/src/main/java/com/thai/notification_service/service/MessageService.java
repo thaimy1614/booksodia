@@ -16,13 +16,11 @@ public class MessageService {
 
     @KafkaListener(id = "sendOtpGroup", topics = "sendOtp")
     public void listenSendOtp(SendOtp sendOtp) {
-        log.info("Message received: {}", sendOtp.getEmail());
         emailService.sendOtp(sendOtp);
     }
 
     @KafkaListener(id = "sendPasswordGroup", topics = "sendNewPassword")
     public void listenSendPassword(SendPassword sendPassword) {
-        log.info("Message received: {}", sendPassword.getEmail());
         emailService.sendNewPassword(sendPassword);
     }
 
