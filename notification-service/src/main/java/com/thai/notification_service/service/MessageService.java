@@ -1,5 +1,6 @@
 package com.thai.notification_service.service;
 
+import com.thai.notification_service.dto.kafka.NotificationDTO;
 import com.thai.notification_service.dto.kafka.SendOtp;
 import com.thai.notification_service.dto.kafka.SendPassword;
 import com.thai.notification_service.dto.kafka.VerifyAccount;
@@ -27,5 +28,10 @@ public class MessageService {
     @KafkaListener(id = "verificationGroup", topics = "verification")
     public void listenVerification(VerifyAccount verifyAccount) {
         emailService.sendHtmlEmail(verifyAccount.getFullName(), verifyAccount.getEmail(), verifyAccount.getUrl());
+    }
+
+    @KafkaListener(topics = "bell-notification")
+    public void sendBellNotification(NotificationDTO notificationDTO){
+
     }
 }

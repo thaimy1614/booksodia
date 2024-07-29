@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageDTO {
+public class NotificationDTO {
     private String message;
+    private String image;
     private String topic;
     private String to;
     private String from;
