@@ -1,5 +1,6 @@
 package com.thai.notification_service.service.impl;
 
+import com.thai.notification_service.dto.kafka.NotificationDTO;
 import com.thai.notification_service.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,14 @@ public class NotificationServiceImpl implements NotificationService {
     private final ConcurrentHashMap<String, ScheduledFuture<?>> heartbeatSchedulers = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public void sendNotification(String userId, String notification) {
-        SseEmitter emitter = emitters.get(userId);
+    public void sendNotification(NotificationDTO notification) {
+        SseEmitter emitter = emitters.get(notification.getTo()[0]);
         if (emitter != null) {
             try {
                 emitter.send(notification);
             } catch (IOException e) {
                 log.info(e.getMessage());
-                removeEmitter(userId);
+                removeEmitter(notification.getTo()[0]);
             }
         }
     }

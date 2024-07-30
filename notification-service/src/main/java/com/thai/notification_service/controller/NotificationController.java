@@ -15,11 +15,4 @@ public class NotificationController {
     SseEmitter subscribe(@RequestParam("userId") String userId) {
         return notificationService.subscribe(userId);
     }
-
-    @PostMapping("/send")
-    String send() {
-        notificationService.sendNotification("123", "HI HI");
-        return "OK";
-    }
-
 }
