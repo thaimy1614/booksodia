@@ -31,7 +31,7 @@ public class RedisSubscriberService {
 
     @Bean
     public ChannelTopic bellNotificationTopic() {
-        return new ChannelTopic("pushNotification");
+        return new ChannelTopic("bellNotification");
     }
 
     @Bean
