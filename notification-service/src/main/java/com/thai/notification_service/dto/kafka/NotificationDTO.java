@@ -11,6 +11,6 @@ public class NotificationDTO {
     private String message;
     private String image;
     private String topic;
-    private String to;
+    private String[] to;
     private String from;
 }

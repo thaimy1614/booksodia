@@ -29,9 +29,4 @@ public class MessageService {
     public void listenVerification(VerifyAccount verifyAccount) {
         emailService.sendHtmlEmail(verifyAccount.getFullName(), verifyAccount.getEmail(), verifyAccount.getUrl());
     }
-
-    @KafkaListener(topics = "bell-notification")
-    public void sendBellNotification(NotificationDTO notificationDTO){
-
-    }
 }
