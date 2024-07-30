@@ -1,6 +1,5 @@
 package com.thai.notification_service.service;
 
-import com.thai.notification_service.dto.kafka.NotificationDTO;
 import com.thai.notification_service.dto.kafka.SendOtp;
 import com.thai.notification_service.dto.kafka.SendPassword;
 import com.thai.notification_service.dto.kafka.VerifyAccount;

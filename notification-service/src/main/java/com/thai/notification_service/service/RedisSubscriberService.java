@@ -18,6 +18,8 @@ import java.io.IOException;
 public class RedisSubscriberService {
     private final NotificationServiceImpl notificationService;
     private final ObjectMapper objectMapper;
+
+
     public void handleBellNotification(String message) {
         try {
             NotificationDTO notification = objectMapper.readValue(message, NotificationDTO.class);
@@ -36,7 +38,7 @@ public class RedisSubscriberService {
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
                                             MessageListenerAdapter bellNotificationListenerAdapter,
                                             ChannelTopic bellNotificationTopic
-                                            ) {
+    ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(bellNotificationListenerAdapter, bellNotificationTopic);
