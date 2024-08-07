@@ -29,6 +29,8 @@ public class Comment {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
     private List<Comment> replies; // List of replies to the comment
 
+    private Long repliedToUserId;
+
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<CommentReaction> reactions; // Reactions on the comment
 
