@@ -2,8 +2,16 @@ package com.thai.post_service.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class PostReaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,12 +19,14 @@ public class PostReaction {
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Post post; // Reference to the post
+    private Post post;
 
-    private Long userId; // ID of the user who reacted
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
-    private ReactionType type; // Reaction type: LIKE, LOVE, ANGRY, etc.
+    private ReactionType type;
 
-    // Getters and setters
+    public enum ReactionType {
+        LIKE, LOVE, ANGRY, HAHA, SAD, WOW
+    }
 }

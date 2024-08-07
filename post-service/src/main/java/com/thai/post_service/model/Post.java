@@ -5,29 +5,32 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String content; // Text content of the post
+    private String content;
 
-    private String mediaUrl; // URL for media content like images or videos
-
-    @Enumerated(EnumType.STRING)
-    private PostType postType; // TEXT, IMAGE, VIDEO, LINK
-
-    private LocalDateTime createdAt; // Creation timestamp
-
-    private LocalDateTime updatedAt; // Last updated timestamp
+    private String mediaUrl;
 
     @Enumerated(EnumType.STRING)
-    private Visibility visibility; // PUBLIC, FRIENDS_ONLY, PRIVATE
+    private PostType postType;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
 
     private Long userId; // ID of the user who created the post
 
@@ -47,4 +50,11 @@ public class Post {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public enum PostType {
+        TEXT, IMAGE, VIDEO, LINK
+    }
+
+    public enum Visibility {
+        PUBLIC, FRIENDS_ONLY, PRIVATE
+    }
 }

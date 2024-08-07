@@ -10,17 +10,24 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String content; // Text content of the comment
+    private String content;
 
-    private LocalDateTime createdAt; // Creation timestamp
+    private LocalDateTime createdAt;
 
-    private Long userId; // ID of the user who made the comment
+    private Long userId;
 
     private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post; // Reference to the post
+
+    @ManyToOne
+    @JoinColumn(name = "parent_comment_id")
+    private Comment parentComment; // Self-referential relationship for nested comments
+
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
+    private List<Comment> replies; // List of replies to the comment
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
     private List<CommentReaction> reactions; // Reactions on the comment

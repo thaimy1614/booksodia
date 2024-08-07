@@ -15,7 +15,9 @@ public class CommentReaction {
     private Long userId; // ID of the user who reacted
 
     @Enumerated(EnumType.STRING)
-    private ReactionType type; // Reaction type: LIKE, LOVE, ANGRY, etc.
+    private ReactionType type;
 
-    // Getters and setters
+    public enum ReactionType {
+        LIKE, LOVE, ANGRY, HAHA, SAD, WOW
+    }
 }
