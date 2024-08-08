@@ -31,17 +31,8 @@ public abstract class UserResponseDto implements Serializable {
     @JsonProperty("title")
     protected String title;
 
-    @JsonProperty("about")
-    protected String about;
-
-    @JsonProperty(value = "nPurchase")
-    protected Integer nPurchase;
-
     @JsonProperty(value = "nFollowing")
     protected Long nFollowing;
-
-    @JsonProperty(value = "nReview")
-    protected Long nReview;
 
     public UserResponseDto(String role) {
         this.role = role.toUpperCase(Locale.ROOT);

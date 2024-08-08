@@ -1,14 +1,13 @@
 package com.thai.profile.controller;
 
-import fsa.cursus.user_service.dto.CheckUserIds;
-import fsa.cursus.user_service.dto.ResponseObject;
-import fsa.cursus.user_service.dto.mail.UserInfo;
-import fsa.cursus.user_service.dto.request.*;
-import fsa.cursus.user_service.dto.response.InstructorRegisterResponse;
-import fsa.cursus.user_service.dto.response.RegisterResponse;
-import fsa.cursus.user_service.dto.response.user.*;
-import fsa.cursus.user_service.model.Role;
-import fsa.cursus.user_service.service.user.UserService;
+import com.thai.profile.dto.ResponseObject;
+import com.thai.profile.dto.request.BlockUserRequest;
+import com.thai.profile.dto.request.UnblockUserRequest;
+import com.thai.profile.dto.request.UpdateUserDto;
+import com.thai.profile.dto.request.UserRequestDto;
+import com.thai.profile.dto.response.user.*;
+import com.thai.profile.model.Role;
+import com.thai.profile.service.user.UserService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -67,37 +66,6 @@ public class UserController {
         return ResponseObject.success(userService.count(isActive, role));
     }
 
-    @Operation(summary = "Admin: Get all user of role instructor")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/instructor/admin")
-    public ResponseObject<ListUserResponseDto> getAllInstructors(
-            @Parameter(description = "NULL: active and inactive. True: Active. False: Inactive")
-            @RequestParam(required = false) Boolean isActive,
-            @ParameterObject @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        return ResponseObject.success(userService.getAllUsers(pageable, Role.INSTRUCTOR_VALUE, isActive));
-    }
-
-    @Operation(summary = "Get all active user of role instructor")
-    @GetMapping("/instructor")
-    public ResponseObject<ListUserResponseDto> getAllInstructorsAdmin(
-            @ParameterObject @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        return ResponseObject.success(userService.getAllUsers(pageable, Role.INSTRUCTOR_VALUE, true));
-    }
-
-    @Operation(summary = "Get all user of role student. Note an Instructor is also a Student")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_ADMIN_PERMS')")
-    @GetMapping("/student")
-    public ResponseObject<ListUserResponseDto> getAllStudents(
-            @Parameter(description = "NULL: active and inactive. True: Active. False: Inactive")
-            @RequestParam(required = false) Boolean isActive,
-            @ParameterObject @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        return ResponseObject.success(userService.getAllUsers(pageable, Role.STUDENT_VALUE, isActive));
-    }
-
     @Operation(summary = "Get all user of role admin")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('SCP_ADMIN_PERMS')")
@@ -115,55 +83,6 @@ public class UserController {
                                                       @RequestBody UpdateUserDto updatedUser) {
         UserResponseDto userDto = userService.updateUser(userId, updatedUser);
         return ResponseObject.success(userDto);
-    }
-
-    @Operation(summary = "Register to become an instructor")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
-    @PostMapping(value = "/register-instructor")
-    public ResponseObject<InstructorRegisterResponse> instructorRegistration(
-            @RequestParam List<Long> categoryId,
-            @RequestParam String description,
-            @RequestParam MultipartFile file
-    ) {
-        final long userId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
-        final RegisterRequest request = new RegisterRequest();
-        request.setDescription(description);
-        request.setCategoryIds(categoryId);
-
-        final InstructorRegisterResponse response = userService.instructorRegistration(userId, file, request);
-        return ResponseObject.success(response);
-    }
-
-    @Operation(summary = "Approve instructor registration request")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_ADMIN_PERMS')")
-    @PostMapping("/approve-instructor")
-    public ResponseObject<InstructorRegisterResponse> approveInstructor(
-            @RequestBody ApproveInstructorRequest request
-    ) {
-        InstructorRegisterResponse response = userService.approveInstructor(request);
-        return ResponseObject.success(response);
-    }
-
-    @Operation(summary = "Reject instructor registration request")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_ADMIN_PERMS')")
-    @PostMapping("/reject-instructor")
-    public ResponseObject<InstructorRegisterResponse> rejectInstructor(
-            @RequestBody RejectInstructorRequest request
-    ) {
-        InstructorRegisterResponse response = userService.rejectInstructor(request);
-        return ResponseObject.success(response);
-    }
-
-    @Operation(summary = "Get all instructor registrations")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_ADMIN_PERMS')")
-    @GetMapping("/register-instructor")
-    public ResponseObject<List<RegisterResponse>> registerInstructor() {
-        List<RegisterResponse> response = userService.getAllRegisterRequest();
-        return ResponseObject.success(response);
     }
 
     @Hidden     // internal API; called by Auth
@@ -193,22 +112,5 @@ public class UserController {
     @GetMapping("/get-full-name")
     public String getFullName(@RequestParam Long userId) {
         return userService.getUserById(userId).getFullName();
-    }
-
-    @Hidden     // internal API; called by Payment
-    @PostMapping("/payment")
-    public Map<Long, UserInfo> createEnrollment(
-            @RequestBody @Valid PaymentCompleteDto paymentCompleteDto
-    ) {
-        return userService.createEnrollmentAndEarning(paymentCompleteDto);
-    }
-
-    @Hidden     // internal API: called by Course
-    @GetMapping("/check")
-    public Boolean checkUsers(@ParameterObject @RequestParam List<Long> userIdList) {
-        CheckUserIds input = CheckUserIds.builder()
-                .userIds(userIdList)
-                .build();
-        return userService.checkUserIds(input);
     }
 }
