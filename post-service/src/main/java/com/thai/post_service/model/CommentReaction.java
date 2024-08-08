@@ -5,13 +5,14 @@ import jakarta.persistence.*;
 @Entity
 public class CommentReaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment; // Reference to the comment
 
+    @Column(name = "user_id")
     private Long userId; // ID of the user who reacted
 
     @Enumerated(EnumType.STRING)

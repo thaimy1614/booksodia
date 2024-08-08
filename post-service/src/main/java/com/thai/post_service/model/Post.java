@@ -20,18 +20,23 @@ public class Post {
 
     private String content;
 
+    @Column(name = "media_url")
     private String mediaUrl;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "post_type")
     private PostType postType;
 
+    @Column(name = "create_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "update_at")
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
 
+    @Column(name = "user_id")
     private Long userId; // ID of the user who created the post
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)

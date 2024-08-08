@@ -14,13 +14,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostReaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @Column(name = "user_id")
     private Long userId;
 
     @Enumerated(EnumType.STRING)

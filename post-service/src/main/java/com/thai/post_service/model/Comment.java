@@ -12,27 +12,31 @@ public class Comment {
 
     private String content;
 
+    @Column(name = "create_at")
     private LocalDateTime createdAt;
 
-    private Long userId;
-
+    @Column(name = "update_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "user_id")
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Post post; // Reference to the post
+    private Post post;
 
     @ManyToOne
     @JoinColumn(name = "parent_comment_id")
-    private Comment parentComment; // Self-referential relationship for nested comments
+    private Comment parentComment;
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
-    private List<Comment> replies; // List of replies to the comment
+    private List<Comment> replies;
 
+    @Column(name = "replied_to_user_id")
     private Long repliedToUserId;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-    private List<CommentReaction> reactions; // Reactions on the comment
+    private List<CommentReaction> reactions;
 
     @PrePersist
     protected void onCreate() {
