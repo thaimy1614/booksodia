@@ -1,6 +1,7 @@
 package com.begin.bg.entities;
 
 
+import com.begin.bg.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,8 @@ public class User {
     private String password;
     @ManyToMany
     private Set<Role> roles;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
     private Date created;
     private Date updated;
 

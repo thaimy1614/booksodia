@@ -29,33 +29,77 @@ public class ApplicationConfiguration {
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
-            log.info("A");
-            if (userRepository.findByEmail("lxlthailxl@gmail.com").isEmpty()) {
-                permissionRepository.save(Permission.builder().name("BLOCK_USER").description("Block account").build());
-                permissionRepository.save(Permission.builder().name("DELETE_USER").description("Delete account").build());
-                log.info("B");
-                var allPermissions = permissionRepository.findAll();
-
-
-                //default roles
-                Set<Role> roles = Set.of(
-                        roleRepository.save(
-                                Role.builder()
-                                        .name("ADMIN")
-                                        .description("Admin_role")
-                                        .permissions(new HashSet<>(allPermissions))
-                                        .build()
-                        ));
-                User user = User
-                        .builder()
-                        .email("lxlthailxl@gmail.com")
-                        .password(passwordEncoder.encode("123"))
-                        .roles(roles)
-                        .status(UserStatus.ACTIVATED.name())
-                        .build();
-                userRepository.save(user);
+            // Default student role
+            if (!roleRepository.existsById("STUDENT")) {
+                Set<Permission> studentPerms = Set.of(
+                        permissionRepository.save(
+                                Permission.builder().name("STUDENT_PERMS").description("All student perm").build()
+                        )
+                );
+                roleRepository.save(
+                        Role.builder().
+                                name("STUDENT")
+                                .description("Student_role")
+                                .permissions(studentPerms)
+                                .build()
+                );
             }
 
+            // Default instructor role
+            if (!roleRepository.existsById("INSTRUCTOR")) {
+                Set<Permission> instructorPerms = Set.of(
+                        permissionRepository.save(
+                                Permission.builder().name("INSTRUCTOR_PERMS").description("All instructor perm").build()
+                        )
+                );
+                roleRepository.save(
+                        Role.builder().
+                                name("INSTRUCTOR")
+                                .description("Instructor_role")
+                                .permissions(instructorPerms)
+                                .build()
+                );
+            }
+
+            // Default admin account
+            if (userRepository.findByEmail("admin@mail").isEmpty()) {
+                Set<Permission> adminPerms = Set.of(
+                        permissionRepository.save(
+                                Permission.builder().name("BLOCK_USER").description("Block account").build()
+                        ),
+                        permissionRepository.save(
+                                Permission.builder().name("DELETE_USER").description("Delete account").build()
+                        ),
+                        permissionRepository.save(
+                                Permission.builder().name("ACCEPT_COURSE").description("Accept course").build()
+                        ),
+                        permissionRepository.save(
+                                Permission.builder().name("ACCEPT_INSTRUCTOR").description("Accept instructor").build()
+                        ),
+                        permissionRepository.save(
+                                Permission.builder().name("ADMIN_PERMS").description("All admin perm").build()
+                        )
+                );
+
+                // default admin roles
+                Set<Role> roles = Set.of(
+                        Role.builder()
+                                .name("ADMIN")
+                                .description("Admin_role")
+                                .permissions(adminPerms)
+                                .build()
+                );
+
+                //admin account
+                User account = User
+                        .builder()
+                        .email("admin@mail")
+                        .password(passwordEncoder.encode("123"))
+                        .roles(roles)
+                        .status(UserStatus.ACTIVATED)
+                        .build();
+                userRepository.save(account);
+            }
         };
     }
 }
