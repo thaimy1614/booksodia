@@ -16,11 +16,6 @@ spring:
     hibernate:
       ddl-auto: update
 
-  flyway:
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    baseline-version: 0
-
   kafka:
     bootstrap-servers: ${KAFKA-1}
     producer:

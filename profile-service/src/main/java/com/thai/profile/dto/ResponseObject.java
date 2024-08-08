@@ -1,25 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.thai.profile.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.thai.profile.exception.handler.ExceptionDTO;
 
-/**
- * @author Duong Quoc Thai CE171563
- */
+public record ResponseObject<T>(T data, ExceptionDTO error) {
+    public static <T> ResponseObject<T> success(T data) {
+        return new ResponseObject<>(data, null);
+    }
 
-@Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ResponseObject {
-    private String status;
-    private String message;
-    private Object data;
-
+    public static <T> ResponseObject<T> error(ExceptionDTO error) {
+        return new ResponseObject<>(null, error);
+    }
 }

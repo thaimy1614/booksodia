@@ -1,6 +1,6 @@
-package com.thai.profile.config;
+package com.thai.profile.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,25 +14,19 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/internal/users"
-    };
-    @Autowired
-    private CustomJwtDecoder customJwtDecoder;
+    private final CustomJwtDecoder customJwtDecoder;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                .anyRequest().authenticated());
-        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer ->
-                jwtConfigurer.decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(converter()
-                        )
-        ));
+        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer ->
+                jwtConfigurer
+                        .decoder(customJwtDecoder)
+                        .jwtAuthenticationConverter(converter())
+        ));
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
