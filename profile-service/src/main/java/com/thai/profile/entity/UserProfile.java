@@ -20,10 +20,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserProfile {
     @Id
-    @GeneratedValue(generatorClass = UUIDStringGenerator.class)
     private String id;
-    @Property("user_id")
-    private String userId;
+    private String email;
     @Property("first_name")
     private String firstName;
     @Property("last_name")

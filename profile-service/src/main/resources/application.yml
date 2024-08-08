@@ -1,10 +1,36 @@
 server:
   port: 8089
-  servlet:
-    context-path: /profile
+  forward-headers-strategy: native
+
 spring:
-  neo4j:
-    uri: bolt://localhost:7687
-    authentication:
-      username: neo4j
-      password: 12345678
+  application:
+    name: user-service
+    api-prefix: /user
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+
+  kafka:
+    bootstrap-servers: ${KAFKA-1}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 1
+      acks: all
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+        partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
+        linger.ms: 100  # Điều chỉnh thời gian chờ đợi để tối ưu hóa batching
+

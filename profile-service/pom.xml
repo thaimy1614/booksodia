@@ -21,13 +21,10 @@
         <spotless.version>2.43.0</spotless.version>
     </properties>
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-neo4j</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

@@ -76,7 +76,8 @@ public class AuthenticationController {
                 kafkaTemplate.send("verification", VerifyAccount.builder().fullName(newUser.getFirstName() + newUser.getLastName()).email(user.getEmail()).url("http://localhost:8080/identity/verify?email=" + user.getEmail() + "&token=" + UUID).build());
             }
             var profileRequest = mapper.toProfileCreationRequest(newUser);
-            profileRequest.setUserId(user.getEmail());
+            profileRequest.setUserId(user.getId());
+            profileRequest.setEmail(user.getEmail());
             var profileResponse = profileClient.createProfile(profileRequest);
             log.info(profileResponse.toString());
             return ResponseEntity.status(HttpStatus.OK)

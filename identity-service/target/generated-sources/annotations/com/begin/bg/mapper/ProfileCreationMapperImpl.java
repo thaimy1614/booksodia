@@ -20,6 +20,7 @@ public class ProfileCreationMapperImpl implements ProfileCreationMapper {
 
         ProfileCreationRequest.ProfileCreationRequestBuilder profileCreationRequest = ProfileCreationRequest.builder();
 
+        profileCreationRequest.email( user.getEmail() );
         profileCreationRequest.firstName( user.getFirstName() );
         profileCreationRequest.lastName( user.getLastName() );
         profileCreationRequest.dob( user.getDob() );
