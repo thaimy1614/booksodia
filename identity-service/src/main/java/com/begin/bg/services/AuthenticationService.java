@@ -212,7 +212,7 @@ public class AuthenticationService {
                     return userRepository.save(User.builder()
                             .email(userInfo.getEmail())
                             .roles(roles)
-                            .status(UserStatus.ACTIVATED.name())
+                            .status(UserStatus.ACTIVATED)
                             .build());
                 });
         // Generate token
@@ -225,12 +225,12 @@ public class AuthenticationService {
 
     public VerifyAccountResponse verifyAccount(String email, String token) {
         User user = userRepository.findByEmail(email).orElseThrow();
-        if (!user.getStatus().equals("UNVERIFIED")) {
+        if (user.getStatus() != UserStatus.UNVERIFIED) {
             return VerifyAccountResponse.builder().success(false).build();
         }
         if (token.equals(redisTemplate.opsForValue().get(email + "_verify"))) {
             redisTemplate.delete(email + "_verify");
-            user.setStatus(UserStatus.ACTIVATED.name());
+            user.setStatus(UserStatus.ACTIVATED);
             userRepository.save(user);
             return VerifyAccountResponse.builder().success(true).build();
         }

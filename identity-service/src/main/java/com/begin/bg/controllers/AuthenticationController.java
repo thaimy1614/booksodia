@@ -7,7 +7,6 @@ import com.begin.bg.entities.ResponseObject;
 import com.begin.bg.entities.User;
 import com.begin.bg.enums.UserStatus;
 import com.begin.bg.mapper.ProfileCreationMapper;
-import com.begin.bg.repositories.PermissionRepository;
 import com.begin.bg.repositories.RoleRepository;
 import com.begin.bg.repositories.httpclient.ProfileClient;
 import com.begin.bg.services.AuthenticationService;
@@ -34,7 +33,6 @@ public class AuthenticationController {
     private final UserService userService;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PermissionRepository permissionRepository;
     private final ProfileClient profileClient;
     private final ProfileCreationMapper mapper;
     private final RedisTemplate<String, String> redisTemplate;
@@ -60,21 +58,18 @@ public class AuthenticationController {
             var roleNameList = newUser.getRoles();
             var roles = roleRepository.findAllById(roleNameList);
             if (roles.size() != roleNameList.size()) {
-                // Some roles were not found
-                // Handle the scenario where some roles were not found
-                // For example, return an error response
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ResponseObject("FAIL", "Some roles not found", null));
             }
             User user = User.builder()
                     .email(newUser.getEmail())
                     .password(passwordEncoder.encode(newUser.getPassword()))
-                    .status(UserStatus.UNVERIFIED.name())
+                    .status(UserStatus.UNVERIFIED)
                     .roles(new HashSet<>(roles))
                     .build();
             user = userService.saveUser(user);
 
-            if (user.getStatus().equals("UNVERIFIED")) {
+            if (user.getStatus() == UserStatus.UNVERIFIED) {
                 String UUID = java.util.UUID.randomUUID().toString();
                 redisTemplate.opsForValue().set(user.getEmail() + "_verify", UUID);
                 authService.verifyAccount(newUser.getEmail(), UUID);

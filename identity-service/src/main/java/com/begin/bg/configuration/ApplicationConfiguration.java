@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -83,11 +82,13 @@ public class ApplicationConfiguration {
 
                 // default admin roles
                 Set<Role> roles = Set.of(
-                        Role.builder()
-                                .name("ADMIN")
-                                .description("Admin_role")
-                                .permissions(adminPerms)
-                                .build()
+                        roleRepository.save(
+                                Role.builder()
+                                        .name("ADMIN")
+                                        .description("Admin_role")
+                                        .permissions(adminPerms)
+                                        .build()
+                        )
                 );
 
                 //admin account

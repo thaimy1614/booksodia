@@ -51,7 +51,7 @@ public class UserController {
                 .map(User -> {
                     var roles = roleRepository.findAllById(newUser.getRoles());
                     User.setPassword(passwordEncoder.encode(newUser.getPassword()));
-                    User.setStatus(UserStatus.UNVERIFIED.name());
+                    User.setStatus(UserStatus.UNVERIFIED);
                     User.setRoles(new HashSet<>(roles));
                     return userService.saveUser(User);
                 }).orElseThrow();
