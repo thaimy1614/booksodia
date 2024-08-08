@@ -15,33 +15,20 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/auth",
-            "/signup",
-            "/log-out",
-            "/introspect",
-            "/forget-password/send-otp",
-            "/forget-password/check-otp",
-            "/change-password",
-            "/verify",
-            "/outbound/authentication"
-    };
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-//                .requestMatchers("/users").hasRole(UserRole.ADMIN.name())
-                .anyRequest().authenticated());
-
-        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer ->
-                jwtConfigurer.decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(converter()
-                        )
-        ));
+                .anyRequest().permitAll());
+        http.oauth2ResourceServer(
+                oauth2 ->
+                        oauth2.jwt(
+                                jwtConfigurer -> jwtConfigurer
+                                        .decoder(customJwtDecoder)
+                                        .jwtAuthenticationConverter(converter())
+                        ));
 
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
