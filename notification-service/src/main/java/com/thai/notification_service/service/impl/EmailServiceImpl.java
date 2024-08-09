@@ -37,7 +37,6 @@ class EmailServiceImpl implements EmailService {
             Context context = new Context();
             context.setVariable("name", name);
             context.setVariable("url", url);
-            context.setVariables(Map.of("name", name, "url", url));
             String text = templateEngine.process(EMAIL_TEMPLATE, context);
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);

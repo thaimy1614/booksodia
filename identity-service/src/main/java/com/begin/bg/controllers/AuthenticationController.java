@@ -66,12 +66,11 @@ public class AuthenticationController {
             if (user.getStatus() == UserStatus.UNVERIFIED) {
                 String UUID = java.util.UUID.randomUUID().toString();
                 redisTemplate.opsForValue().set(user.getEmail() + "_verify", UUID);
-                authService.verifyAccount(newUser.getEmail(), UUID);
                 kafkaTemplate.send("verification",
                         VerifyAccount.builder()
                                 .fullName(newUser.getFullName())
                                 .email(user.getEmail())
-                                .url("http://localhost:8080/identity/verify?email=" + user.getEmail() + "&token=" + UUID)
+                                .url("http://localhost:8080/api/identity/verify?email=" + user.getEmail() + "&token=" + UUID)
                                 .build());
             }
             var profileRequest = mapper.toProfileCreationRequest(newUser);

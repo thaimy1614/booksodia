@@ -17,7 +17,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProfileCreationRequest {
     @NotNull(message = "Id is required")
-    @Positive(message = "Id must be positive number")
     private String userId;
 
     @NotEmpty(message = "FullName is required")

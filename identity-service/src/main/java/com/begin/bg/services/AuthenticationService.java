@@ -9,6 +9,7 @@ import com.begin.bg.entities.Role;
 import com.begin.bg.entities.User;
 import com.begin.bg.enums.UserRole;
 import com.begin.bg.enums.UserStatus;
+import com.begin.bg.mapper.ProfileCreationMapper;
 import com.begin.bg.repositories.UserRepository;
 import com.begin.bg.repositories.httpclient.OutboundIdentityClient;
 import com.begin.bg.repositories.httpclient.OutboundUserClient;
@@ -49,11 +50,12 @@ public class AuthenticationService {
     protected final String GRANT_TYPE = "authorization_code";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OutboundIdentityClient outboundIdentityClient;
     private final OutboundUserClient outboundUserClient;
     private final ProfileClient profileClient;
+
     @NonFinal
     @Value("${outbound.identity.client-id}")
     protected String CLIENT_ID;
