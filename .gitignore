@@ -27,10 +27,10 @@ replay_pid*
 redis-data
 neo4j_data
 *.env
-docker-compose.yaml
-Dockerfile
-kibana
-logstash
-elasticsearch
 elasticsearch_sink_connector.json
 debezium_postgres_connector.json
+custom-config
+docker-compose.yaml
+Dockerfile
+
+
