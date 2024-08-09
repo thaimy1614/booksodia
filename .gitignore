@@ -33,4 +33,4 @@ custom-config
 docker-compose.yaml
 Dockerfile
 
-
+debezium-connector-postgresql
