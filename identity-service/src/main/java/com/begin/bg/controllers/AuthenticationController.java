@@ -26,7 +26,7 @@ import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("${application.api.prefix}")
 @Slf4j
 public class AuthenticationController {
     private final AuthenticationService authService;

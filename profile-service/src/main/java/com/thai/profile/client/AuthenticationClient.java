@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
         name = "authenticationService",
-        url = "http://authentication-service:8080/identity",
+        url = "http://identity-service:8080/identity",
         configuration = {AuthenticationRequestInterceptor.class}
 )
 public interface AuthenticationClient {

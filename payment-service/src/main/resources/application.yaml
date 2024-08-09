@@ -1,9 +1,9 @@
 spring:
   application:
-    name: payment_service
+    name: payment-service
 
   kafka:
-    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    bootstrap-servers: ${KAFKA_1},${KAFKA_2},${KAFKA_3}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -17,17 +17,17 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
 server:
-  port: 8083
-  servlet:
-    context-path: /payment
-
+  port: 8080
+application:
+  api:
+    prefix: /payment
 
 payment:
   vnPay:

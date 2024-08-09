@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/role")
+@RequestMapping("${application.api.prefix}/role")
 @RequiredArgsConstructor
 public class RoleController {
     private final RoleService roleService;

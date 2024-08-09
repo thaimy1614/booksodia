@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: post-service
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USERNAME}
@@ -9,10 +11,11 @@ spring:
       ddl-auto: update
   data:
     redis:
-      port: 6379
-      host: localhost
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
 
 server:
-  port: 8089
-  servlet:
-    context-path: /post
+  port: 8080
+application:
+  api:
+    prefix: /post
