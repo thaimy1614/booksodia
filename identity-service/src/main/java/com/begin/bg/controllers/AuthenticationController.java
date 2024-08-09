@@ -77,10 +77,12 @@ public class AuthenticationController {
             var profileRequest = mapper.toProfileCreationRequest(newUser);
             profileRequest.setUserId(user.getId());
             profileRequest.setEmail(user.getEmail());
-            var profileResponse = profileClient.createProfile(profileRequest);
-            log.info(profileResponse.toString());
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseObject("OK", "Insert User successful!", user));
+            boolean profileResponse = profileClient.createProfile(profileRequest);
+            return profileResponse ? ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseObject("OK", "Insert User successful!", user))
+                    : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseObject("FAIL", "Insert User fail!", null))
+                    ;
         }
     }
 

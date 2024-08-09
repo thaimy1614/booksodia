@@ -82,11 +82,11 @@ public class UserController {
 
     @Hidden     // internal API; called by Auth
     @PostMapping
-    public ResponseObject<UserResponseDto> createUser(
+    public Boolean createUser(
             @Valid @RequestBody ProfileCreationRequest user
     ) {
         UserResponseDto userDto = userService.saveUser(user);
-        return ResponseObject.success(userDto);
+        return userDto != null;
     }
 
     @Hidden     // internal API; called by Auth
