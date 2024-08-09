@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${application.api.prefix")
+@RequestMapping("${application.api.prefix}")
 public class VnPayController {
     private final PaymentService paymentService;
 
