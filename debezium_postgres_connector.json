@@ -7,11 +7,11 @@
     "tasks.max": "1",
     "database.history.kafka.bootstrap.servers": "kafka-1:29092,kafka-2:29093,kafka-3:29094",
     "database.history.kafka.topic": "schema-changes.book",
-    "database.server.name": "dbserver1",
+    "database.server.name": "booksodia",
     "database.port": "5432",
     "plugin.name": "pgoutput",
-    "topic.prefix": "dbserver1",
-    "database.hostname": "book_db",
+    "topic.prefix": "booksodia",
+    "database.hostname": "book-db",
     "database.password": "password",
     "table.include.list": "public.book,public.review,public.category"
   }

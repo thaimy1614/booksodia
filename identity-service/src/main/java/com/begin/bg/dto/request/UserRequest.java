@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +12,6 @@ import java.util.List;
 public class UserRequest {
     private String email;
     private String password;
-    private String firstName;
-    private String lastName;
-    private LocalDate dob;
-    private String city;
-    private List<String> roles;
+    private String fullName;
+    private String image;
 }

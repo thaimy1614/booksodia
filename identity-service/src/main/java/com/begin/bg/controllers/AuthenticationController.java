@@ -21,8 +21,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,17 +55,11 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                     .body(new ResponseObject("FAIL", "User name already taken", null));
         } else {
-            var roleNameList = newUser.getRoles();
-            var roles = roleRepository.findAllById(roleNameList);
-            if (roles.size() != roleNameList.size()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ResponseObject("FAIL", "Some roles not found", null));
-            }
             User user = User.builder()
                     .email(newUser.getEmail())
                     .password(passwordEncoder.encode(newUser.getPassword()))
                     .status(UserStatus.UNVERIFIED)
-                    .roles(new HashSet<>(roles))
+                    .roles(Set.of(roleRepository.findById("USER").orElseThrow()))
                     .build();
             user = userService.saveUser(user);
 
@@ -73,7 +67,12 @@ public class AuthenticationController {
                 String UUID = java.util.UUID.randomUUID().toString();
                 redisTemplate.opsForValue().set(user.getEmail() + "_verify", UUID);
                 authService.verifyAccount(newUser.getEmail(), UUID);
-                kafkaTemplate.send("verification", VerifyAccount.builder().fullName(newUser.getFirstName() + newUser.getLastName()).email(user.getEmail()).url("http://localhost:8080/identity/verify?email=" + user.getEmail() + "&token=" + UUID).build());
+                kafkaTemplate.send("verification",
+                        VerifyAccount.builder()
+                                .fullName(newUser.getFullName())
+                                .email(user.getEmail())
+                                .url("http://localhost:8080/identity/verify?email=" + user.getEmail() + "&token=" + UUID)
+                                .build());
             }
             var profileRequest = mapper.toProfileCreationRequest(newUser);
             profileRequest.setUserId(user.getId());

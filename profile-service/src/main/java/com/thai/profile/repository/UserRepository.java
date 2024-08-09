@@ -1,6 +1,6 @@
 package com.thai.profile.repository;
 
-import fsa.cursus.user_service.model.User;
+import com.thai.profile.model.User;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.isActive = true")
     Optional<User> findByUserEmail(@Param("email") String email);
 
@@ -24,10 +24,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM User u JOIN u.roles r " +
             "WHERE (u.isActive = :countBlock) AND r.roleName LIKE :roleName")
     long countByStatusAndRole(boolean countBlock, @Nullable @Param("roleName") String roleName);
-
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM User u JOIN u.roles r WHERE u.userId = " +
-            ":userId AND r.roleName = 'instructor'")
-    boolean isInstructor(@Param("userId") Long userId);
 
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.roleName = :roleName")
     Page<User> findAllByRoleName(Pageable pageable, @Param("roleName") String roleName);
@@ -40,7 +36,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     );
 
     @Query("SELECT u FROM User u WHERE u.userId = :userId")
-    Optional<User> findByUserId(@Param("userId") Long userId);
+    Optional<User> findByUserId(@Param("userId") String userId);
 
     @Modifying
     @Transactional

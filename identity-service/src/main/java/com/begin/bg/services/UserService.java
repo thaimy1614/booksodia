@@ -43,7 +43,7 @@ public class UserService {
 
     public User deleteUserById(String id) {
         User user = userRepository.findById(id).orElseThrow();
-        user.setStatus(UserStatus.DELETED );
+        user.setStatus(UserStatus.DELETED);
         return user;
     }
 }

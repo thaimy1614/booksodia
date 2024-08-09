@@ -29,33 +29,17 @@ public class ApplicationConfiguration {
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
             // Default student role
-            if (!roleRepository.existsById("STUDENT")) {
-                Set<Permission> studentPerms = Set.of(
+            if (!roleRepository.existsById("USER")) {
+                Set<Permission> userPermission = Set.of(
                         permissionRepository.save(
-                                Permission.builder().name("STUDENT_PERMS").description("All student perm").build()
+                                Permission.builder().name("USER_PERMS").description("All user perm").build()
                         )
                 );
                 roleRepository.save(
                         Role.builder().
-                                name("STUDENT")
-                                .description("Student_role")
-                                .permissions(studentPerms)
-                                .build()
-                );
-            }
-
-            // Default instructor role
-            if (!roleRepository.existsById("INSTRUCTOR")) {
-                Set<Permission> instructorPerms = Set.of(
-                        permissionRepository.save(
-                                Permission.builder().name("INSTRUCTOR_PERMS").description("All instructor perm").build()
-                        )
-                );
-                roleRepository.save(
-                        Role.builder().
-                                name("INSTRUCTOR")
-                                .description("Instructor_role")
-                                .permissions(instructorPerms)
+                                name("USER")
+                                .description("User_role")
+                                .permissions(userPermission)
                                 .build()
                 );
             }
@@ -68,12 +52,6 @@ public class ApplicationConfiguration {
                         ),
                         permissionRepository.save(
                                 Permission.builder().name("DELETE_USER").description("Delete account").build()
-                        ),
-                        permissionRepository.save(
-                                Permission.builder().name("ACCEPT_COURSE").description("Accept course").build()
-                        ),
-                        permissionRepository.save(
-                                Permission.builder().name("ACCEPT_INSTRUCTOR").description("Accept instructor").build()
                         ),
                         permissionRepository.save(
                                 Permission.builder().name("ADMIN_PERMS").description("All admin perm").build()

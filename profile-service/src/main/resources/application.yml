@@ -29,3 +29,7 @@ spring:
         partitioner.class: org.apache.kafka.clients.producer.internals.DefaultPartitioner
         linger.ms: 100  # Điều chỉnh thời gian chờ đợi để tối ưu hóa batching
 
+  data:
+    redis:
+      host: localhost
+      port: 6379

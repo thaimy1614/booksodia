@@ -6,8 +6,7 @@ import org.springframework.http.HttpStatus;
 /**
  * Exception that will display the message to the user
  */
-public abstract class WhiteException extends BaseException
-{
+public abstract class WhiteException extends BaseException {
     private static final String codePrefix = "WH";
 
     public WhiteException(String code, String message, HttpStatus status) {

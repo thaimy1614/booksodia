@@ -10,7 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,7 +22,7 @@ import java.util.Set;
 @SQLDelete(sql = "UPDATE users SET is_active = FALSE WHERE user_id=?")
 public class User {
     public static final User DEFAULT_USER = User.builder()
-            .userId(0)
+            .userId("0")
             .fullName("Unknown or Removed User")
             .image(null)
             .isActive(false)
@@ -91,10 +90,12 @@ public class User {
     public static String simplifyRoles(Set<Role> roles) {
         if (roles.contains(Role.ADMIN)) {
             return Role.ADMIN_VALUE;
-        } else if (roles.contains(Role.INSTRUCTOR)) {
-            return Role.INSTRUCTOR_VALUE;
-        } else {
-            return Role.STUDENT_VALUE;
+        }
+//        else if (roles.contains(Role.INSTRUCTOR)) {
+//            return Role.INSTRUCTOR_VALUE;
+//        }
+        else {
+            return Role.USER_VALUE;
         }
     }
 }

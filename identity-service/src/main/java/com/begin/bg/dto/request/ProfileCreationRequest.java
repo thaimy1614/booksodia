@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,9 +12,7 @@ import java.time.LocalDate;
 public class ProfileCreationRequest {
     private String userId;
     private String email;
-    private String firstName;
-    private String lastName;
-    private LocalDate dob;
-    private String city;
-    private String avatar;
+    private String fullName;
+    private boolean isAdmin;
+    private String image;
 }

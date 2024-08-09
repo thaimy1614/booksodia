@@ -202,10 +202,8 @@ public class AuthenticationService {
                 () -> {
                     var profileRequest = ProfileCreationRequest.builder()
                             .userId(userInfo.getEmail())
-                            .firstName(userInfo.getGivenName())
-                            .lastName(userInfo.getFamilyName())
-                            .avatar(userInfo.getPicture())
-                            .city(userInfo.getLocale())
+                            .fullName(userInfo.getGivenName() + userInfo.getFamilyName())
+                            .image(userInfo.getPicture())
                             .build();
                     // call profile service to add profile
                     profileClient.createProfile(profileRequest);

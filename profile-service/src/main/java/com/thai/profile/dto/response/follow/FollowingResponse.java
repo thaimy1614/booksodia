@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FollowingResponse {
-    private long id;
+    private String id;
     private String name;
     private String image;
     private String title;

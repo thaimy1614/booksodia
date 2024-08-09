@@ -4,17 +4,17 @@ import com.thai.profile.dto.response.follow.ListFollowerResponse;
 import com.thai.profile.dto.response.follow.ListFollowingResponse;
 
 public interface FollowService {
-    void followUser(Long followerId, Long followingId);
+    void followUser(String followerId, String followingId);
 
-    void unfollowUser(Long followerId, Long followingId);
+    void unfollowUser(String followerId, String followingId);
 
-    ListFollowingResponse getAllFollowing(Long userId);
+    ListFollowingResponse getAllFollowing(String userId);
 
-    long countFollowing(Long userId);
+    long countFollowing(String userId);
 
-    ListFollowerResponse getAllFollower(Long userId);
+    ListFollowerResponse getAllFollower(String userId);
 
-    long countFollower(Long userId);
+    long countFollower(String userId);
 
-    boolean isFollowBy(long currentUser, Long following);
+    boolean isFollowBy(String currentUser, String following);
 }

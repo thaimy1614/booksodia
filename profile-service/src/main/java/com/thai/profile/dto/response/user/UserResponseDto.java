@@ -14,7 +14,7 @@ public abstract class UserResponseDto implements Serializable {
     private final String role;
 
     @JsonProperty("userId")
-    protected long userId;
+    protected String userId;
 
     @JsonProperty("fullName")
     protected String fullName;

@@ -1,7 +1,7 @@
 package com.thai.profile.mapper;
 
 import com.thai.profile.dto.mail.UserInfo;
-import com.thai.profile.dto.request.UserRequestDto;
+import com.thai.profile.dto.request.ProfileCreationRequest;
 import com.thai.profile.dto.response.user.AdminResponseDto;
 import com.thai.profile.dto.response.user.UserNormalResponseDto;
 import com.thai.profile.dto.response.user.UserResponseDto;
@@ -21,7 +21,7 @@ public abstract class UserMapper {
         };
     }
 
-    public abstract User userRequestDtoToUser(UserRequestDto userRequestDto);
+    public abstract User userRequestDtoToUser(ProfileCreationRequest userRequestDto);
 
     public abstract AdminResponseDto userToAdminResponseDto(User user);
 

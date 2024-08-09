@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.8 (Oracle Corporation)"
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
 )
 @Component
 public class ProfileCreationMapperImpl implements ProfileCreationMapper {
@@ -21,10 +21,8 @@ public class ProfileCreationMapperImpl implements ProfileCreationMapper {
         ProfileCreationRequest.ProfileCreationRequestBuilder profileCreationRequest = ProfileCreationRequest.builder();
 
         profileCreationRequest.email( user.getEmail() );
-        profileCreationRequest.firstName( user.getFirstName() );
-        profileCreationRequest.lastName( user.getLastName() );
-        profileCreationRequest.dob( user.getDob() );
-        profileCreationRequest.city( user.getCity() );
+        profileCreationRequest.fullName( user.getFullName() );
+        profileCreationRequest.image( user.getImage() );
 
         return profileCreationRequest.build();
     }

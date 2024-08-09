@@ -1,9 +1,11 @@
 package com.thai.profile.service.follow;
 
-import com.thai.profile.exception.white.CustomValidationException;
+import com.thai.profile.dto.response.follow.FollowerResponse;
+import com.thai.profile.dto.response.follow.FollowingResponse;
+import com.thai.profile.dto.response.follow.ListFollowerResponse;
+import com.thai.profile.dto.response.follow.ListFollowingResponse;
 import com.thai.profile.exception.white.UserNotFoundException;
 import com.thai.profile.model.Follow;
-import com.thai.profile.model.Role;
 import com.thai.profile.model.User;
 import com.thai.profile.repository.FollowRepository;
 import com.thai.profile.repository.UserRepository;
@@ -23,14 +25,11 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     @CacheEvict(value = "userCache", key = "#followingId")
-    public void followUser(Long followerId, Long followingId) {
+    public void followUser(String followerId, String followingId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
         User following = userRepository.findById(followingId)
                 .orElseThrow(() -> new UserNotFoundException("Following not found"));
-        if (!following.getRoles().contains(Role.INSTRUCTOR)) {
-            throw new CustomValidationException("Can only follow instructor");
-        }
 
         Follow follow = new Follow();
         follow.setFollower(follower);
@@ -42,7 +41,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     @CacheEvict(value = "userCache", key = "#followingId")
-    public void unfollowUser(Long followerId, Long followingId) {
+    public void unfollowUser(String followerId, String followingId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new UserNotFoundException("Follower not found"));
         User following = userRepository.findById(followingId)
@@ -52,7 +51,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public ListFollowingResponse getAllFollowing(Long userId) {
+    public ListFollowingResponse getAllFollowing(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -64,7 +63,6 @@ public class FollowServiceImpl implements FollowService {
                         .title(following.getTitle())
                         .name(following.getFullName())
                         .image(following.getImage())
-                        .nCourse(following.getNCourse())
                         .nFollower(following.getNFollower())
                         .build()
                 )
@@ -76,7 +74,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public long countFollowing(Long userId) {
+    public long countFollowing(String userId) {
         if (!userRepository.existsById(userId)) throw new UserNotFoundException(userId);
         final User user = userRepository.getReferenceById(userId);
 
@@ -84,7 +82,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public ListFollowerResponse getAllFollower(Long userId) {
+    public ListFollowerResponse getAllFollower(String userId) {
         if (!userRepository.existsById(userId)) throw new UserNotFoundException(userId);
 
         User user = userRepository.getReferenceById(userId);
@@ -97,7 +95,6 @@ public class FollowServiceImpl implements FollowService {
                         .name(follower.getFullName())
                         .image(follower.getImage())
                         .title(follower.getTitle())
-                        .nCourse(follower.getNCourse())
                         .nFollower(follower.getNFollower())
                         .build()
                 )
@@ -109,7 +106,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public long countFollower(Long userId) {
+    public long countFollower(String userId) {
         if (!userRepository.existsById(userId)) throw new UserNotFoundException(userId);
         final User user = userRepository.getReferenceById(userId);
 
@@ -117,7 +114,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public boolean isFollowBy(long currentUser, Long following) {
+    public boolean isFollowBy(String currentUser, String following) {
         return followRepository.existsByFollower_UserIdAndFollowing_UserId(currentUser, following);
     }
 }

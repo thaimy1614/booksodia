@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("${application.api.prefix}")
 public class BookController {
     private final BookService bookService;
 

@@ -15,10 +15,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDto {
+public class ProfileCreationRequest {
     @NotNull(message = "Id is required")
     @Positive(message = "Id must be positive number")
-    private Long userId;
+    private String userId;
 
     @NotEmpty(message = "FullName is required")
     private String fullName;

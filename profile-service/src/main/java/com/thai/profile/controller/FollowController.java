@@ -1,5 +1,13 @@
 package com.thai.profile.controller;
 
+import com.thai.profile.dto.ResponseObject;
+import com.thai.profile.dto.response.EmptyObject;
+import com.thai.profile.dto.response.follow.ListFollowerResponse;
+import com.thai.profile.dto.response.follow.ListFollowingResponse;
+import com.thai.profile.exception.white.CustomValidationException;
+import com.thai.profile.service.follow.FollowService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +27,7 @@ public class FollowController {
     public ResponseObject<ListFollowingResponse> getAllFollowing(
             JwtAuthenticationToken token
     ) {
-        Long userId = Long.parseLong(token.getName());
+        String userId = token.getName();
         return ResponseObject.success(followService.getAllFollowing(userId));
     }
 
@@ -30,7 +38,7 @@ public class FollowController {
     public ResponseObject<Long> countFollowing(
             JwtAuthenticationToken token
     ) {
-        Long userId = Long.parseLong(token.getName());
+        String userId = token.getName();
         return ResponseObject.success(followService.countFollowing(userId));
     }
 
@@ -39,10 +47,10 @@ public class FollowController {
     @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
     @GetMapping("/following/check")
     public ResponseObject<Boolean> isFollowed(
-            @RequestParam Long following,
+            @RequestParam String following,
             @Autowired JwtAuthenticationToken token
     ) {
-        long currentUser = Long.parseLong(token.getName());
+        String currentUser = token.getName();
         final boolean res = followService.isFollowBy(currentUser, following);
         return ResponseObject.success(res);
     }
@@ -54,14 +62,14 @@ public class FollowController {
     public ResponseObject<ListFollowerResponse> getAllFollower(
             JwtAuthenticationToken token
     ) {
-        Long userId = Long.parseLong(token.getName());
+        String userId = token.getName();
         return ResponseObject.success(followService.getAllFollower(userId));
     }
 
     @Operation(summary = "Count number of followers")
     @GetMapping("/{userId}/follower/count")
     public ResponseObject<Long> countFollower(
-            @PathVariable Long userId
+            @PathVariable String userId
     ) {
         return ResponseObject.success(followService.countFollower(userId));
     }
@@ -73,7 +81,7 @@ public class FollowController {
     public ResponseObject<Long> countFollower(
             JwtAuthenticationToken token
     ) {
-        Long userId = Long.parseLong(token.getName());
+        String userId = token.getName();
         return ResponseObject.success(followService.countFollower(userId));
     }
 
@@ -82,10 +90,10 @@ public class FollowController {
     @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
     @PostMapping("/follow/{followingUserId}")
     public ResponseObject<EmptyObject> followUser(
-            @PathVariable Long followingUserId,
+            @PathVariable String followingUserId,
             JwtAuthenticationToken token
     ) {
-        Long followerId = Long.parseLong(token.getName());
+        String followerId = token.getName();
         if (followerId.equals(followingUserId)) throw new CustomValidationException("Cannot follow yourself");
 
         followService.followUser(followerId, followingUserId);
@@ -97,10 +105,10 @@ public class FollowController {
     @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
     @DeleteMapping("/unfollow/{followingUserId}")
     public ResponseObject<EmptyObject> unfollowUser(
-            @PathVariable Long followingUserId,
+            @PathVariable String followingUserId,
             JwtAuthenticationToken token
     ) {
-        Long followerId = Long.parseLong(token.getName());
+        String followerId = token.getName();
         if (followerId.equals(followingUserId)) throw new CustomValidationException("Cannot unfollow yourself");
 
         followService.unfollowUser(followerId, followingUserId);

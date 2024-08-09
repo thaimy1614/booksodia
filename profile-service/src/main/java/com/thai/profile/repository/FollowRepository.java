@@ -1,7 +1,7 @@
 package com.thai.profile.repository;
 
-import fsa.cursus.user_service.model.Follow;
-import fsa.cursus.user_service.model.User;
+import com.thai.profile.model.Follow;
+import com.thai.profile.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -17,5 +17,5 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     Long countByFollowing(User following);
 
-    boolean existsByFollower_UserIdAndFollowing_UserId(long follower, long following);
+    boolean existsByFollower_UserIdAndFollowing_UserId(String follower, String following);
 }

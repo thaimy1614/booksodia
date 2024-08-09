@@ -32,4 +32,5 @@ Dockerfile
 kibana
 logstash
 elasticsearch
-env
+elasticsearch_sink_connector.json
+debezium_postgres_connector.json

@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: book-service
   servlet:
     multipart:
       max-file-size: 50MB
@@ -12,7 +14,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
   kafka:
-    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    bootstrap-servers: ${KAFKA_1},${KAFKA_2},${KAFKA_3}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -34,11 +36,12 @@ jwt:
   signer-key: ${JWT_SIGNING_KEY}
 app:
   services:
-    profile: http://localhost:8082/profile
+    profile: ${PROFILE_URL}
 server:
-  port: 8082
-  servlet:
-    context-path: /book
+  port: 8080
+application:
+  api:
+    prefix: /book
 aws:
   access:
     key:

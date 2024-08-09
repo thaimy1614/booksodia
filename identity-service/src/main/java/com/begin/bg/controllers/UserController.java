@@ -49,10 +49,8 @@ public class UserController {
     ResponseEntity<ResponseObject> updateUser(@RequestBody UserRequest newUser, @PathVariable String id) {
         User updatedUser = userService.findUserById(id)
                 .map(User -> {
-                    var roles = roleRepository.findAllById(newUser.getRoles());
                     User.setPassword(passwordEncoder.encode(newUser.getPassword()));
                     User.setStatus(UserStatus.UNVERIFIED);
-                    User.setRoles(new HashSet<>(roles));
                     return userService.saveUser(User);
                 }).orElseThrow();
 
