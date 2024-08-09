@@ -8,22 +8,66 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: identity_service
-          uri: http://localhost:8080
+        - id: identity-service
+          uri: http://identity-service:8080
           predicates:
             - Path=${app.api-prefix}/identity/**
           filters:
             - StripPrefix=1
-        - id: profile_service
-          uri: http://localhost:8089
+
+        - id: profile-service
+          uri: http://profile-service:8080
           predicates:
-            - Path=${app.api-prefix}/profile/users/**
+            - Path=${app.api-prefix}/profile/**
           filters:
             - StripPrefix=1
-        - id: notification_service
-          uri: http://localhost:8088
+
+        - id: notification-service
+          uri: http://notification-service:8080
           predicates:
             - Path=${app.api-prefix}/notification/**
+          filters:
+            - StripPrefix=1
+
+        - id: book-service
+          uri: http://book-service:8080
+          predicates:
+            - Path=${app.api-prefix}/book/**
+          filters:
+            - StripPrefix=1
+
+        - id: cart-service
+          uri: http://cart-service:8080
+          predicates:
+            - Path=${app.api-prefix}/cart/**
+          filters:
+            - StripPrefix=1
+
+        - id: order-service
+          uri: http://order-service:8080
+          predicates:
+            - Path=${app.api-prefix}/order/**
+          filters:
+            - StripPrefix=1
+
+        - id: payment-service
+          uri: http://payment-service:8080
+          predicates:
+            - Path=${app.api-prefix}/payment/**
+          filters:
+            - StripPrefix=1
+
+        - id: post-service
+          uri: http://post-service:8080
+          predicates:
+            - Path=${app.api-prefix}/post/**
+          filters:
+            - StripPrefix=1
+
+        - id: search-service
+          uri: http://search-service:8080
+          predicates:
+            - Path=${app.api-prefix}/search/**
           filters:
             - StripPrefix=1
 
