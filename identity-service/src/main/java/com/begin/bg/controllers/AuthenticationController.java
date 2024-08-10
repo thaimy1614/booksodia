@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,7 +63,6 @@ public class AuthenticationController {
                     .roles(Set.of(roleRepository.findById("USER").orElseThrow()))
                     .build();
             user = userService.saveUser(user);
-
             if (user.getStatus() == UserStatus.UNVERIFIED) {
                 String UUID = java.util.UUID.randomUUID().toString();
                 redisTemplate.opsForValue().set(user.getEmail() + "_verify", UUID);
@@ -75,8 +75,10 @@ public class AuthenticationController {
             }
             var profileRequest = mapper.toProfileCreationRequest(newUser);
             profileRequest.setUserId(user.getId());
-            profileRequest.setEmail(user.getEmail());
+            profileRequest.setIsAdmin(false);
+            log.info(profileRequest.getUserId());
             boolean profileResponse = profileClient.createProfile(profileRequest);
+
             return profileResponse ? ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseObject("OK", "Insert User successful!", user))
                     : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

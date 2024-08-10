@@ -17,6 +17,8 @@ import com.thai.profile.util.UserValidation;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,6 +36,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -133,7 +136,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @CachePut(value = "userCache", key = "#userDto.userId")
     public UserResponseDto saveUser(ProfileCreationRequest userDto) {
+        log.info(userDto.getUserId());
         User user = userMapper.userRequestDtoToUser(userDto);
+        user.setUserId(userDto.getUserId());
         if (userRepository.existsById(user.getUserId())) {
             throw new CustomValidationException("User_ID already exists");
         }

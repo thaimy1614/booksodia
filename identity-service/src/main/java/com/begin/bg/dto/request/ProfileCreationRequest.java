@@ -13,6 +13,6 @@ public class ProfileCreationRequest {
     private String userId;
     private String email;
     private String fullName;
-    private boolean isAdmin;
+    private Boolean isAdmin;
     private String image;
 }

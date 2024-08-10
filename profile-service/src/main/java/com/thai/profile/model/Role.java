@@ -16,9 +16,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Table(name = "roles")
 public class Role {
-    public static final String ADMIN_VALUE = "admin";
+    public static final String ADMIN_VALUE = "ADMIN";
     public static final Role ADMIN = new Role(ADMIN_VALUE);
-    public static final String USER_VALUE = "user";
+    public static final String USER_VALUE = "USER";
     public static final Role USER = new Role(USER_VALUE);
 
     @Id
