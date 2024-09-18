@@ -15,7 +15,7 @@ public class WebClientConfig {
     @Bean
     WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("http://localhost:8080/identity")
+                .baseUrl("http://identity-service:8080/identity")
                 .build();
     }
 

@@ -22,7 +22,7 @@ public class FollowController {
 
     @Operation(summary = "Get all following")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/following")
     public ResponseObject<ListFollowingResponse> getAllFollowing(
             JwtAuthenticationToken token
@@ -33,7 +33,7 @@ public class FollowController {
 
     @Operation(summary = "Count number of following")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/following/count")
     public ResponseObject<Long> countFollowing(
             JwtAuthenticationToken token
@@ -44,7 +44,7 @@ public class FollowController {
 
     @Operation(summary = "Check if the current log in user follow {userId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/following/check")
     public ResponseObject<Boolean> isFollowed(
             @RequestParam String following,
@@ -57,7 +57,7 @@ public class FollowController {
 
     @Operation(summary = "Get all follower")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_INSTRUCTOR_PERMS')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/follower")
     public ResponseObject<ListFollowerResponse> getAllFollower(
             JwtAuthenticationToken token
@@ -76,7 +76,7 @@ public class FollowController {
 
     @Operation(summary = "Count number of followers")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_INSTRUCTOR_PERMS')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/follower/count")
     public ResponseObject<Long> countFollower(
             JwtAuthenticationToken token
@@ -87,7 +87,7 @@ public class FollowController {
 
     @Operation(summary = "Follow user with id {followingUserId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/follow/{followingUserId}")
     public ResponseObject<EmptyObject> followUser(
             @PathVariable String followingUserId,
@@ -102,7 +102,7 @@ public class FollowController {
 
     @Operation(summary = "Unfollow user with id {followingUserId}")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('SCP_STUDENT_PERMS')")
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/unfollow/{followingUserId}")
     public ResponseObject<EmptyObject> unfollowUser(
             @PathVariable String followingUserId,
