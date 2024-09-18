@@ -27,19 +27,21 @@ import java.util.Arrays;
 public class AuthenticationFilter implements GlobalFilter, Ordered {
     private final IdentityService identityService;
     private final ObjectMapper mapper;
-    String[] PUBLIC_ENDPOINTS = {
+    String[] POST_PUBLIC_ENDPOINTS = {
             "/identity/auth",
-            "/identity/log-out",
             "/identity/introspect",
             "/identity/signup",
             "/identity/change-password",
             "/identity/forget-password/send-otp",
             "/identity/forget-password/check-otp",
-            "/identity/verify",
             "/identity/outbound/authentication",
+    };
 
+    String[] GET_PUBLIC_ENDPOINTS = {
+            "/identity/log-out",
+            "/post/**",
+            "/identity/verify",
             "/notification/connect-sse",
-            "/post"
     };
     @Value("${app.api-prefix}")
     private String prefix;
@@ -91,12 +93,18 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     private boolean isPublicEndpoint(ServerHttpRequest request) {
-        return Arrays.stream(PUBLIC_ENDPOINTS).anyMatch(s ->
-        {
-            log.info(s);
-            return request.getURI().getPath().matches(prefix + s);
-        });
+        String path = request.getURI().getPath();
+        String method = request.getMethod().name();
+
+        boolean isPostPublic = Arrays.stream(POST_PUBLIC_ENDPOINTS)
+                .anyMatch(s -> path.matches(prefix + s) && "POST".equals(method));
+
+        boolean isGetPublic = Arrays.stream(GET_PUBLIC_ENDPOINTS)
+                .anyMatch(s -> path.matches(prefix + s) && "GET".equals(method));
+
+        return isPostPublic || isGetPublic;
     }
+
 
     Mono<Void> unauthenticated(ServerHttpResponse response) throws JsonProcessingException {
         ResponseObject responseObject = ResponseObject

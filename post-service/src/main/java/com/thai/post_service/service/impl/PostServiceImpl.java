@@ -2,6 +2,7 @@ package com.thai.post_service.service.impl;
 
 import com.thai.post_service.dto.request.PostRequest;
 import com.thai.post_service.dto.response.PostResponse;
+import com.thai.post_service.exception.white.PostNotFoundException;
 import com.thai.post_service.mapper.PostMapper;
 import com.thai.post_service.model.Post;
 import com.thai.post_service.repository.PostRepository;
@@ -25,11 +26,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse getPost(String id) {
-        return null;
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+        return postMapper.toPostResponse(post);
     }
 
     @Override
     public PostResponse createPost(PostRequest postRequest) {
+        Post post = postMapper.toPost(postRequest);
+        try{
+            post = postRepository.save(post);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         return null;
     }
 

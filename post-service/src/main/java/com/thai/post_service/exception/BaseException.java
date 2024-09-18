@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class BaseException extends RuntimeException {
-    public static final String codePrefix = "USER";
+    public static final String codePrefix = "POST";
     public static final String defaultCode = "UNKNOWN";
     public static final HttpStatus defaultStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     public static final String defaultMsg = "Something went wrong, please contact us if the problem persist";
