@@ -38,7 +38,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/verify",
             "/identity/outbound/authentication",
 
-            "/notification/connect-sse"
+            "/notification/connect-sse",
+            "/post"
     };
     @Value("${app.api-prefix}")
     private String prefix;
