@@ -98,8 +98,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse deletePost(String id) {
-        return null;
+    public void deletePost(String id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(id));
+
+        // Delete the post from the repository
+        postRepository.delete(post);
+        deleteMedia(id);
     }
 
     @Async

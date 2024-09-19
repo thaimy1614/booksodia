@@ -87,6 +87,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("@postServiceImpl.getPost(#id).userId == authentication.name && hasRole('USER')")
     public void deletePostById(
             @PathVariable String id) {
         postService.deletePost(id);

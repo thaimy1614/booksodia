@@ -15,5 +15,5 @@ public interface PostService {
 
     PostResponse updatePost(String id, PostRequest postRequest, MultipartFile file);
 
-    PostResponse deletePost(String id);
+    void deletePost(String id);
 }
