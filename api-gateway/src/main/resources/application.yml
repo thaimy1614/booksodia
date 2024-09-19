@@ -61,6 +61,7 @@ spring:
           uri: http://post-service:8080/
           predicates:
             - Path=${app.api-prefix}/post/**
+            - Path=${app.api-prefix}/post
           filters:
             - StripPrefix=1
 

@@ -22,7 +22,7 @@ public class PostReaction {
     private Post post;
 
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     @Enumerated(EnumType.STRING)
     private ReactionType type;

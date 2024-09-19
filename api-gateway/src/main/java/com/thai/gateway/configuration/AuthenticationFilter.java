@@ -40,6 +40,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     String[] GET_PUBLIC_ENDPOINTS = {
             "/identity/log-out",
             "/post/**",
+            "/post",
             "/identity/verify",
             "/notification/connect-sse",
     };
@@ -48,7 +49,6 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
         log.info("{}", isPublicEndpoint(exchange.getRequest()));
         log.info(exchange.getRequest().getPath().toString());
         if (isPublicEndpoint(exchange.getRequest())) {
@@ -100,8 +100,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 .anyMatch(s -> path.matches(prefix + s) && "POST".equals(method));
 
         boolean isGetPublic = Arrays.stream(GET_PUBLIC_ENDPOINTS)
-                .anyMatch(s -> path.matches(prefix + s) && "GET".equals(method));
-
+                .anyMatch(s -> path.matches(prefix + s.replace("/**", "/.*")) && "GET".equals(method));
         return isPostPublic || isGetPublic;
     }
 

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class PostResponse {
     private String id;
+    private String userId;
     private String content;
     private String mediaUrl;
     private Post.PostType postType;

@@ -20,7 +20,7 @@ public class Comment {
     private LocalDateTime updatedAt;
 
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
     @ManyToOne
     @JoinColumn(name = "post_id")

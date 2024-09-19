@@ -13,7 +13,7 @@ public class CommentReaction {
     private Comment comment; // Reference to the comment
 
     @Column(name = "user_id")
-    private Long userId; // ID of the user who reacted
+    private String userId; // ID of the user who reacted
 
     @Enumerated(EnumType.STRING)
     private ReactionType type;

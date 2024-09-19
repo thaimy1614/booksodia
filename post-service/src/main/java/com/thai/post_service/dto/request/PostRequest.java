@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PostRequest {
     private String content;
-    private String mediaUrl;
     private Post.PostType postType;
     private Post.Visibility visibility;
 }

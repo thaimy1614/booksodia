@@ -37,7 +37,7 @@ public class Post {
     private Visibility visibility;
 
     @Column(name = "user_id")
-    private Long userId; // ID of the user who created the post
+    private String userId; // ID of the user who created the post
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments; // List of comments on the post
