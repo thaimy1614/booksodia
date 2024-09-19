@@ -11,12 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Objects;
 
 @RestController
 @RequestMapping("${application.api.prefix}")
@@ -76,16 +76,35 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
+    @PostAuthorize("hasRole('USER') && returnObject.data().userId == authentication.name")
     public ResponseObject<PostResponse> updatePost(
             @PathVariable String id,
-            @RequestBody PostRequest postRequest) {
-        return null;
+            @RequestPart PostRequest postRequest,
+            @Nullable @RequestParam("file") MultipartFile multipartFile
+    ) {
+        PostResponse updatedPost = postService.updatePost(id, postRequest, multipartFile);
+        return ResponseObject.success(updatedPost);
     }
 
     @DeleteMapping("/{id}")
     public void deletePostById(
             @PathVariable String id) {
-
+        postService.deletePost(id);
     }
 
+    @GetMapping("/{userId}")
+    public ResponseObject<Page<PostResponse>> getPostsOfUser(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "content") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction,
+            JwtAuthenticationToken token
+    ) {
+        String myId = token.getName();
+        Sort sort = Sort.by(Sort.Direction.fromString(direction.toUpperCase()), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<PostResponse> postResponses = postService.getPosts(pageable);
+        return ResponseObject.success(postResponses);
+    }
 }

@@ -13,7 +13,7 @@ public interface PostService {
 
     PostResponse createPost(String id, PostRequest postRequest, MultipartFile file);
 
-    PostResponse updatePost(String id, PostRequest postRequest);
+    PostResponse updatePost(String id, PostRequest postRequest, MultipartFile file);
 
     PostResponse deletePost(String id);
 }

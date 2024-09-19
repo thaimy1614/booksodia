@@ -50,14 +50,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse createPost(String id, PostRequest postRequest, MultipartFile file) {
         Post post = postMapper.toPost(postRequest);
-        try{
+        try {
             post.setUserId(id);
             post = postRepository.save(post);
-            if(file != null) {
+            if (file != null) {
                 upload(file, post.getId());
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -65,8 +65,36 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse updatePost(String id, PostRequest postRequest) {
-        return null;
+    public PostResponse updatePost(String id, PostRequest postRequest, MultipartFile file) {
+        Post existingPost = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(id));
+        if (existingPost.getMediaUrl() != null && !existingPost.getMediaUrl().isEmpty()) {
+            deleteMedia(id);
+            existingPost.setMediaUrl(null);
+        }
+        if (file != null) {
+            upload(file, id);
+            existingPost.setPostType(getTypeOfMedia(file));
+        } else {
+            existingPost.setPostType(Post.PostType.TEXT);
+        }
+        existingPost.setContent(postRequest.getContent());
+        existingPost.setVisibility(postRequest.getVisibility());
+        Post updatedPost = postRepository.save(existingPost);
+
+        return postMapper.toPostResponse(updatedPost);
+    }
+
+    private Post.PostType getTypeOfMedia(MultipartFile file) {
+        String contentType = file.getContentType();
+        if (contentType != null) {
+            return switch (contentType) {
+                case "image/jpeg", "image/png", "image/gif", "image/bmp" -> Post.PostType.IMAGE;
+                default -> Post.PostType.VIDEO;
+            };
+        } else {
+            return Post.PostType.TEXT;
+        }
     }
 
     @Override
@@ -96,5 +124,9 @@ public class PostServiceImpl implements PostService {
 
     public String getUrl(String objectName) {
         return s3.getUrl(bucketName, objectName).toString();
+    }
+
+    private void deleteMedia(String id) {
+        s3.deleteObject(bucketName, id);
     }
 }
