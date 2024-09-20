@@ -93,7 +93,7 @@ public class PostController {
         postService.deletePost(id);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseObject<Page<PostResponse>> getPostsOfUser(
             @PathVariable String userId,
             @RequestParam(defaultValue = "0") int page,

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,6 +106,23 @@ public class PostServiceImpl implements PostService {
         // Delete the post from the repository
         postRepository.delete(post);
         deleteMedia(id);
+    }
+
+    @Override
+    public Page<PostResponse> getPostsOfUser(Pageable pageable) {
+        String myId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Page<Post> posts = postRepository.findAllByUserId(myId, pageable);
+        return posts.map(postMapper::toPostResponse);
+    }
+
+    @Override
+    public Page<PostResponse> getPostsOfUser(String userId, Pageable pageable) {
+        if(SecurityContextHolder.getContext()!=null){
+            String myId = SecurityContextHolder.getContext().getAuthentication().getName();
+            // Todo: check relationship between users via 2 user ids
+        }
+
+
     }
 
     @Async

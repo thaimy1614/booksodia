@@ -16,4 +16,8 @@ public interface PostService {
     PostResponse updatePost(String id, PostRequest postRequest, MultipartFile file);
 
     void deletePost(String id);
+
+    Page<PostResponse> getPostsOfUser(Pageable pageable);
+
+    Page<PostResponse> getPostsOfUser(String userId, Pageable pageable);
 }
