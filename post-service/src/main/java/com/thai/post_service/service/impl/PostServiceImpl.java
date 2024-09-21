@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -23,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -117,13 +120,38 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<PostResponse> getPostsOfUser(String userId, Pageable pageable) {
-        if(SecurityContextHolder.getContext()!=null){
+        // Fetch public posts
+        Page<Post> publicPosts = postRepository.findAllByUserIdAndVisibility(userId, Post.Visibility.PUBLIC, pageable);
+
+        if (SecurityContextHolder.getContext() != null) {
             String myId = SecurityContextHolder.getContext().getAuthentication().getName();
-            // Todo: check relationship between users via 2 user ids
+
+            // Check if either user has blocked the other
+            boolean isBlocked = relationshipService.isBlocked(myId, userId);
+            if (isBlocked) {
+                return null;  // Return null if either user has blocked the other
+            }
+
+            // Check if they are friends
+            boolean isFriend = relationshipService.areFriends(myId, userId);
+
+
+            if (isFriend) {
+                // Fetch "friend only" posts
+                Page<Post> friendOnlyPosts = postRepository.findAllByUserIdAndVisibility(userId, Post.Visibility.FRIENDS_ONLY, pageable);
+
+                // Combine public and friend-only posts
+                List<Post> combinedPosts = new ArrayList<>();
+                combinedPosts.addAll(publicPosts.getContent());
+                combinedPosts.addAll(friendOnlyPosts.getContent());
+
+                return new PageImpl<>(combinedPosts, pageable, combinedPosts.size()).map(postMapper::toPostResponse);
+            }
         }
 
-
+        return publicPosts.map(postMapper::toPostResponse);
     }
+
 
     @Async
     public void upload(MultipartFile file, String id) {
