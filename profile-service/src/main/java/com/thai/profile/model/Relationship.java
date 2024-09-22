@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@IdClass(RelationshipId.class)
 public class Relationship {
     @Id
     @ManyToOne
@@ -30,6 +31,7 @@ public class Relationship {
     @Column(name = "update_at")
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
     private RelationshipType relationshipType;
 
     @PrePersist

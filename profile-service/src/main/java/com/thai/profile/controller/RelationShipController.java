@@ -32,4 +32,17 @@ public class RelationShipController {
     ) {
         return relationshipService.getRelationship(firstUser, secondUser);
     }
+
+    @GetMapping("/{userId}")
+    public ResponseObject<RelationshipResponse> getRelationship(
+            @PathVariable("userId") String userId,
+            JwtAuthenticationToken token
+    ) {
+        return ResponseObject
+                .success(RelationshipResponse.builder()
+                        .myId(token.getName())
+                        .theirId(token.getName())
+                        .relationshipType(relationshipService.getRelationship(token.getName(), userId))
+                        .build());
+    }
 }
