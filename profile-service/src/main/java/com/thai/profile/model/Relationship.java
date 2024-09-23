@@ -45,6 +45,6 @@ public class Relationship {
     }
 
     public enum RelationshipType {
-        FRIEND, BLOCKED, STRANGER
+        FRIEND, BLOCKED, STRANGER, PENDING
     }
 }
