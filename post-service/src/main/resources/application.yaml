@@ -40,3 +40,7 @@ aws:
     region: ${AWS_S3_REGION}
     bucket:
       name: ${AWS_S3_BUCKET_NAME}
+
+app:
+  services:
+    profile: ${PROFILE_URL}

@@ -105,7 +105,7 @@ public class PostController {
         String myId = token.getName();
         Sort sort = Sort.by(Sort.Direction.fromString(direction.toUpperCase()), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<PostResponse> postResponses = postService.getPosts(pageable);
+        Page<PostResponse> postResponses = postService.getPostsOfUser(pageable);
         return ResponseObject.success(postResponses);
     }
 }

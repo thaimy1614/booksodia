@@ -97,12 +97,14 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         String method = request.getMethod().name();
 
         boolean isPostPublic = Arrays.stream(POST_PUBLIC_ENDPOINTS)
-                .anyMatch(s -> path.matches(prefix + s) && "POST".equals(method));
+                .anyMatch(s -> path.startsWith(prefix + s) && "POST".equalsIgnoreCase(method));
 
         boolean isGetPublic = Arrays.stream(GET_PUBLIC_ENDPOINTS)
-                .anyMatch(s -> path.matches(prefix + s.replace("/**", "/.*")) && "GET".equals(method));
+                .anyMatch(s -> path.startsWith(prefix + s.replace("/**", "")) && "GET".equalsIgnoreCase(method));
+
         return isPostPublic || isGetPublic;
     }
+
 
 
     Mono<Void> unauthenticated(ServerHttpResponse response) throws JsonProcessingException {
