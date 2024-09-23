@@ -5,10 +5,12 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.thai.post_service.dto.request.PostRequest;
 import com.thai.post_service.dto.response.PostResponse;
+import com.thai.post_service.enums.RelationshipType;
 import com.thai.post_service.exception.white.PostNotFoundException;
 import com.thai.post_service.mapper.PostMapper;
 import com.thai.post_service.model.Post;
 import com.thai.post_service.repository.PostRepository;
+import com.thai.post_service.repository.httpclient.ProfileClient;
 import com.thai.post_service.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final AmazonS3 s3;
+    private final ProfileClient profileClient;
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
@@ -126,18 +129,13 @@ public class PostServiceImpl implements PostService {
         if (SecurityContextHolder.getContext() != null) {
             String myId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            // Check if either user has blocked the other
-            boolean isBlocked = relationshipService.isBlocked(myId, userId);
-            if (isBlocked) {
-                return null;  // Return null if either user has blocked the other
+            RelationshipType type = profileClient.getRelationship(myId, userId);
+
+            if (type == RelationshipType.BLOCKED) {
+                return null;
             }
 
-            // Check if they are friends
-            boolean isFriend = relationshipService.areFriends(myId, userId);
-
-
-            if (isFriend) {
-                // Fetch "friend only" posts
+            if (type == RelationshipType.FRIEND) {
                 Page<Post> friendOnlyPosts = postRepository.findAllByUserIdAndVisibility(userId, Post.Visibility.FRIENDS_ONLY, pageable);
 
                 // Combine public and friend-only posts
